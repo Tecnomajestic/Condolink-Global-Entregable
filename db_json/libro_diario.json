@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ASI-2026-001",
+    "fecha": "2026-10-01T08:00:00.000Z",
+    "junta_id": "JTA-CHARAM-001",
+    "tenant_id": "TENANT-CHARAM-01",
+    "codigoDebe": "1.1.01.001",
+    "cuentaDebe": "Banco Mercantil Cuenta Corriente Condominio",
+    "codigoHaber": "4.1.01.001",
+    "cuentaHaber": "Ingresos por Cobranza Cuota Condominio Octubre",
+    "montoUsd": 2400.00,
+    "tasaBcv": 881.88,
+    "montoVes": 2116512.00,
+    "concepto": "Recaudación Ordinaria de Alícuotas Período Octubre 2026"
+  },
+  {
+    "id": "ASI-2026-002",
+    "fecha": "2026-10-15T10:30:00.000Z",
+    "junta_id": "JTA-CHARAM-001",
+    "tenant_id": "TENANT-CHARAM-01",
+    "codigoDebe": "5.1.02.001",
+    "cuentaDebe": "Gasto Mantenimiento de Ascensores Otis",
+    "codigoHaber": "1.1.01.001",
+    "cuentaHaber": "Banco Mercantil Cuenta Corriente",
+    "montoUsd": 450.00,
+    "tasaBcv": 881.88,
+    "montoVes": 396846.00,
+    "concepto": "Pago mensualidad contrato de ascensores Otis según factura F-4412"
+  },
+  {
+    "id": "ASI-2026-003",
+    "fecha": "2026-10-15T15:00:00.000Z",
+    "junta_id": "JTA-CHARAM-001",
+    "tenant_id": "TENANT-CHARAM-01",
+    "codigoDebe": "5.1.01.001",
+    "cuentaDebe": "Gastos de Nómina Quincenal y Beneficios LOTTT",
+    "codigoHaber": "1.1.01.001",
+    "cuentaHaber": "Banco Mercantil Cuenta Corriente",
+    "montoUsd": 350.00,
+    "tasaBcv": 881.88,
+    "montoVes": 308658.00,
+    "concepto": "Pago de primera quincena a trabajadores residenciales Torre Charam"
+  }
+]

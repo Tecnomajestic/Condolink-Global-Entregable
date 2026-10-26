@@ -1,0 +1,62 @@
+[
+  {
+    "id": "CLG_MASTER_01",
+    "nombre": "Condolink Global Master Central",
+    "rif": "J-50123456-0",
+    "direccion": "Torre Charam, Piso 12, La Castellana, Caracas",
+    "telefono": "+58 212 2630000",
+    "email": "master@condolinkglobal.com",
+    "tipo": "MASTER",
+    "activo": true,
+    "logoUrl": "https://i.imgur.com/XcMwIDa.png",
+    "fechaCreacion": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "CLG_MONITOR_01",
+    "nombre": "Consola Auditoría Técnica C4I Monitor",
+    "rif": "J-50123456-1",
+    "direccion": "Centro de Operaciones C4I, Caracas",
+    "telefono": "+58 212 2630001",
+    "email": "monitor@condolinkglobal.com",
+    "tipo": "MONITOR",
+    "activo": true,
+    "logoUrl": "https://i.imgur.com/XcMwIDa.png",
+    "fechaCreacion": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "CLG_TENANT_ADMIN",
+    "nombre": "Administradora Inmobiliaria Charam C.A.",
+    "rif": "J-40987654-2",
+    "direccion": "Av. Principal La Castellana, Edif. Charam, Caracas",
+    "telefono": "+58 212 2631122",
+    "email": "admin@condolinkglobal.com",
+    "tipo": "ADMINISTRADORA",
+    "activo": true,
+    "logoUrl": "https://i.imgur.com/XcMwIDa.png",
+    "fechaCreacion": "2026-01-10T10:00:00.000Z"
+  },
+  {
+    "id": "TENANT-CHARAM-01",
+    "nombre": "Condominio Residencial Torre Charam",
+    "rif": "J-30456789-9",
+    "direccion": "Calle Los Chaguaramos con Av. Blandín, La Castellana",
+    "telefono": "+58 212 2632233",
+    "email": "junta.charam@gmail.com",
+    "tipo": "CONDOMINIO",
+    "activo": true,
+    "logoUrl": "https://i.imgur.com/XcMwIDa.png",
+    "fechaCreacion": "2026-01-15T08:30:00.000Z"
+  },
+  {
+    "id": "CLG_INV_01",
+    "nombre": "Fondo de Inversión Inmobiliaria Global",
+    "rif": "J-41234567-8",
+    "direccion": "Av. Francisco de Miranda, Centro Lido, Caracas",
+    "telefono": "+58 212 9510000",
+    "email": "inversionistas@condolinkglobal.com",
+    "tipo": "INVERSIONISTA",
+    "activo": true,
+    "logoUrl": "https://i.imgur.com/XcMwIDa.png",
+    "fechaCreacion": "2026-02-01T14:00:00.000Z"
+  }
+]

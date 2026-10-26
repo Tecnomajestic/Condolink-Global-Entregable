@@ -1,0 +1,17 @@
+{
+  "spreadsheet_id": "1K_EiaARKQfucIqgC4_FnqBr1UwFGDKOOC-ks6i0Jh4c",
+  "drive_folder_id": "1_GOZOLnHBMm_meTUQSpmsIqZeY1E4Jzl",
+  "appName": "Condolink Global Enterprise",
+  "appVersion": "V20.8",
+  "tasaBCV": "881.88",
+  "tasaNumerica": 881.88,
+  "monedaBase": "USD",
+  "monedaLocal": "VES",
+  "sede": "Torre Charam, La Castellana, Caracas, Venezuela",
+  "emailMaster": "condolinkglobal@gmail.com",
+  "emailAdmin": "administrador@condolinkglobal.com",
+  "fechaActualizacion": "2026-10-26T16:00:00.000Z",
+  "estadoSistema": "OPERATIVO_GLOBAL",
+  "modulosActivos": 26,
+  "rolesSoportados": 13
+}

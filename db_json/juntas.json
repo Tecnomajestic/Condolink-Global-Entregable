@@ -1,0 +1,30 @@
+[
+  {
+    "id": "JTA-CHARAM-001",
+    "nombreJunta": "Junta de Condominio Torre Charam",
+    "condominio": "Torre Charam",
+    "tenant_id": "TENANT-CHARAM-01",
+    "propiedad_id": "PROP-101",
+    "numUnidades": 48,
+    "numTrabajadores": 3,
+    "alicuotaBaseUnidad": 2.0833,
+    "logoAdminCreador": "https://i.imgur.com/XcMwIDa.png",
+    "fechaConstitucion": "2026-01-15T08:30:00.000Z",
+    "estado": "ACTIVA_INDEPENDIENTE",
+    "periodo": "2026-2027"
+  },
+  {
+    "id": "JTA-AVILA-002",
+    "nombreJunta": "Junta de Condominio Residencias Ávila",
+    "condominio": "Residencias Parque Ávila",
+    "tenant_id": "CLG_TENANT_ADMIN",
+    "propiedad_id": "PROP-102",
+    "numUnidades": 36,
+    "numTrabajadores": 2,
+    "alicuotaBaseUnidad": 2.7778,
+    "logoAdminCreador": "https://i.imgur.com/XcMwIDa.png",
+    "fechaConstitucion": "2026-02-01T10:00:00.000Z",
+    "estado": "ACTIVA_INDEPENDIENTE",
+    "periodo": "2026-2027"
+  }
+]

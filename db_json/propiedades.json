@@ -1,0 +1,53 @@
+[
+  {
+    "id": "PROP-101",
+    "nombre": "Torre Charam",
+    "tipo": "edificio",
+    "direccion": "Av. Principal La Castellana con Calle Los Chaguaramos",
+    "ciudad": "Caracas",
+    "estado": "Distrito Capital",
+    "unidadesTotal": 48,
+    "adminAsignadoId": "USR-003",
+    "tenant_id": "TENANT-CHARAM-01",
+    "logoAdminUrl": "https://i.imgur.com/XcMwIDa.png",
+    "alicuotaAdmin": 10.00,
+    "precio": 3500000,
+    "moneda": "USD",
+    "estadoOperativo": "ACTIVO",
+    "fechaRegistro": "2026-01-15T08:30:00.000Z"
+  },
+  {
+    "id": "PROP-102",
+    "nombre": "Residencias Parque Ávila",
+    "tipo": "edificio",
+    "direccion": "4ta Avenida de Altamira Norte",
+    "ciudad": "Caracas",
+    "estado": "Miranda",
+    "unidadesTotal": 36,
+    "adminAsignadoId": "USR-003",
+    "tenant_id": "CLG_TENANT_ADMIN",
+    "logoAdminUrl": "https://i.imgur.com/XcMwIDa.png",
+    "alicuotaAdmin": 8.50,
+    "precio": 2800000,
+    "moneda": "USD",
+    "estadoOperativo": "ACTIVO",
+    "fechaRegistro": "2026-02-01T10:00:00.000Z"
+  },
+  {
+    "id": "PROP-103",
+    "nombre": "Centro Empresarial Lido",
+    "tipo": "comercial",
+    "direccion": "Av. Francisco de Miranda, El Rosal",
+    "ciudad": "Caracas",
+    "estado": "Miranda",
+    "unidadesTotal": 60,
+    "adminAsignadoId": "USR-003",
+    "tenant_id": "CLG_INV_01",
+    "logoAdminUrl": "https://i.imgur.com/XcMwIDa.png",
+    "alicuotaAdmin": 12.00,
+    "precio": 6500000,
+    "moneda": "USD",
+    "estadoOperativo": "ACTIVO",
+    "fechaRegistro": "2026-02-10T11:00:00.000Z"
+  }
+]

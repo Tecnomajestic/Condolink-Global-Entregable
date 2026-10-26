@@ -1,0 +1,16 @@
+[
+  {
+    "id": "ADM-001",
+    "cedula": "V-14567890",
+    "nombre": "Beatriz",
+    "apellido": "Charam",
+    "correo": "admin@condolinkglobal.com",
+    "telefono": "+58 414 2631122",
+    "nivelAcceso": "ADMIN_MASTER",
+    "estatus": "Activo",
+    "tenant_id": "CLG_TENANT_ADMIN",
+    "usuario_id": "USR-003",
+    "juntasAsignadas": ["JTA-CHARAM-001", "JTA-AVILA-002"],
+    "fechaRegistro": "2026-01-10T10:00:00.000Z"
+  }
+]

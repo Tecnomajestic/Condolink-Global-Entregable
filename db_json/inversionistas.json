@@ -1,0 +1,16 @@
+[
+  {
+    "id": "INV-001",
+    "nombre": "Inversiones Inmobiliarias Charam & Asociados",
+    "rif": "J-41234567-8",
+    "correo": "inversionista@condolinkglobal.com",
+    "telefono": "+58 212 9510000",
+    "propiedades": "Centro Empresarial Lido, Torre Charam",
+    "inversionTotalUsd": 1250000.00,
+    "rendimientoEstimadoAnual": 14.5,
+    "tenant_id": "CLG_INV_01",
+    "usuario_id": "USR-009",
+    "estado": "ACTIVO",
+    "fechaRegistro": "2026-02-01T14:00:00.000Z"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "UNI-101-01",
+    "codigoUnidad": "PH-A",
+    "propiedad_id": "PROP-101",
+    "junta_id": "JTA-CHARAM-001",
+    "tenant_id": "TENANT-CHARAM-01",
+    "nombrePropietario": "Carlos Eduardo Mendoza",
+    "emailPropietario": "cmendoza@gmail.com",
+    "telefonoPropietario": "+58 414 1112233",
+    "alicuota": 4.1666,
+    "saldoUsd": 0.00,
+    "saldoVes": 0.00,
+    "estadoSolvencia": "SOLVENTE",
+    "fechaRegistro": "2026-01-15T08:30:00.000Z"
+  },
+  {
+    "id": "UNI-101-02",
+    "codigoUnidad": "Apto 8-B",
+    "propiedad_id": "PROP-101",
+    "junta_id": "JTA-CHARAM-001",
+    "tenant_id": "TENANT-CHARAM-01",
+    "nombrePropietario": "Valentina Rivas Gómez",
+    "emailPropietario": "propietario@condolinkglobal.com",
+    "telefonoPropietario": "+58 412 3334455",
+    "alicuota": 2.0833,
+    "saldoUsd": 45.00,
+    "saldoVes": 39684.60,
+    "estadoSolvencia": "PENDIENTE",
+    "fechaRegistro": "2026-01-18T10:00:00.000Z"
+  },
+  {
+    "id": "UNI-101-03",
+    "codigoUnidad": "Apto 5-A",
+    "propiedad_id": "PROP-101",
+    "junta_id": "JTA-CHARAM-001",
+    "tenant_id": "TENANT-CHARAM-01",
+    "nombrePropietario": "Inversiones Miranda C.A.",
+    "emailPropietario": "contacto@invmiranda.com",
+    "telefonoPropietario": "+58 424 5556677",
+    "alicuota": 2.0833,
+    "saldoUsd": 0.00,
+    "saldoVes": 0.00,
+    "estadoSolvencia": "SOLVENTE",
+    "fechaRegistro": "2026-01-20T09:00:00.000Z"
+  }
+]

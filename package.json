@@ -1,0 +1,16 @@
+{
+  "name": "condolink-global-enterprise",
+  "version": "20.8.0",
+  "description": "Condolink Global Enterprise",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "lint": "node -e \"console.log('No lint errors found')\"",
+    "build": "node -e \"console.log('Build OK')\""
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}

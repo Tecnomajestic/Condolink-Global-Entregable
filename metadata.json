@@ -1,0 +1,8 @@
+{
+  "name": "Condolink Global Enterprise",
+  "description": "Sistema unificado de gestión de condominios, multi-tenant y multi-rol para administración inmobiliaria y residencial.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

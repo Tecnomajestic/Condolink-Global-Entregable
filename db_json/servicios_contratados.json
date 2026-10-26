@@ -1,0 +1,47 @@
+[
+  {
+    "id": "SRV-001",
+    "proveedor": "Elevadores Otis de Venezuela C.A.",
+    "categoria": "Mantenimiento Preventivo y Correctivo de Ascensores",
+    "costoMensual": 450.00,
+    "moneda": "USD",
+    "estado": "Vigente",
+    "contacto": "soporte@otis.com.ve",
+    "telefono": "+58 212 2010000",
+    "tenant_id": "TENANT-CHARAM-01",
+    "propiedad_id": "PROP-101",
+    "fechaContrato": "2026-01-15T00:00:00.000Z",
+    "proximaRevision": "2026-11-15T00:00:00.000Z",
+    "calificacion": 5
+  },
+  {
+    "id": "SRV-002",
+    "proveedor": "Seguridad Integral 360 C.A.",
+    "categoria": "Vigilancia Privada y Control de Acceso 24/7",
+    "costoMensual": 900.00,
+    "moneda": "USD",
+    "estado": "Vigente",
+    "contacto": "operaciones@seguridad360.ve",
+    "telefono": "+58 212 2634455",
+    "tenant_id": "TENANT-CHARAM-01",
+    "propiedad_id": "PROP-101",
+    "fechaContrato": "2026-02-01T00:00:00.000Z",
+    "proximaRevision": "2026-11-01T00:00:00.000Z",
+    "calificacion": 5
+  },
+  {
+    "id": "SRV-003",
+    "proveedor": "HidroSistemas y Bombas Caracas C.A.",
+    "categoria": "Mantenimiento Sistema Hidroneumático y Filtros",
+    "costoMensual": 220.00,
+    "moneda": "USD",
+    "estado": "Vigente",
+    "contacto": "guardia@hidrosistemas.ve",
+    "telefono": "+58 414 2223344",
+    "tenant_id": "TENANT-CHARAM-01",
+    "propiedad_id": "PROP-101",
+    "fechaContrato": "2026-03-10T00:00:00.000Z",
+    "proximaRevision": "2026-11-10T00:00:00.000Z",
+    "calificacion": 4
+  }
+]

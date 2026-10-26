@@ -1,0 +1,68 @@
+[
+  {
+    "id": "MSG-001",
+    "canal": "JUNTA",
+    "tenant_id": "TENANT-CHARAM-01",
+    "junta_id": "JTA-CHARAM-001",
+    "emisor": "ADMINISTRADOR",
+    "autor": "Admin (Torre Charam)",
+    "texto": "Presupuesto de impermeabilización aprobado y programado para inicio de obras.",
+    "fecha": "2026-10-26T14:30:00.000Z",
+    "leido": true
+  },
+  {
+    "id": "MSG-002",
+    "canal": "EJECUTIVO",
+    "tenant_id": "TENANT-CHARAM-01",
+    "junta_id": "JTA-CHARAM-001",
+    "emisor": "EJECUTIVO_ADMINISTRATIVO",
+    "autor": "Ejecutivo Administrativo",
+    "texto": "Conciliación bancaria al cierre del día verificada sin discrepancias.",
+    "fecha": "2026-10-26T15:00:00.000Z",
+    "leido": true
+  },
+  {
+    "id": "MSG-003",
+    "canal": "MASTER",
+    "tenant_id": "CLG_MASTER_01",
+    "junta_id": "JTA-CHARAM-001",
+    "emisor": "MASTER",
+    "autor": "Superusuario Master",
+    "texto": "Tasa oficial BCV (881.88 VES) y sincronización de licencias multi-tenant activas.",
+    "fecha": "2026-10-26T15:30:00.000Z",
+    "leido": true
+  },
+  {
+    "id": "MSG-004",
+    "canal": "INVERSIONISTA",
+    "tenant_id": "CLG_INV_01",
+    "junta_id": "JTA-CHARAM-001",
+    "emisor": "ADMINISTRADOR",
+    "autor": "Admin",
+    "texto": "Informe trimestral de rendimientos y plusvalía inmobiliaria disponible en portal.",
+    "fecha": "2026-10-26T15:45:00.000Z",
+    "leido": false
+  },
+  {
+    "id": "MSG-005",
+    "canal": "LEGAL",
+    "tenant_id": "TENANT-CHARAM-01",
+    "junta_id": "JTA-CHARAM-001",
+    "emisor": "LEGAL",
+    "autor": "Consultor Jurídico",
+    "texto": "Revisión del nuevo reglamento interno de áreas sociales concluida favorablemente.",
+    "fecha": "2026-10-26T16:00:00.000Z",
+    "leido": false
+  },
+  {
+    "id": "MSG-006",
+    "canal": "PROPIETARIO",
+    "tenant_id": "TENANT-CHARAM-01",
+    "junta_id": "JTA-CHARAM-001",
+    "emisor": "ADMINISTRADOR",
+    "autor": "Administración Torre Charam",
+    "texto": "Se recuerda el mantenimiento preventivo del tanque principal pautado para este jueves.",
+    "fecha": "2026-10-26T16:05:00.000Z",
+    "leido": false
+  }
+]

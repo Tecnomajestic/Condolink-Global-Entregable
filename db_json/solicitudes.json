@@ -1,0 +1,43 @@
+[
+  {
+    "id": "SOL-2026-001",
+    "tipoSolicitud": "Contratar Servicio",
+    "nombre": "Condominio Residencias El Ávila",
+    "rif": "J-30948271-0",
+    "direccion": "Av. Principal La Castellana, Torre Ávila",
+    "telefono": "+58 412 1234567",
+    "email": "avila.condominio@gmail.com",
+    "rol": "Administrador",
+    "pin": "1234",
+    "estado": "Pendiente",
+    "fechaRegistro": "2026-10-25T14:30:00.000Z",
+    "instaladorDestino": "instalador_tenant_admin_master",
+    "observaciones": {
+      "juntaSolicitada": "Junta Ávila",
+      "unidadesEstimadas": 36,
+      "alicuotaPropuesta": 8.5
+    },
+    "urlRifDrive": "https://drive.google.com/file/d/mock_rif_001/view",
+    "urlLogoDrive": "https://drive.google.com/file/d/mock_logo_001/view"
+  },
+  {
+    "id": "SOL-2026-002",
+    "tipoSolicitud": "Instalación Inversionista",
+    "nombre": "Capital Real Estate Partners C.A.",
+    "rif": "J-40112233-4",
+    "direccion": "Centro Empresarial Lido, Nivel Financiero",
+    "telefono": "+58 212 9511122",
+    "email": "contacto@capitalrealestate.ve",
+    "rol": "Inversionista",
+    "pin": "5678",
+    "estado": "Pendiente",
+    "fechaRegistro": "2026-10-26T09:15:00.000Z",
+    "instaladorDestino": "instalador_tenant_inversionista_master",
+    "observaciones": {
+      "portafolioPropiedades": "3 Complejos Residenciales",
+      "capitalAporteUsd": 500000
+    },
+    "urlRifDrive": "https://drive.google.com/file/d/mock_rif_002/view",
+    "urlLogoDrive": "https://drive.google.com/file/d/mock_logo_002/view"
+  }
+]

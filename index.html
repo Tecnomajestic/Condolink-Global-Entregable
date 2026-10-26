@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Condolink Global Enterprise</title>
+  <meta name="description" content="Sistema unificado de gestión de condominios, multi-tenant y multi-rol para administración inmobiliaria y residencial.">
+  <meta property="og:title" content="Condolink Global Enterprise">
+  <meta property="og:description" content="Sistema unificado de gestión de condominios, multi-tenant y multi-rol para administración inmobiliaria y residencial.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --azul-primario: #020617;
+      --azul-secundario: #00f2fe;
+      --azul-hover: #4facfe;
+      --bg-main: #060913;
+      --bg-card: rgba(15, 23, 42, 0.94);
+      --bg-input: #0b1120;
+      --gris-borde: rgba(0, 242, 254, 0.35);
+      --gris-texto: #94a3b8;
+      --gris-titulo: #f8fafc;
+      --success: #22c55e;
+      --error: #ef4444;
+      --neon-gold: #ffd700;
+      --neon-warning: #ffaa00;
+      --radius: 16px;
+      --shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 242, 254, 0.25);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --success-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+    }
+
+    body { 
+      font-family: 'Inter', system-ui, sans-serif;
+      background: radial-gradient(circle at top right, #082f49 0%, #060913 65%);
+      color: var(--gris-titulo); 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 12px;
+      opacity: 0;
+      transition: opacity 0.4s ease-in;
+    }
+
+    /* CONTENEDOR ENVOLVENTE CENTRADO */
+    .app-wrapper {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: auto 0;
+    }
+
+    /* CONTENEDOR PRINCIPAL TIPO TARJETA - TAMAÑO ESTANDARIZADO FIJO */
+    .main-container {
+      width: 100%;
+      height: 580px; /* Altura estandarizada con scroll interno */
+      background: var(--bg-card);
+      border: 1px solid var(--gris-borde);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px 20px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+    }
+
+    /* BARRA SUPERIOR INTEGRADA DENTRO DE LA TARJETA */
+    .top-lcars-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00f2fe, #4facfe, #ffaa00);
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+    }
+
+    .main-container::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: -2px;
+      width: 4px;
+      height: 65px;
+      background: var(--azul-secundario);
+      border-radius: 3px;
+      box-shadow: 0 0 10px var(--azul-secundario);
+    }
+
+    /* CABECERA Y LOGO */
+    .header-section {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .avatar-logo {
+      width: 54px; 
+      height: 54px; 
+      border-radius: 50%; 
+      background: rgba(3, 7, 18, 0.95); 
+      border: 2px dashed rgba(0, 242, 254, 0.7); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      overflow: hidden; 
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4), inset 0 0 10px rgba(79, 172, 254, 0.3);
+      animation: rotarHaloMistico 12s linear infinite;
+    }
+
+    @keyframes rotarHaloMistico {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .avatar-logo img { 
+      width: 36px; 
+      height: 36px; 
+      object-fit: contain; 
+      border-radius: 50%;
+      filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));
+    }
+
+    .banner-title {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--gris-titulo);
+      text-transform: uppercase;
+    }
+
+    .banner-subtitle {
+      font-size: 0.58rem;
+      color: var(--gris-texto);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* PESTAÑAS DE NAVEGACIÓN */
+    .tabs-nav {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: rgba(2, 6, 23, 0.85);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 242, 254, 0.2);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--gris-texto);
+      padding: 6px 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .tab-btn i { font-size: 0.75rem; }
+
+    .tab-btn.active {
+      background: var(--azul-secundario);
+      color: var(--azul-primario);
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+      font-weight: 800;
+    }
+
+    /* WIDGET TASA BCV */
+    .bcv-ticker {
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--neon-gold);
+      cursor: pointer;
+      box-shadow: inset 0 1px 3px rgba(255, 215, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    /* CONTENEDOR INTERNO CON SCROLL */
+    .view-container-wrapper {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      max-height: 290px;
+      padding: 4px 4px 4px 0;
+      margin: 4px 0;
+    }
+
+    .view-container-wrapper::-webkit-scrollbar {
+      width: 5px;
+    }
+    .view-container-wrapper::-webkit-scrollbar-track {
+      background: rgba(2, 6, 23, 0.5);
+      border-radius: 4px;
+    }
+    .view-container-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(0, 242, 254, 0.4);
+      border-radius: 4px;
+    }
+
+    .view-section {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    .view-section.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* GRUPOS DE INPUTS */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      text-align: left;
+    }
+
+    .input-group label {
+      font-size: 0.58rem;
+      color: var(--gris-texto);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    input, select { 
+      width: 100%; 
+      padding: 7px 10px; 
+      font-size: 0.76rem; 
+      background-color: var(--bg-input);
+      border: 1px solid var(--gris-borde); 
+      color: var(--gris-titulo);
+      border-radius: 8px; 
+      outline: none;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    select { appearance: none; cursor: pointer; }
+
+    input:focus, select:focus {
+      border-color: var(--azul-secundario);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.25);
+    }
+
+    input::placeholder { color: #64748b; }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      color: var(--gris-texto);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+    .toggle-password:hover { color: var(--azul-secundario); }
+
+    .file-status-hint {
+      font-size: 0.58rem;
+      color: var(--azul-secundario);
+      margin-top: 2px;
+      display: none;
+    }
+
+    /* BOTONES */
+    .sys-btn {
+      width: 100%;
+      padding: 9px 14px;
+      background-color: rgba(30, 41, 59, 0.7);
+      color: var(--azul-secundario);
+      border: 1px solid var(--gris-borde);
+      border-radius: 8px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .sys-btn.primary {
+      background: var(--success-gradient);
+      color: #ffffff;
+      border: none;
+      font-weight: 800;
+      box-shadow: 0 4px 15px rgba(3, 105, 161, 0.4);
+    }
+
+    .sys-btn.warning {
+      background: linear-gradient(135deg, var(--neon-warning) 0%, #cc8800 100%);
+      color: #000;
+      border: none;
+      font-weight: 800;
+      box-shadow: 0 4px 15px rgba(255, 170, 0, 0.3);
+    }
+
+    .sys-btn:hover:not(:disabled) {
+      background-color: rgba(0, 242, 254, 0.15);
+      border-color: var(--azul-secundario);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .sys-btn.primary:hover:not(:disabled) {
+      filter: brightness(1.1);
+      box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5);
+    }
+
+    .sys-btn.warning:hover:not(:disabled) {
+      filter: brightness(1.1);
+      box-shadow: 0 6px 20px rgba(255, 170, 0, 0.5);
+    }
+
+    .sys-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    #mensaje { 
+      font-size: 0.68rem; 
+      letter-spacing: 0.5px;
+      text-align: center;
+      min-height: 14px;
+      font-weight: 600;
+    }
+
+    /* PIE DE PÁGINA CORPORATIVO */
+    .arcade-footer {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--gris-borde);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+      font-size: 0.65rem;
+      color: var(--gris-texto);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+    }
+
+    .arcade-footer strong { color: #f8fafc; }
+
+    .footer-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .footer-links a {
+      color: var(--azul-secundario);
+      text-decoration: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .footer-links a:hover {
+      color: var(--neon-gold);
+    }
+
+    /* OVERLAYS DE ALERTA Y ÉXITO */
+    #alert-overlay, #success-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(2, 6, 23, 0.9);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .alert-box, .success-box {
+      border: 2px solid var(--error);
+      background-color: var(--bg-card);
+      width: 85%; max-width: 420px;
+      padding: 24px; text-align: center;
+      box-shadow: 0 0 35px rgba(239, 68, 68, 0.4);
+      color: var(--error);
+      border-radius: var(--radius);
+    }
+
+    .success-box {
+      border-color: var(--success);
+      box-shadow: 0 0 35px rgba(34, 197, 94, 0.4);
+      color: var(--success);
+    }
+
+    .flashing { opacity: 0.2; }
+    .pulsing { transform: scale(0.98); }
+
+    @media (max-height: 680px) {
+      body { padding: 6px; }
+      .main-container { height: 530px; padding: 12px; }
+      .avatar-logo { width: 44px; height: 44px; }
+      .avatar-logo img { width: 28px; height: 28px; }
+      .banner-title { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-wrapper">
+
+    <div class="main-container">
+      <div class="top-lcars-bar"></div>
+
+      <!-- CABECERA CON LOGO Y TÍTULO -->
+      <div class="header-section">
+        <div class="avatar-logo">
+          <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo Condolink">
+        </div>
+        <div>
+          <div class="banner-title"><?= appName ?></div>
+          <div class="banner-subtitle">Consola de Acceso e Identificación Universal</div>
+        </div>
+      </div>
+
+      <!-- PESTAÑAS DE NAVEGACIÓN -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" id="tabEntrar" onclick="cambiarVista('entrar')">
+          <i class="fas fa-sign-in-alt"></i> Entrar
+        </button>
+        <button class="tab-btn" id="tabRegistro" onclick="cambiarVista('registro')">
+          <i class="fas fa-user-plus"></i> Registro
+        </button>
+        <button class="tab-btn" id="tabRecuperar" onclick="cambiarVista('recuperar')">
+          <i class="fas fa-key"></i> Recuperar PIN
+        </button>
+      </div>
+
+      <!-- WIDGET TASA BCV A 2 DECIMALES -->
+      <div class="bcv-ticker" id="bcv-display" onclick="sincronizarTasaBCVLogin()" title="Haz clic para sincronizar Tasa Oficial BCV">
+        <i id="sync-icon" class="fas fa-coins"></i> 
+        <span>Tasa BCV Sync:</span> 
+        <span id="tasa-hoy" style="color: #fff; font-weight: bold;">881,88 VES</span>
+      </div>
+
+      <!-- CONTENEDOR INTERNO DE VISTAS CON SCROLL Y ALTURA CONTROLADA -->
+      <div class="view-container-wrapper">
+
+        <!-- VISTA 1: ENTRAR (LOGIN) -->
+        <div id="vistaEntrar" class="view-section active">
+          <div class="input-group">
+            <label for="usuarioLogin">Usuario del Sistema</label>
+            <input type="text" id="usuarioLogin" placeholder="Ej. admin, propietario1..." autocomplete="username" onkeypress="if(event.key==='Enter') intentarLogin()">
+          </div>
+
+          <div class="input-group">
+            <label for="claveLogin">Pin de Seguridad</label>
+            <div class="input-wrapper">
+              <input type="password" id="claveLogin" placeholder="••••" autocomplete="current-password" onkeypress="if(event.key==='Enter') intentarLogin()">
+              <i class="fas fa-eye toggle-password" id="togglePassword" onclick="alternarPassword('claveLogin', 'togglePassword')"></i>
+            </div>
+          </div>
+
+          <button type="button" id="btnEntrar" class="sys-btn primary" onclick="intentarLogin()">
+            <i class="fas fa-sign-in-alt"></i> Inicializar Sesión
+          </button>
+        </div>
+
+        <!-- VISTA 2: REGISTRO DE ENTORNO -->
+        <div id="vistaRegistro" class="view-section">
+          
+          <div class="input-group">
+            <label for="tipoSolicitudReg">Tipo de Solicitud</label>
+            <select id="tipoSolicitudReg">
+              <option value="Probar Servicio">Solicitar Prueba del Sistema</option>
+              <option value="Contratar Servicio">Contratar Servicio</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="nombreReg">Nombre Completo o Empresa</label>
+            <input id="nombreReg" placeholder="Ej. Residencias Torre Charam...">
+          </div>
+
+          <div class="input-group">
+            <label for="rifReg">Número de RIF / Identificación Fiscal</label>
+            <input id="rifReg" placeholder="Ej. J-12345678-0 o V-12345678-0">
+          </div>
+
+          <div class="input-group">
+            <label for="rifFile">Adjuntar Comprobante de RIF (Imagen / PDF)</label>
+            <input type="file" id="rifFile" accept="image/*,.pdf" style="padding-top: 4px;" onchange="mostrarEstadoArchivo('rifFile', 'rifFileStatus')">
+            <span id="rifFileStatus" class="file-status-hint"></span>
+          </div>
+
+          <div class="input-group">
+            <label for="direccionReg">Dirección Fiscal / Ubicación</label>
+            <input id="direccionReg" placeholder="Ej. Av. Principal Torre Charam, Caracas...">
+          </div>
+
+          <div class="input-group">
+            <label for="telefonoReg">Número de Teléfono</label>
+            <input id="telefonoReg" type="tel" placeholder="Ej. 0412-1234567">
+          </div>
+
+          <div class="input-group">
+            <label for="emailReg">Correo Corporativo</label>
+            <input id="emailReg" type="email" placeholder="correo@dominio.com...">
+          </div>
+
+          <div class="input-group">
+            <label for="rolReg">Rol de Ecosistema</label>
+            <select id="rolReg">
+              <option value="">Seleccione rol...</option>
+              <option value="Administrador">Administrador</option>
+              <option value="Inversionista">Inversionista</option>
+              <option value="Junta">Junta de Condominio</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="pinReg">PIN de Acceso</label>
+            <input type="password" id="pinReg" placeholder="Asigne PIN (ej. 1234)" maxlength="6">
+          </div>
+
+          <div class="input-group">
+            <label for="logoFile">Logo Corporativo (Drive)</label>
+            <input type="file" id="logoFile" accept="image/*" style="padding-top: 4px;" onchange="mostrarEstadoArchivo('logoFile', 'logoFileStatus')">
+            <span id="logoFileStatus" class="file-status-hint"></span>
+          </div>
+
+          <button type="button" id="btnEnviarRegistro" class="sys-btn primary" onclick="registrarEntorno()">
+            <i class="fas fa-paper-plane"></i> Enviar Solicitud al Master
+          </button>
+        </div>
+
+        <!-- VISTA 3: RECUPERAR PIN -->
+        <div id="vistaRecuperar" class="view-section">
+          <div class="input-group">
+            <label for="usuarioRecuperacion">Usuario Registrado</label>
+            <input type="text" id="usuarioRecuperacion" autocomplete="username" placeholder="Ingrese su usuario...">
+          </div>
+
+          <button type="button" class="sys-btn warning" id="btnRecuperar" onclick="procesarRecuperacionPIN()">
+            <i class="fas fa-paper-plane"></i> Solicitar Restablecimiento de PIN
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ESTADO / TERMINAL DE MENSAJES -->
+      <div id="mensaje"></div>
+
+    </div>
+
+    <!-- PIE DE PÁGINA OFICIAL -->
+    <footer class="arcade-footer">
+      <div><strong>CONDOLINK GLOBAL V20.8</strong> &copy; 2026 - Torre Charam, Caracas. Todos los derechos reservados.</div>
+      <div class="footer-links">
+        <a href="https://www.tecnomajestic.com" target="_blank"><i class="fas fa-globe"></i> www.tecnomajestic.com</a>
+        <span>//</span>
+        <a href="https://www.condolinkglobal.com" target="_blank"><i class="fas fa-globe"></i> www.condolinkglobal.com</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- OVERLAYS DE ALERTA / ÉXITO -->
+  <div id="alert-overlay">
+    <div class="alert-box" id="alertBox">
+      <div style="font-size: 1.3rem; font-weight: 800; margin-bottom: 4px;">¡Alerta!</div>
+      <div style="font-size: 0.9rem; color: #fff; margin-bottom: 8px; font-weight: 600;">Acceso Denegado</div>
+      <div style="font-size: 0.72rem; color: #fca5a5; border: 1px dashed rgba(239, 68, 68, 0.4); padding: 8px; border-radius: 6px;" id="alertTextDetail">
+        Usuario no registrado o credenciales inválidas.
+      </div>
+    </div>
+  </div>
+
+  <div id="success-overlay">
+    <div class="success-box" id="successBox">
+      <div style="font-size: 1.3rem; font-weight: 800; margin-bottom: 4px;">¡Acceso!</div>
+      <div style="font-size: 0.9rem; color: #fff; margin-bottom: 8px; font-weight: 600;">Garantizado</div>
+      <div style="font-size: 0.72rem; color: #86efac; border: 1px dashed rgba(34, 197, 94, 0.4); padding: 8px; border-radius: 6px;" id="successTextDetail">
+        Credenciales verificadas - Iniciando sesión...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BASE_URL = "<?= baseUrl ?>";
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.style.opacity = "1";
+      document.getElementById('usuarioLogin').focus();
+      sincronizarTasaBCVLogin();
+      setInterval(sincronizarTasaBCVLogin, 60000);
+    });
+
+    /* =========================================================================
+       SINCRONIZACIÓN Y NORMALIZACIÓN DE TASA BCV ESTRICTA A 2 DECIMALES
+       ========================================================================= */
+    function normalizarTasaBCV(raw) {
+      if (raw === null || raw === undefined) return 881.88;
+      let str = String(raw).trim().replace(/[^0-9.,]/g, '');
+      if (!str) return 881.88;
+      if (str.includes(',') && !str.includes('.')) {
+        str = str.replace(',', '.');
+      } else if (str.includes('.') && str.includes(',')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+      }
+      let num = parseFloat(str);
+      if (isNaN(num) || num <= 0) return 881.88;
+      while (num >= 5000) {
+        num = num / 10;
+      }
+      return Math.round(num * 100) / 100;
+    }
+
+    function renderizarTasaBCVLogin(valorNumerico) {
+      const spanTasa = document.getElementById('tasa-hoy');
+      const syncIcon = document.getElementById('sync-icon');
+      const tasaLimpia = normalizarTasaBCV(valorNumerico);
+      if (spanTasa) {
+        spanTasa.innerText = tasaLimpia.toFixed(2).replace('.', ',') + " VES";
+      }
+      if (syncIcon) syncIcon.className = "fas fa-coins";
+    }
+
+    function sincronizarTasaBCVLogin() {
+      const syncIcon = document.getElementById('sync-icon');
+      if (syncIcon) syncIcon.className = "fas fa-sync-alt fa-spin";
+
+      let resuelto = false;
+      const fallbackTimer = setTimeout(() => {
+        if (!resuelto) {
+          resuelto = true;
+          consultarRespaldoBCVLogin();
+        }
+      }, 3000);
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        const fnBackend = google.script.run
+          .withSuccessHandler(function(res) {
+            if (!resuelto) {
+              resuelto = true;
+              clearTimeout(fallbackTimer);
+              let valor = (res && typeof res === 'object') ? (res.tasaNumerica || res.tasa) : res;
+              if (valor) {
+                renderizarTasaBCVLogin(valor);
+              } else {
+                consultarRespaldoBCVLogin();
+              }
+            }
+          })
+          .withFailureHandler(function() {
+            if (!resuelto) {
+              resuelto = true;
+              clearTimeout(fallbackTimer);
+              consultarRespaldoBCVLogin();
+            }
+          });
+
+        if (typeof fnBackend.obtenerTasaBCVOficial === 'function') {
+          fnBackend.obtenerTasaBCVOficial();
+        } else if (typeof fnBackend.obtenerTasaBCV === 'function') {
+          fnBackend.obtenerTasaBCV();
+        } else {
+          resuelto = true;
+          clearTimeout(fallbackTimer);
+          consultarRespaldoBCVLogin();
+        }
+      } else {
+        resuelto = true;
+        clearTimeout(fallbackTimer);
+        consultarRespaldoBCVLogin();
+      }
+    }
+
+    function consultarRespaldoBCVLogin() {
+      fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+        .then(r => r.json())
+        .then(data => {
+          const val = data.promedio || data.price;
+          if (val) {
+            renderizarTasaBCVLogin(val);
+          } else {
+            renderizarTasaBCVLogin(881.88);
+          }
+        })
+        .catch(() => renderizarTasaBCVLogin(881.88));
+    }
+
+    /* CONTROL DE PESTAÑAS */
+    function cambiarVista(vista) {
+      document.getElementById('vistaEntrar').classList.remove('active');
+      document.getElementById('vistaRegistro').classList.remove('active');
+      document.getElementById('vistaRecuperar').classList.remove('active');
+      
+      document.getElementById('tabEntrar').classList.remove('active');
+      document.getElementById('tabRegistro').classList.remove('active');
+      document.getElementById('tabRecuperar').classList.remove('active');
+
+      document.getElementById('mensaje').innerText = "";
+
+      if (vista === 'entrar') {
+        document.getElementById('vistaEntrar').classList.add('active');
+        document.getElementById('tabEntrar').classList.add('active');
+        document.getElementById('usuarioLogin').focus();
+      } else if (vista === 'registro') {
+        document.getElementById('vistaRegistro').classList.add('active');
+        document.getElementById('tabRegistro').classList.add('active');
+        document.getElementById('nombreReg').focus();
+      } else if (vista === 'recuperar') {
+        document.getElementById('vistaRecuperar').classList.add('active');
+        document.getElementById('tabRecuperar').classList.add('active');
+        document.getElementById('usuarioRecuperacion').focus();
+      }
+    }
+
+    function alternarPassword(idInput, idIcono) {
+      const inputClave = document.getElementById(idInput);
+      const icono = document.getElementById(idIcono);
+      if (inputClave.type === 'password') {
+        inputClave.type = 'text';
+        icono.classList.remove('fa-eye');
+        icono.classList.add('fa-eye-slash');
+      } else {
+        inputClave.type = 'password';
+        icono.classList.remove('fa-eye-slash');
+        icono.classList.add('fa-eye');
+      }
+    }
+
+    function mostrarEstadoArchivo(idInput, idStatus) {
+      const input = document.getElementById(idInput);
+      const status = document.getElementById(idStatus);
+      if (!input || !status) return;
+      if (input.files && input.files.length > 0) {
+        const f = input.files[0];
+        const kb = (f.size / 1024).toFixed(1);
+        status.style.display = 'block';
+        status.innerText = `✓ Archivo listo para Drive: ${f.name} (${kb} KB)`;
+      } else {
+        status.style.display = 'none';
+        status.innerText = '';
+      }
+    }
+
+    function leerArchivoComoBase64(inputElement) {
+      return new Promise((resolve, reject) => {
+        if (!inputElement || !inputElement.files || inputElement.files.length === 0) {
+          resolve(null);
+          return;
+        }
+        const archivo = inputElement.files[0];
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const resultado = evt.target.result || "";
+          const partes = resultado.split(",");
+          resolve({
+            nombre: archivo.name,
+            mimeType: archivo.type || "application/octet-stream",
+            tamano: archivo.size,
+            base64: partes.length > 1 ? partes[1] : partes[0]
+          });
+        };
+        reader.onerror = function(err) {
+          reject(err);
+        };
+        reader.readAsDataURL(archivo);
+      });
+    }
+
+    /* LÓGICA LOGIN */
+    function intentarLogin() {
+      const u = document.getElementById('usuarioLogin').value.trim();
+      const c = document.getElementById('claveLogin').value.trim();
+      const msg = document.getElementById('mensaje');
+      const btnEntrar = document.getElementById('btnEntrar');
+
+      if (!u || !c) {
+        msg.style.color = "var(--error)";
+        msg.innerText = "ERROR: Complete usuario y PIN de seguridad.";
+        return;
+      }
+
+      btnEntrar.disabled = true;
+      msg.style.color = "var(--azul-secundario)";
+      msg.innerText = "VERIFICANDO CREDENCIALES...";
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            btnEntrar.disabled = false;
+            if (res && (res.ok || res.success)) {
+              msg.style.color = "var(--success)";
+              msg.innerText = "ACCESO CONCEDIDO // REDIRIGIENDO...";
+              let destinoFinal = res.destino || 'portal_master';
+              let tenantAsignado = res.tenant || 'default';
+              let rolAsignado = res.rol || 'master';
+
+              document.getElementById('successTextDetail').innerText = 
+                `Credenciales verificadas - Rol: ${rolAsignado.toUpperCase()} - Cargando...`;
+              activarAccesoGarantizado(destinoFinal, tenantAsignado, rolAsignado, u, c);
+            } else {
+              activarAlertaRoja("Usuario no registrado o credenciales inválidas.");
+            }
+          })
+          .withFailureHandler(function(err) {
+            btnEntrar.disabled = false;
+            activarAlertaRoja("Error de conexión con el servidor.");
+          })
+          .verificarCredenciales(u, c);
+      } else {
+        setTimeout(() => {
+          btnEntrar.disabled = false;
+          activarAccesoGarantizado('portal_master', 'default', 'master', u, c);
+        }, 800);
+      }
+    }
+
+    function activarAccesoGarantizado(destino, tenant, rol, user, pin) {
+      const overlay = document.getElementById('success-overlay');
+      const successBox = document.getElementById('successBox');
+      overlay.style.display = 'flex';
+
+      let pulseCount = 0;
+      const pulseInterval = setInterval(() => {
+        successBox.classList.toggle('pulsing');
+        pulseCount++;
+        if (pulseCount >= 6) {
+          clearInterval(pulseInterval);
+          const baseUrlClean = (BASE_URL && BASE_URL.trim() !== "" && !BASE_URL.includes("?")) 
+            ? BASE_URL 
+            : window.location.href.split('?')[0];
+          window.location.href = `${baseUrlClean}?p=${encodeURIComponent(destino)}&tenant=${encodeURIComponent(tenant)}&rol=${encodeURIComponent(rol)}&user=${encodeURIComponent(user)}&pin=${encodeURIComponent(pin)}`;
+        }
+      }, 250);
+    }
+
+    function activarAlertaRoja(texto) {
+      document.getElementById('alertTextDetail').innerText = texto;
+      const overlay = document.getElementById('alert-overlay');
+      const alertBox = document.getElementById('alertBox');
+      overlay.style.display = 'flex';
+
+      let flashCount = 0;
+      const flashInterval = setInterval(() => {
+        alertBox.classList.toggle('flashing');
+        flashCount++;
+        if (flashCount >= 8) {
+          clearInterval(flashInterval);
+          overlay.style.display = 'none';
+          document.getElementById('mensaje').innerText = "";
+        }
+      }, 250);
+    }
+
+    /* LÓGICA DE REGISTRO MULTI-CANAL (DRIVE + CORREOS + PANEL MASTER + INSTALADOR) */
+    async function registrarEntorno() {
+      const tipoSolicitud = document.getElementById("tipoSolicitudReg").value;
+      const nombre = document.getElementById("nombreReg").value.trim();
+      const rif = document.getElementById("rifReg").value.trim();
+      const direccion = document.getElementById("direccionReg").value.trim();
+      const telefono = document.getElementById("telefonoReg").value.trim();
+      const email = document.getElementById("emailReg").value.trim();
+      const rol = document.getElementById("rolReg").value;
+      const pin = document.getElementById("pinReg").value.trim();
+      const logoInput = document.getElementById("logoFile");
+      const rifInput = document.getElementById("rifFile");
+      const msgDiv = document.getElementById("mensaje");
+      const btnReg = document.getElementById("btnEnviarRegistro");
+
+      if (!nombre || !rif || !direccion || !telefono || !email || !rol || !pin) {
+        msgDiv.style.color = "var(--error)";
+        msgDiv.innerText = "Complete todos los campos obligatorios para enviar la solicitud.";
+        return;
+      }
+
+      const rolLower = rol.toLowerCase();
+      let instaladorDestino = "instalador_tenant_admin_master";
+      if (rolLower.includes("inversionista")) {
+        instaladorDestino = "instalador_tenant_inversionista_master";
+      } else if (rolLower.includes("admin") || rolLower.includes("junta")) {
+        instaladorDestino = "instalador_tenant_admin_master";
+      }
+
+      btnReg.disabled = true;
+      btnReg.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Subiendo a Drive y Notificando...`;
+      msgDiv.style.color = "var(--azul-secundario)";
+      msgDiv.innerText = "Procesando Cédula/RIF y Logo en Google Drive...";
+
+      try {
+        const archivoRifPayload = await leerArchivoComoBase64(rifInput);
+        const archivoLogoPayload = await leerArchivoComoBase64(logoInput);
+
+        const datos = {
+          ID_Solicitud: "SOL-" + Date.now(),
+          TipoSolicitud: tipoSolicitud,
+          Nombre: nombre,
+          RIF: rif,
+          Direccion: direccion,
+          Telefono: telefono,
+          Email: email,
+          Rol: rol,
+          PIN: pin,
+          Estado: "Pendiente",
+          FechaRegistro: new Date().toISOString(),
+          InstaladorDestino: instaladorDestino,
+          CorreosNotificacion: [
+            "condolinkglobal@gmail.com",
+            "administrador@condolinkglobal@gmail.com",
+            "administrador.condolinkglobal@gmail.com"
+          ],
+          ArchivoRIF: archivoRifPayload,
+          ArchivoLogo: archivoLogoPayload
+        };
+
+        try {
+          const pendientesLocal = JSON.parse(localStorage.getItem("CLG_Solicitudes_Pendientes") || "[]");
+          pendientesLocal.unshift({
+            id: datos.ID_Solicitud,
+            tipoSolicitud: datos.TipoSolicitud,
+            nombre: datos.Nombre,
+            rif: datos.RIF,
+            direccion: datos.Direccion,
+            telefono: datos.Telefono,
+            email: datos.Email,
+            rol: datos.Rol,
+            pin: datos.PIN,
+            estado: "Pendiente",
+            fecha: datos.FechaRegistro,
+            instaladorDestino: datos.InstaladorDestino
+          });
+          localStorage.setItem("CLG_Solicitudes_Pendientes", JSON.stringify(pendientesLocal.slice(0, 50)));
+        } catch (storageErr) {}
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(res => {
+              btnReg.disabled = false;
+              btnReg.innerHTML = `<i class="fas fa-paper-plane"></i> Enviar Solicitud al Master`;
+              if (res && (res.ok || res.success)) {
+                msgDiv.style.color = "var(--success)";
+                msgDiv.innerText = res.msg || "Solicitud enviada con éxito al Master.";
+                document.getElementById("nombreReg").value = "";
+                document.getElementById("rifReg").value = "";
+                document.getElementById("direccionReg").value = "";
+                document.getElementById("telefonoReg").value = "";
+                document.getElementById("emailReg").value = "";
+                document.getElementById("rolReg").value = "";
+                document.getElementById("pinReg").value = "";
+                logoInput.value = "";
+                rifInput.value = "";
+                document.getElementById("rifFileStatus").style.display = "none";
+                document.getElementById("logoFileStatus").style.display = "none";
+              } else {
+                msgDiv.style.color = "var(--error)";
+                msgDiv.innerText = res ? res.msg : "Error en el registro.";
+              }
+            })
+            .withFailureHandler(err => {
+              btnReg.disabled = false;
+              btnReg.innerHTML = `<i class="fas fa-paper-plane"></i> Enviar Solicitud al Master`;
+              msgDiv.style.color = "var(--error)";
+              msgDiv.innerText = "Error de conexión: " + err.message;
+            })
+            .registrarUsuarioConLogoDrive(datos);
+        } else {
+          setTimeout(() => {
+            btnReg.disabled = false;
+            btnReg.innerHTML = `<i class="fas fa-paper-plane"></i> Enviar Solicitud al Master`;
+            msgDiv.style.color = "var(--success)";
+            msgDiv.innerText = "Modo simulación: Solicitud registrada exitosamente.";
+          }, 1000);
+        }
+      } catch (fileErr) {
+        btnReg.disabled = false;
+        btnReg.innerHTML = `<i class="fas fa-paper-plane"></i> Enviar Solicitud al Master`;
+        msgDiv.style.color = "var(--error)";
+        msgDiv.innerText = "Error al procesar los archivos adjuntos.";
+      }
+    }
+
+    /* LÓGICA RECUPERACIÓN */
+    function procesarRecuperacionPIN() {
+      const usuario = document.getElementById("usuarioRecuperacion").value.trim();
+      const msg = document.getElementById("mensaje");
+      const btn = document.getElementById("btnRecuperar");
+
+      if (!usuario) {
+        msg.style.color = "var(--error)";
+        msg.innerText = "Debe ingresar su nombre de usuario.";
+        return;
+      }
+
+      msg.style.color = "var(--neon-warning)";
+      msg.innerText = "Verificando en CLG_usuario y notificando a condolinkglobal@gmail.com...";
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Procesando...`;
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(res => {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fas fa-paper-plane"></i> Solicitar Restablecimiento de PIN`;
+            if (res && (res.ok || res.success)) {
+              msg.style.color = "var(--success)";
+              msg.innerText = "Usuario verificado. Notificación enviada a condolinkglobal@gmail.com.";
+              setTimeout(() => cambiarVista('entrar'), 3500);
+            } else {
+              msg.style.color = "var(--error)";
+              msg.innerText = (res && res.msg) ? res.msg : "El usuario no existe en CLG_usuario.";
+            }
+          })
+          .withFailureHandler(err => {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fas fa-paper-plane"></i> Solicitar Restablecimiento de PIN`;
+            msg.style.color = "var(--error)";
+            msg.innerText = "Error de enlace con servidor: " + err.message;
+          })
+          .enviarRecuperacionPINPorUsuarioBackend(usuario);
+      } else {
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fas fa-paper-plane"></i> Solicitar Restablecimiento de PIN`;
+          msg.style.color = "var(--success)";
+          msg.innerText = "Simulación: PIN enviado correctamente.";
+          setTimeout(() => cambiarVista('entrar'), 2500);
+        }, 1500);
+      }
+    }
+  </script>
+</body>
+</html>

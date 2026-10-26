@@ -1,0 +1,62 @@
+[
+  {
+    "id": "AUD-005",
+    "fecha": "2026-10-26T16:17:17.726Z",
+    "tipo": "AUTH_SUCCESS",
+    "modulo": "LOGIN_UI",
+    "usuario": "admin@condolinkglobal.com",
+    "usuario_id": "USR-003",
+    "tenant_id": "CLG_TENANT_ADMIN",
+    "detalle": "Inicio de sesión concedido para rol: admin. Destino: portal_admin",
+    "estado": "OK",
+    "vista": "sistema"
+  },
+  {
+    "id": "AUD-004",
+    "fecha": "2026-10-26T16:17:17.705Z",
+    "tipo": "SECURITY_SCAN",
+    "modulo": "BARRIDO_C4I_MONITOR",
+    "usuario": "MONITOR_GLOBAL",
+    "usuario_id": "USR-001",
+    "tenant_id": "CLG_MASTER_01",
+    "detalle": "Barrido C4I completado. Integridad verificada en db_json (14 usuarios, 2 juntas, 3 propiedades, 3 asientos).",
+    "estado": "OK",
+    "vista": "sistema"
+  },
+  {
+    "id": "AUD-001",
+    "fecha": "2026-10-26T16:00:00.000Z",
+    "tipo": "INFO",
+    "modulo": "ROUTER_CENTRAL",
+    "usuario": "SISTEMA",
+    "usuario_id": "USR-001",
+    "tenant_id": "CLG_MASTER_01",
+    "detalle": "Inicialización del Ecosistema Condolink Global Enterprise V20.8.",
+    "estado": "ONLINE",
+    "vista": "portal_master"
+  },
+  {
+    "id": "AUD-002",
+    "fecha": "2026-10-26T16:01:00.000Z",
+    "tipo": "SECURITY",
+    "modulo": "BARRIDO_C4I_MONITOR",
+    "usuario": "monitor",
+    "usuario_id": "USR-002",
+    "tenant_id": "CLG_MONITOR_01",
+    "detalle": "Barrido de seguridad C4I completado. Integridad de base de datos JSON verificada al 100%. Tasa BCV: 881.88 VES.",
+    "estado": "AUDITADO_OK",
+    "vista": "pruebas_monitoreo_monitor"
+  },
+  {
+    "id": "AUD-003",
+    "fecha": "2026-10-26T16:05:00.000Z",
+    "tipo": "AUTH",
+    "modulo": "LOGIN_UI",
+    "usuario": "admin@condolinkglobal.com",
+    "usuario_id": "USR-003",
+    "tenant_id": "CLG_TENANT_ADMIN",
+    "detalle": "Acceso exitoso con privilegios de Administradora de Condominio.",
+    "estado": "EXITOSO",
+    "vista": "login_ui"
+  }
+]
