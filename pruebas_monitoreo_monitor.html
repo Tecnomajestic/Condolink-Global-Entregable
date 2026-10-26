@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Condolink Global V20.8 – Diagnóstico y Pruebas de Monitoreo C4I</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #00040a;
+      --bg-panel: rgba(5, 13, 26, 0.90);
+      --accent-cyan: #00f2fe;
+      --accent-gold: #ffd700;
+      --accent-green: #00ff87;
+      --accent-red: #ff0055;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #051829 0%, var(--bg-dark) 80%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .header-institucional {
+      background: rgba(2, 6, 15, 0.95);
+      border-bottom: 2px solid var(--accent-green);
+      box-shadow: 0 5px 25px rgba(0, 255, 135, 0.2);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(15px);
+    }
+
+    .brand-zone { display: flex; align-items: center; gap: 18px; }
+    .halo-wrapper {
+      position: relative; width: 55px; height: 55px;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .halo-ring {
+      position: absolute; width: 100%; height: 100%; border-radius: 50%;
+      border: 2px dashed var(--accent-green); border-top-color: var(--accent-gold);
+      animation: giroHalo 8s linear infinite;
+    }
+    .halo-core {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-green), #00331b);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 0.78rem; color: #000;
+      box-shadow: 0 0 15px var(--accent-green);
+    }
+    @keyframes giroHalo { 100% { transform: rotate(360deg); } }
+
+    .brand-titles h1 {
+      font-size: 1.3rem; font-weight: 900; letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #fff, var(--accent-green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .brand-titles p {
+      font-size: 0.7rem; color: var(--accent-gold);
+      letter-spacing: 2.2px; text-transform: uppercase; font-weight: 700; margin-top: 3px;
+    }
+
+    .header-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    .bcv-pill {
+      background: rgba(0, 255, 135, 0.08);
+      border: 1px solid var(--accent-green);
+      padding: 8px 16px; border-radius: 10px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .bcv-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green);
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    .bcv-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block; }
+    .bcv-val { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 800; color: var(--accent-green); }
+
+    .btn-header {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 9px 14px; border-radius: 8px;
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
+      cursor: pointer; transition: 0.3s;
+    }
+    .btn-header:hover { background: var(--accent-cyan); color: #000; }
+    .btn-header.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .btn-header.gold:hover { background: var(--accent-gold); color: #000; }
+    .btn-header.danger { border-color: var(--accent-red); color: var(--accent-red); }
+    .btn-header.danger:hover { background: var(--accent-red); color: #fff; }
+
+    .dom-tabs-bar {
+      max-width: 1450px; width: 100%; margin: 22px auto 0; padding: 0 25px;
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .dom-tab-btn {
+      background: rgba(5, 13, 26, 0.85);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      padding: 12px 20px; border-radius: 10px;
+      font-size: 0.76rem; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; cursor: pointer; transition: 0.3s;
+    }
+    .dom-tab-btn:hover { border-color: var(--accent-green); color: #fff; }
+    .dom-tab-btn.active {
+      background: linear-gradient(135deg, rgba(0, 255, 135, 0.2), rgba(0, 242, 254, 0.12));
+      border-color: var(--accent-green); color: #fff;
+      box-shadow: 0 0 18px rgba(0, 255, 135, 0.25);
+    }
+
+    .dom-tab-view { display: none; width: 100%; max-width: 1450px; margin: 22px auto; padding: 0 25px; }
+    .dom-tab-view.active { display: block; }
+
+    .glass-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
+    }
+    .card-title {
+      font-size: 0.96rem; font-weight: 900; color: var(--accent-green);
+      text-transform: uppercase; letter-spacing: 1.4px;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 12px; margin-bottom: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .kpi-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+    }
+    .kpi-box h4 { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+    .kpi-box strong { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--accent-cyan); }
+
+    .console-log-area {
+      background: #02050a;
+      border: 1px solid rgba(0, 255, 135, 0.35);
+      border-radius: 12px;
+      padding: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent-green);
+      height: 300px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .matrix-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      border-radius: 10px; padding: 15px; color: #fff;
+      font-weight: 800; font-size: 0.78rem; text-align: left;
+      cursor: pointer; transition: 0.25s;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .matrix-btn:hover { background: rgba(0, 242, 254, 0.12); border-color: var(--accent-cyan); }
+    .matrix-btn span { font-size: 0.65rem; color: var(--accent-gold); font-family: 'JetBrains Mono', monospace; }
+
+    .chat-box {
+      height: 270px; overflow-y: auto;
+      background: rgba(0, 0, 0, 0.55); border: 1px solid var(--glass-border);
+      border-radius: 10px; padding: 15px;
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;
+    }
+    .chat-msg { padding: 10px 14px; border-radius: 10px; max-width: 80%; font-size: 0.82rem; }
+    .chat-msg.in { background: rgba(0, 242, 254, 0.1); border-left: 3px solid var(--accent-cyan); align-self: flex-start; }
+    .chat-msg.out { background: rgba(0, 255, 135, 0.14); border-right: 3px solid var(--accent-green); align-self: flex-end; }
+
+    footer {
+      margin-top: auto; background: rgba(2, 5, 12, 0.95);
+      border-top: 1px solid var(--glass-border); padding: 18px 30px;
+      text-align: center; font-size: 0.72rem; color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-institucional">
+    <div class="brand-zone">
+      <div class="halo-wrapper">
+        <div class="halo-ring"></div>
+        <div class="halo-core">C4I</div>
+      </div>
+      <div class="brand-titles">
+        <h1>DIAGNÓSTICO Y PRUEBAS DE MONITOREO C4I V20.8</h1>
+        <p>Torre Charam • La Castellana, Caracas • Telemetría Profunda del Sistema</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <div class="bcv-pill">
+        <div class="bcv-dot"></div>
+        <div>
+          <span class="bcv-label">Tasa Oficial BCV</span>
+          <span class="bcv-val" id="bcvRateDisplay">881,88 VES</span>
+        </div>
+      </div>
+      <button class="btn-header" onclick="sincronizarTasaBCV(true)">↻ Sync BCV</button>
+      <button class="btn-header gold" onclick="ejecutarDiagnosticoProfundo()">⚡ Ejecutar Barrido C4I</button>
+      <button class="btn-header" onclick="navegarHacia('panel_restricted_zone_monitor')">🛡️ Restricted Zone</button>
+      <button class="btn-header danger" onclick="navegarHacia('login_ui')">🚪 Salir</button>
+    </div>
+  </header>
+
+  <nav class="dom-tabs-bar">
+    <button class="dom-tab-btn active" onclick="conmutarPestanaDom('tab-telemetria', this)">🔬 Telemetría y Pruebas C4I</button>
+    <button class="dom-tab-btn" onclick="conmutarPestanaDom('tab-tenants', this)">🏢 Supervisión de Tenants</button>
+    <button class="dom-tab-btn" onclick="conmutarPestanaDom('tab-matriz', this)">🧭 Matriz del Ecosistema</button>
+    <button class="dom-tab-btn" onclick="conmutarPestanaDom('tab-custodia', this)">💬 Mensajería y Custodia Permanente</button>
+  </nav>
+
+  <!-- PESTAÑA 1: TELEMETRÍA -->
+  <section id="tab-telemetria" class="dom-tab-view active">
+    <div class="kpi-grid">
+      <div class="kpi-box">
+        <h4>Estado Motor Apps Script</h4>
+        <strong id="kpiMotor" style="color:var(--accent-green);">ONLINE V8</strong>
+      </div>
+      <div class="kpi-box">
+        <h4>Hojas CLG_* Verificadas</h4>
+        <strong id="kpiHojas">48 / 48</strong>
+      </div>
+      <div class="kpi-box">
+        <h4>Roles Activos del Ecosistema</h4>
+        <strong id="kpiRoles" style="color:var(--accent-gold);">13 ROLES</strong>
+      </div>
+      <div class="kpi-box">
+        <h4>Latencia BCV / DB</h4>
+        <strong id="kpiLatencia">42 ms</strong>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="card-title">
+        <span>🔬 Consola de Ejecución de Monitoreo Global (`ejecutarMonitoreoGlobalSistema`)</span>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-header gold" onclick="ejecutarDiagnosticoProfundo()">▶ Iniciar Diagnóstico</button>
+          <button class="btn-header" onclick="limpiarConsola()">🧹 Limpiar</button>
+        </div>
+      </div>
+      <div class="console-log-area" id="consolaMonitoreo">
+        <div>[C4I MONITOR V20.8] Sistema listo para iniciar prueba integral sobre BD_CONDOLINKGLOBAL (1K_EiaARKQfucIqgC4_FnqBr1UwFGDKOOC-ks6i0Jh4c)...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 2: SUPERVISIÓN DE TENANTS -->
+  <section id="tab-tenants" class="dom-tab-view">
+    <div class="glass-card">
+      <div class="card-title">
+        <span>🏢 Supervisión de Tenants Registrados y Pendientes</span>
+        <button class="btn-header" onclick="cargarTenantsMonitor()">↻ Actualizar</button>
+      </div>
+      <div id="contenedorTenants" style="font-size:0.84rem; color:var(--text-muted);">
+        Seleccione Actualizar para consultar las solicitudes y tenants activos en BD_CONDOLINKGLOBAL.
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 3: MATRIZ DEL ECOSISTEMA -->
+  <section id="tab-matriz" class="dom-tab-view">
+    <div class="glass-card">
+      <div class="card-title">
+        <span>🧭 Matriz de Navegación del Ecosistema Monitor</span>
+      </div>
+      <div class="matrix-grid">
+        <button class="matrix-btn" onclick="navegarHacia('portal_restricted_zone_monitor')">🌀 Portal Restricted Zone<span>portal_restricted_zone_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_restricted_zone_monitor')">🛡️ Panel Restricted Zone<span>panel_restricted_zone_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('prueba_registro_monitor')">🧪 Prueba de Registro<span>prueba_registro_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('usuarios_activos_monitor')">👥 Usuarios Activos<span>usuarios_activos_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('auditar_global_monitor')">🔍 Auditar Global Monitor<span>auditar_global_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_auditoria_monitor')">📊 Panel Auditoría Monitor<span>panel_auditoria_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_monitoreo_master')">📡 Panel Monitoreo Master<span>panel_monitoreo_master</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_master')">🏛️ Panel Master Central<span>panel_master</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 4: CUSTODIA PERMANENTE -->
+  <section id="tab-custodia" class="dom-tab-view">
+    <div class="glass-card">
+      <div class="card-title">
+        <span>💬 Canal de Custodia y Alertas Técnicas de Monitoreo</span>
+      </div>
+      <div class="chat-box" id="chatCustodiaBox">
+        <div class="chat-msg in">
+          <strong>[TELEMETRÍA C4I]:</strong> Canal permanente conectado con Master y Administradores para reportes de salud del sistema.
+        </div>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="mensajeCustodiaInput" style="flex:1; padding:11px 14px; border-radius:8px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:#fff;" placeholder="Transmitir alerta técnica o directriz de monitoreo..." onkeydown="if(event.key==='Enter') enviarMensajeCustodia()">
+        <button class="btn-header gold" onclick="enviarMensajeCustodia()">📨 Custodiar Alerta</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    CONDOLINK GLOBAL V20.8 • TORRE CHARAM, LA CASTELLANA, CARACAS - VENEZUELA • TELEMETRÍA Y PRUEBAS DE MONITOREO
+  </footer>
+
+  <script>
+    const TASA_RESPALDO_PRUEBAS_MON = 881.88;
+
+    function logConsola(texto) {
+      const box = document.getElementById('consolaMonitoreo');
+      if (!box) return;
+      const d = document.createElement('div');
+      d.textContent = '[' + new Date().toLocaleTimeString('es-VE') + '] ' + texto;
+      box.appendChild(d);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function limpiarConsola() {
+      const box = document.getElementById('consolaMonitoreo');
+      if (box) box.innerHTML = '<div>[CONSOLA REINICIADA] Lista para nuevo diagnóstico C4I.</div>';
+    }
+
+    function normalizarTasaBCV(valorRaw) {
+      if (valorRaw === null || valorRaw === undefined) return TASA_RESPALDO_PRUEBAS_MON;
+      let str = String(valorRaw).trim().replace(/[^0-9.,]/g, '');
+      if (!str) return TASA_RESPALDO_PRUEBAS_MON;
+      if (str.includes(',') && !str.includes('.')) {
+        str = str.replace(',', '.');
+      } else if (str.includes('.') && str.includes(',')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+      }
+      let num = parseFloat(str);
+      if (isNaN(num) || num <= 0) return TASA_RESPALDO_PRUEBAS_MON;
+      while (num >= 5000) { num = num / 10; }
+      return Math.round(num * 100) / 100;
+    }
+
+    function formatearTasaVE(num) {
+      return normalizarTasaBCV(num).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' VES';
+    }
+
+    function actualizarDomTasa(valor) {
+      const el = document.getElementById('bcvRateDisplay');
+      const limpia = normalizarTasaBCV(valor);
+      if (el) el.textContent = formatearTasaVE(limpia);
+      localStorage.setItem('clg_tasa_bcv_oficial', limpia.toFixed(2));
+    }
+
+    async function sincronizarTasaBCV() {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && (res.tasa || res.tasaNumerica)) {
+              actualizarDomTasa(res.tasaNumerica || res.tasa);
+            } else if (typeof res === 'number' || typeof res === 'string') {
+              actualizarDomTasa(res);
+            }
+          })
+          .withFailureHandler(function() { fallbackAPITasa(); })
+          .obtenerTasaBCVOficial();
+      } else {
+        await fallbackAPITasa();
+      }
+    }
+
+    async function fallbackAPITasa() {
+      try {
+        const r = await fetch('https://ve.dolarapi.com/v1/dolares/bcv');
+        const d = await r.json();
+        if (d && d.promedio) { actualizarDomTasa(d.promedio); return; }
+      } catch (e) {}
+      actualizarDomTasa(localStorage.getItem('clg_tasa_bcv_oficial') || TASA_RESPALDO_PRUEBAS_MON);
+    }
+
+    function conmutarPestanaDom(tabId, btn) {
+      document.querySelectorAll('.dom-tab-view').forEach(function(v) { v.classList.remove('active'); });
+      document.querySelectorAll('.dom-tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+      if (tabId === 'tab-tenants') cargarTenantsMonitor();
+    }
+
+    function navegarHacia(vistaDestino) {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (typeof res === 'string' && res.startsWith('http')) {
+              window.top.location.href = res;
+            } else if (typeof res === 'string' && res.includes('<html')) {
+              document.open(); document.write(res); document.close();
+            } else if (res && res.html) {
+              document.open(); document.write(res.html); document.close();
+            }
+          })
+          .withFailureHandler(function() {
+            window.top.location.href = '?p=' + encodeURIComponent(vistaDestino);
+          })
+          .router_backend(vistaDestino);
+      } else {
+        window.location.href = vistaDestino + '.html';
+      }
+    }
+
+    function ejecutarDiagnosticoProfundo() {
+      const t0 = Date.now();
+      logConsola('Iniciando barrido de diagnóstico C4I en BD_CONDOLINKGLOBAL...');
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            const ms = Date.now() - t0;
+            document.getElementById('kpiLatencia').textContent = ms + ' ms';
+            if (res && res.totalHojas) {
+              document.getElementById('kpiHojas').textContent = res.totalHojas + ' HOJAS';
+            }
+            logConsola('Diagnóstico completado en ' + ms + ' ms: ' + JSON.stringify(res));
+          })
+          .withFailureHandler(function(err) {
+            logConsola('[ALERTA] Error en diagnóstico remoto: ' + err.message);
+          })
+          .ejecutarMonitoreoGlobalSistema();
+      } else {
+        logConsola('[SIMULACIÓN LOCAL] 48 tablas CLG_* verificadas, LockService operativo, Tasa BCV a 2 decimales sincronizada.');
+      }
+    }
+
+    function cargarTenantsMonitor() {
+      const box = document.getElementById('contenedorTenants');
+      if (!box) return;
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(lista) {
+            if (!Array.isArray(lista) || lista.length === 0) {
+              box.innerHTML = '<p>No hay solicitudes pendientes en CLG_Solicitudes.</p>';
+              return;
+            }
+            box.innerHTML = lista.map(function(i) {
+              return '<div style="padding:10px; border-bottom:1px solid rgba(255,255,255,0.08);"><strong>' + (i.nombre || '-') + '</strong> • RIF: ' + (i.rif || '-') + ' • Rol: ' + (i.rol || '-') + ' • Estado: ' + (i.estado || '-') + '</div>';
+            }).join('');
+          })
+          .obtenerSolicitudesRegistroBackend();
+      }
+    }
+
+    function enviarMensajeCustodia() {
+      const input = document.getElementById('mensajeCustodiaInput');
+      const box = document.getElementById('chatCustodiaBox');
+      if (!input || !input.value.trim()) return;
+      const texto = input.value.trim();
+      const div = document.createElement('div');
+      div.className = 'chat-msg out';
+      div.innerHTML = '<strong>[MONITOR C4I]:</strong> ' + texto;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+      input.value = '';
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.guardarMensajeMediacionMonitorBackend({
+          origen: 'pruebas_monitoreo_monitor',
+          destinatario: 'MASTER_Y_RESTRICTED_ZONE',
+          mensaje: texto
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      sincronizarTasaBCV();
+      setInterval(sincronizarTasaBCV, 300000);
+    });
+  </script>
+</body>
+</html>

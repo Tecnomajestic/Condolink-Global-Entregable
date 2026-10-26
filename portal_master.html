@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Condolink Global V20.8 - Portal de Acceso Maestro Arcade</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-principal: #030810;
+            --bg-card: #0b1120;
+            --bg-card-hover: #131c31;
+            --acento-verde: #00ff66;
+            --acento-rojo: #ff3333;
+            --magia-dorado: #ffcc00;     
+            --magia-cian: #00e5ff;
+            --magia-morado: #a855f7;
+            --gris-texto: #94a3b8;
+            --texto-blanco: #f0f6fc;
+            --borde-color: rgba(0, 229, 255, 0.3);
+            --arcade-shadow: 0 15px 35px -5px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif; 
+            background: radial-gradient(circle at center, #0b1120 0%, #030810 100%); 
+            color: var(--texto-blanco); 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+
+        .arcade-font { font-family: 'Press Start 2P', monospace; }
+
+        /* CONTENEDOR CENTRAL MAESTRO */
+        .portal-wrapper {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: auto 0;
+        }
+
+        /* HEADER MAIN */
+        header {
+            background: var(--bg-card);
+            border: 2px solid var(--magia-dorado);
+            border-radius: 16px;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.1), var(--arcade-shadow);
+            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-mystical-left {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 58px;
+            height: 58px;
+            flex-shrink: 0;
+        }
+
+        @keyframes spinSlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spinSlowRev { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+        @keyframes cyan-pulse { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 6px currentColor); } 50% { opacity: 1; filter: drop-shadow(0 0 14px currentColor); } }
+
+        .mystical-halo-outer {
+            position: absolute; width: 100%; height: 100%;
+            border: 2px dashed var(--magia-dorado); border-radius: 50%;
+            animation: spinSlowRev 18s linear infinite;
+        }
+
+        .mystical-halo-inner {
+            position: absolute; width: 76%; height: 76%;
+            border: 1.5px dotted var(--magia-cian); border-radius: 50%;
+            animation: spinSlow 10s linear infinite;
+        }
+
+        .brand-logo-mystical { 
+            width: 44px; height: 44px; object-fit: cover; border-radius: 50%; 
+            border: 2px solid var(--magia-dorado); background: #030810;
+            padding: 2px; z-index: 2;
+            animation: cyan-pulse 3s ease-in-out infinite;
+        }
+
+        /* CONSOLA DE LOGS */
+        .system-log-box {
+            background: #030810;
+            border: 2px solid var(--acento-verde);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.78rem;
+            color: var(--acento-verde);
+            box-shadow: inset 0 0 15px rgba(0, 255, 102, 0.15);
+            line-height: 1.4;
+            max-height: 90px;
+            overflow-y: auto;
+        }
+
+        /* TASA BCV BANNER */
+        .bcv-ticker {
+            background: rgba(0, 0, 0, 0.75);
+            border: 1.5px solid var(--magia-dorado);
+            padding: 12px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .bcv-ticker:hover { transform: scale(1.005); }
+
+        /* SECCIÓN HEADER TÍTULO */
+        .section-header {
+            background: var(--bg-card);
+            border: 2px solid var(--magia-cian);
+            border-radius: 14px;
+            padding: 14px 22px;
+            box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.08), var(--arcade-shadow);
+        }
+
+        /* CONTROLADOR DE PESTAÑAS DOM (DOM TABS STATE CONTROLLER) */
+        .dom-tab-content { display: none; }
+        .dom-tab-content.active-tab { display: grid; animation: fadeInTabs 0.3s ease-in-out forwards; }
+
+        @keyframes fadeInTabs {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* NAVEGACIÓN DE PESTAÑAS UI */
+        .nav-tabs-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+        .tab-nav-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--borde-color);
+            color: var(--gris-texto);
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+        .tab-nav-btn.active {
+            background: var(--magia-cian);
+            color: var(--bg-principal);
+            border-color: var(--magia-cian);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+        }
+
+        /* GRID PRINCIPAL DE MÓDULOS */
+        .grid-portal {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .card-portal {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 22px;
+            border: 2px solid var(--magia-dorado);
+            box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.08), var(--arcade-shadow);
+            transition: all 0.2s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            gap: 12px;
+        }
+
+        .card-portal:hover { transform: translateY(-3px); border-color: var(--magia-cian); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); }
+
+        .portal-icon { 
+            width: 58px; height: 58px; border-radius: 50%; 
+            background: rgba(0, 229, 255, 0.08); 
+            border: 2px solid var(--borde-color); 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 1.4rem; color: var(--magia-cian);
+            margin: 0 auto 10px auto;
+        }
+
+        /* BOTONES ARCADE */
+        .arcade-btn {
+            position: relative;
+            padding: 11px 16px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s ease;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            width: 100%;
+        }
+
+        .arcade-btn:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        .btn-eldritch { background: linear-gradient(135deg, #ffcc00 0%, #b38f00 100%); color: #030810; border-color: #ffcc00; }
+        .btn-contrato { background: linear-gradient(135deg, #00e5ff 0%, #0088cc 100%); color: #030810; border-color: #00e5ff; }
+        .btn-arcana { background: linear-gradient(135deg, #9933ff 0%, #6600cc 100%); color: #fff; border-color: #9933ff; }
+        .btn-green { background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%); color: #030810; border-color: #00ff66; }
+        .btn-danger { background: linear-gradient(135deg, #ff3333 0%, #b30000 100%) !important; color: #fff !important; border-color: #ff3333 !important; }
+
+        /* FOOTER */
+        footer {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--bg-card);
+            border: 1.5px solid var(--magia-cian);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--gris-texto);
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.15);
+        }
+
+        @media (max-width: 850px) {
+            .grid-portal { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="portal-wrapper">
+
+        <!-- HEADER -->
+        <header>
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div class="header-mystical-left" title="Torre Charam Sede Principal">
+                    <div class="mystical-halo-outer"></div>
+                    <div class="mystical-halo-inner"></div>
+                    <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo Condolink" class="brand-logo-mystical" onerror="this.src='https://i.imgur.com/XcMwIDa.png'">
+                </div>
+                <div>
+                    <h1 class="arcade-font" style="font-size: 0.85rem; color: var(--magia-cian); margin: 0;">CONDOLINK GLOBAL V20.8</h1>
+                    <small style="color:var(--gris-texto); font-weight:600; font-size:0.7rem;">PORTAL DE ACCESO MAESTRO // <span id="badgeRolMaster" style="color: var(--magia-dorado); font-weight: 800;">MASTER</span></small>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="https://www.condolinkglobal.com" target="_blank" class="arcade-btn btn-contrato" style="width: auto; padding: 8px 14px; font-size: 7px;">
+                    <i class="fas fa-globe"></i> Web
+                </a>
+                <button class="arcade-btn btn-danger" style="width: auto; padding: 8px 14px; font-size: 7px;" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
+            </div>
+        </header>
+
+        <!-- TERMINAL DE LOGS -->
+        <div class="system-log-box" id="systemLogBox">
+            [SYS ARCADE 13:30:00Z]: Portal de Acceso Maestro V20.8 inicializado en Torre Charam, Caracas.
+        </div>
+
+        <!-- TASA BCV ASÍNCRONA EN TIEMPO REAL (2 DECIMALES ESTRICTOS) -->
+        <div class="bcv-ticker" onclick="sincronizarTasaBCVAutonoma()" title="Clic para sincronizar tasa oficial">
+            <div>
+                <div style="font-size: 0.72rem; color: var(--gris-texto); font-weight: 700;">TASA OFICIAL BCV (VENEZUELA) [Client-Side Auto-Sync]</div>
+                <div id="tasa-hoy" style="font-size: 1.15rem; font-weight: 900; color: #fff; margin-top: 2px;"><i class="fas fa-spinner fa-spin"></i> Sincronizando...</div>
+            </div>
+            <i id="sync-icon" class="fas fa-sync-alt fa-spin" style="color:var(--magia-dorado); font-size:1.3rem;"></i>
+        </div>
+
+        <!-- ENCABEZADO DE MÓDULOS Y CONTROLADOR DOM TABS -->
+        <div class="section-header">
+            <h2 class="arcade-font" style="font-size: 0.75rem; text-transform: uppercase; color: var(--magia-cian); margin:0 0 10px 0;">
+                <i class="fas fa-th-large me-2"></i> Módulos de Gestión del Sistema y Auditoría Multiversal
+            </h2>
+            
+            <!-- Barra de Pestañas DOM Controller -->
+            <div class="nav-tabs-bar">
+                <button class="tab-nav-btn active" onclick="switchDomTab('tab-principal', this)"><i class="fas fa-cubes me-1"></i> Paneles Principales</button>
+                <button class="tab-nav-btn" onclick="switchDomTab('tab-gestion', this)"><i class="fas fa-users-cog me-1"></i> Gestión e Instaladores Tenant</button>
+                <button class="tab-nav-btn" onclick="switchDomTab('tab-mensajeria', this)"><i class="fas fa-comments me-1"></i> Custodia y Mensajería</button>
+            </div>
+            <p style="color: var(--gris-texto); font-size: 0.82rem; margin: 0;">Panel exclusivo para administradores globales operando en Torre Charam, Caracas.</p>
+        </div>
+
+        <!-- CONTENEDORES DE PESTAÑAS (DOM TABS STATE CONTROLLER V20.8) -->
+        
+        <!-- PESTAÑA 1: PRINCIPAL -->
+        <div id="tab-principal" class="dom-tab-content active-tab grid-portal">
+            <!-- 1. Panel Master -->
+            <div class="card-portal">
+                <div>
+                    <div class="portal-icon"><i class="fas fa-crown" style="color: var(--magia-dorado);"></i></div>
+                    <h3 class="arcade-font" style="font-size: 0.72rem; color: var(--magia-cian); margin-bottom: 8px;">Panel Master</h3>
+                    <p style="color: var(--gris-texto); font-size: 0.78rem; line-height: 1.4;">Panel central para aprobación de solicitudes (RIF y Logo en Drive), creación de administradoras y mensajería global.</p>
+                </div>
+                <button class="arcade-btn btn-eldritch" onclick="navegarModulo('panel_master')">
+                    <i class="fas fa-bolt"></i> Acceder Panel Master
+                </button>
+            </div>
+
+            <!-- 2. Panel Inmobiliario Master -->
+            <div class="card-portal">
+                <div>
+                    <div class="portal-icon"><i class="fas fa-home" style="color: var(--magia-morado);"></i></div>
+                    <h3 class="arcade-font" style="font-size: 0.72rem; color: var(--magia-cian); margin-bottom: 8px;">Panel Inmobiliario</h3>
+                    <p style="color: var(--gris-texto); font-size: 0.78rem; line-height: 1.4;">Receptor final y mediador maestro de negociaciones entre compradores, arrendatarios, vendedores y arrendadores.</p>
+                </div>
+                <button class="arcade-btn btn-arcana" onclick="navegarModulo('panel_inmobiliario_master')">
+                    <i class="fas fa-building"></i> Acceder Inmobiliario
+                </button>
+            </div>
+
+            <!-- 3. Panel Servicios Contratados Master -->
+            <div class="card-portal">
+                <div>
+                    <div class="portal-icon"><i class="fas fa-handshake" style="color: var(--magia-cian);"></i></div>
+                    <h3 class="arcade-font" style="font-size: 0.72rem; color: var(--magia-cian); margin-bottom: 8px;">Panel Servicios Contratados</h3>
+                    <p style="color: var(--gris-texto); font-size: 0.78rem; line-height: 1.4;">Receptor final y control integral de servicios contratados, proveedores certificados, reseñas y campañas permanentes.</p>
+                </div>
+                <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_servicios_contratados_master')">
+                    <i class="fas fa-toolbox"></i> Acceder Servicios
+                </button>
+            </div>
+
+            <!-- 4. Auditoría Master -->
+            <div class="card-portal" style="grid-column: 1 / -1; border-color: var(--acento-rojo);">
+                <div>
+                    <div class="portal-icon" style="color: var(--acento-rojo); background: rgba(255, 51, 51, 0.1);"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="arcade-font" style="font-size: 0.78rem; color: var(--acento-rojo); margin-bottom: 6px;">Panel Auditoría y Certificación Master</h3>
+                    <p style="color: var(--gris-texto); font-size: 0.78rem; line-height: 1.4; max-width: 700px; margin: 0 auto;">Centro de observación y monitoreo global para auditar en tiempo real las acciones de los administradores y los 64 archivos del sistema.</p>
+                </div>
+                <div style="display: flex; gap: 12px; width: 100%; max-width: 650px; margin: 0 auto; flex-wrap: wrap;">
+                    <button class="arcade-btn btn-danger" style="flex: 1;" onclick="navegarModulo('panel_auditoria_master')">
+                        <i class="fas fa-satellite-dish"></i> Auditoría de Administradores
+                    </button>
+                    <button class="arcade-btn btn-contrato" style="flex: 1;" onclick="navegarModulo('auditar_global_master')">
+                        <i class="fas fa-microchip"></i> Diagnóstico 64 Archivos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 2: GESTIÓN Y TENANTS -->
+        <div id="tab-gestion" class="dom-tab-content grid-portal">
+            <div class="card-portal" style="grid-column: 1 / -1; border-color: var(--magia-cian);">
+                <div>
+                    <div class="portal-icon"><i class="fas fa-users-cog" style="color: var(--magia-cian);"></i></div>
+                    <h3 class="arcade-font" style="font-size: 0.8rem; color: var(--magia-cian); margin-bottom: 10px;">Instaladores de Tenants: Administradores e Inversionistas</h3>
+                    <p style="color: var(--gris-texto); font-size: 0.82rem; line-height: 1.5; margin-bottom: 15px;">Módulo operativo para aprovisionamiento de empresas administradoras e inversionistas multi-propiedad con vinculación de RIF y Logo desde Google Drive.</p>
+                </div>
+                <div style="display:flex; gap:12px; width:100%; max-width:750px; margin:0 auto; flex-wrap: wrap;">
+                    <button class="arcade-btn btn-eldritch" style="flex: 1;" onclick="navegarModulo('instalador_tenant_admin_master')"><i class="fas fa-building-shield"></i> Instalador Tenant Admin</button>
+                    <button class="arcade-btn btn-arcana" style="flex: 1;" onclick="navegarModulo('instalador_tenant_inversionista_master')"><i class="fas fa-chart-pie"></i> Instalador Tenant Inversionista</button>
+                    <button class="arcade-btn btn-contrato" style="flex: 1;" onclick="navegarModulo('panel_master')"><i class="fas fa-check-double"></i> Bandeja Solicitudes Master</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 3: MENSAJERÍA Y CUSTODIA -->
+        <div id="tab-mensajeria" class="dom-tab-content grid-portal">
+            <div class="card-portal" style="grid-column: 1 / -1; border-color: var(--magia-dorado);">
+                <div>
+                    <div class="portal-icon"><i class="fas fa-envelope-open-text" style="color: var(--magia-dorado);"></i></div>
+                    <h3 class="arcade-font" style="font-size: 0.8rem; color: var(--magia-dorado); margin-bottom: 10px;">Canal Directo de Mensajería, Mediación y Custodia Master</h3>
+                    <p style="color: var(--gris-texto); font-size: 0.82rem; line-height: 1.5; margin-bottom: 15px;">Sistema de comunicación permanente y custodia segura entre Administradores, Juntas, Propietarios, Inversionistas y Negociaciones Inmobiliarias.</p>
+                </div>
+                <div style="display: flex; gap: 12px; width: 100%; max-width: 680px; margin: 0 auto; flex-wrap: wrap;">
+                    <button class="arcade-btn btn-eldritch" style="flex: 1;" onclick="navegarModulo('panel_master')">
+                        <i class="fas fa-comments"></i> Chat Global Multi-Usuario (Master)
+                    </button>
+                    <button class="arcade-btn btn-arcana" style="flex: 1;" onclick="navegarModulo('panel_inmobiliario_master')">
+                        <i class="fas fa-handshake"></i> Mediación Inmobiliaria Master
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div><strong style="color: #fff;">CONDOLINK GLOBAL V20.8</strong> &copy; 2026 - Torre Charam, Caracas. Todos los derechos reservados.</div>
+        <div>STATUS: <span style="color: var(--acento-verde);">ONLINE [SECURE DOM]</span> // <span style="color: var(--magia-cian);"><i class="fa-solid fa-shield-halved"></i> Google Workspace</span></div>
+    </footer>
+
+    <script>
+        function logTerminal(mensaje, color = 'var(--acento-verde)') {
+            const logBox = document.getElementById('systemLogBox');
+            const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+            if (logBox) {
+                logBox.innerHTML += `<br><span style="color: ${color}">[SYS ARCADE ${timestamp}]: ${mensaje}</span>`;
+                logBox.scrollTop = logBox.scrollHeight;
+            }
+        }
+
+        /* ===================== NORMALIZADOR ESTRICTO A 2 DECIMALES ===================== */
+        function normalizarTasaBCV(raw) {
+            if (raw === null || raw === undefined) return 881.88;
+            let str = String(raw).trim().replace(/[^0-9.,]/g, '');
+            if (!str) return 881.88;
+            if (str.includes(',') && !str.includes('.')) {
+                str = str.replace(',', '.');
+            } else if (str.includes('.') && str.includes(',')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            }
+            let num = parseFloat(str);
+            if (isNaN(num) || num <= 0) return 881.88;
+            while (num >= 5000) {
+                num = num / 10;
+            }
+            return Math.round(num * 100) / 100;
+        }
+
+        /* ===================== CONTROLADOR DOM TABS ===================== */
+        function switchDomTab(tabId, btnElement) {
+            document.querySelectorAll('.dom-tab-content').forEach(tab => {
+                tab.classList.remove('active-tab');
+            });
+            document.querySelectorAll('.tab-nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.add('active-tab');
+            }
+            if (btnElement) {
+                btnElement.classList.add('active');
+            }
+            logTerminal(`Vista de pestaña cambiada a: [${tabId}] sin recarga DOM.`, "var(--magia-cian)");
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            verificarSeguridadMaster();
+        });
+
+        function mostrarPortal() {
+            document.body.style.opacity = "1";
+            sincronizarTasaBCVAutonoma();
+            setInterval(sincronizarTasaBCVAutonoma, 60000);
+            logTerminal("Portal de Acceso Maestro V20.8 inicializado correctamente.", "var(--magia-dorado)");
+        }
+
+        function verificarSeguridadMaster() {
+            let respondido = false;
+            let safetyTimer = setTimeout(() => {
+                if (!respondido) {
+                    respondido = true;
+                    mostrarPortal();
+                }
+            }, 2000);
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.obtenerSesionUsuario === 'function') {
+                google.script.run
+                    .withSuccessHandler(function() {
+                        if (!respondido) {
+                            respondido = true;
+                            clearTimeout(safetyTimer);
+                            mostrarPortal();
+                        }
+                    })
+                    .withFailureHandler(function() {
+                        if (!respondido) {
+                            respondido = true;
+                            clearTimeout(safetyTimer);
+                            mostrarPortal();
+                        }
+                    })
+                    .obtenerSesionUsuario();
+            } else {
+                respondido = true;
+                clearTimeout(safetyTimer);
+                mostrarPortal();
+            }
+        }
+
+        /* ===================== TASA BCV ASÍNCRONA EN CLIENTE ===================== */
+        function sincronizarTasaBCVAutonoma() {
+            const icon = document.getElementById('sync-icon');
+            if (icon) icon.classList.add('fa-spin');
+            logTerminal("Sincronizando Tasa BCV (CLG_Configuracion!B2)...", "var(--magia-dorado)");
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                const runner = google.script.run
+                    .withSuccessHandler(t => {
+                        let val = (t && typeof t === 'object') ? (t.tasaNumerica || t.tasa) : t;
+                        if (val) {
+                            aplicarValorTasa(val);
+                        } else {
+                            consultarApisPublicasCliente();
+                        }
+                    })
+                    .withFailureHandler(consultarApisPublicasCliente);
+
+                if (typeof runner.obtenerTasaBCVOficial === 'function') {
+                    runner.obtenerTasaBCVOficial();
+                } else if (typeof runner.obtenerTasaBCV === 'function') {
+                    runner.obtenerTasaBCV();
+                } else {
+                    consultarApisPublicasCliente();
+                }
+            } else {
+                consultarApisPublicasCliente();
+            }
+        }
+
+        function consultarApisPublicasCliente() {
+            fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+                .then(res => res.json())
+                .then(data => {
+                    let tasaVal = data.promedio || data.price || 881.88;
+                    aplicarValorTasa(tasaVal);
+                })
+                .catch(() => {
+                    aplicarValorTasa(881.88);
+                });
+        }
+
+        function aplicarValorTasa(valor) {
+            const tasaValNum = normalizarTasaBCV(valor);
+            const formatted = tasaValNum.toFixed(2).replace('.', ',') + " VES";
+            const tasaHoyEl = document.getElementById('tasa-hoy');
+            if (tasaHoyEl) tasaHoyEl.innerText = formatted;
+            
+            const icon = document.getElementById('sync-icon');
+            if (icon) {
+                icon.classList.remove('fa-spin');
+                icon.style.color = "var(--acento-verde)";
+            }
+            logTerminal(`Tasa BCV sincronizada a 2 decimales: ${formatted}`, "var(--acento-verde)");
+        }
+
+        /* ===================== ROUTER SEGURO ===================== */
+        function navegarModulo(nombreModulo) {
+            logTerminal(`Redirigiendo al módulo [${nombreModulo}] con privilegios Master...`, "var(--magia-cian)");
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+                google.script.run
+                    .withSuccessHandler(html => {
+                        if (nombreModulo === 'login_ui') {
+                            window.top.location.href = html || '?p=login_ui';
+                        } else {
+                            document.open();
+                            document.write(html);
+                            document.close();
+                        }
+                    })
+                    .withFailureHandler(() => {
+                        window.top.location.href = "?p=" + encodeURIComponent(nombreModulo) + "&rol=master";
+                    })
+                    .router_backend(nombreModulo);
+            } else {
+                window.top.location.href = "?p=" + encodeURIComponent(nombreModulo) + "&rol=master";
+            }
+        }
+
+        function cerrarSesion() {
+            logTerminal("Cerrando sesión de Master...", "var(--acento-rojo)");
+            navegarModulo('login_ui');
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condolink Global V20.8 // Auditoría de Administradores (Master)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --lcars-cyan: #00e5ff; 
+            --bg-deep: #030810; 
+            --magia-dorado: #ffcc00; 
+            --magia-verde: #00ff66; 
+            --magia-rojo: #ff3b30;
+            --magia-amarillo: #ffcc00;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-deep); color: var(--lcars-cyan); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        
+        header { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, #001f3f 0%, #003366 100%); padding: 10px 16px; border-bottom: 2px solid var(--lcars-cyan); box-shadow: 0 0 15px rgba(0, 229, 255, 0.2); flex-shrink: 0; }
+        .header-brand { display: flex; align-items: center; gap: 12px; }
+        
+        .logo-container {
+          position: relative;
+          width: 38px;
+          height: 38px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+        .logo-halo {
+          position: absolute;
+          width: 44px;
+          height: 44px;
+          border: 1.5px dotted var(--lcars-cyan);
+          border-radius: 50%;
+          animation: rotateHalo 12s linear infinite;
+        }
+        @keyframes rotateHalo {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .header-logo { height: 30px; width: 30px; object-fit: cover; border-radius: 50%; border: 1.5px solid var(--magia-dorado); z-index: 2; }
+        
+        .header-title { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; text-transform: uppercase; }
+        
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .bcv-ticker { background: rgba(0, 0, 0, 0.85); border: 1.5px solid var(--magia-dorado); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: var(--magia-dorado); font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
+
+        .btn-arcade {
+            background: linear-gradient(180deg, #00e5ff 0%, #0088cc 100%);
+            border: 2px solid #ffffff;
+            color: #030810;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #004466, 0 6px 10px rgba(0,0,0,0.4);
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-arcade:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #004466, 0 3px 5px rgba(0,0,0,0.4);
+        }
+        .btn-arcade.danger {
+            background: linear-gradient(180deg, #ff3b30 0%, #cc0000 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 0 #880000, 0 6px 10px rgba(0,0,0,0.4);
+        }
+        .btn-arcade.btn-busy { opacity: 0.6; pointer-events: none; }
+
+        .main-container { display: flex; flex: 1; overflow: hidden; }
+        
+        .lcars-sidebar { width: 55px; background: #001528; display: flex; flex-direction: column; align-items: center; padding: 12px 0; border-right: 2px solid var(--lcars-cyan); flex-shrink: 0; gap: 12px; }
+        .sidebar-btn { width: 38px; height: 38px; background: rgba(0, 229, 255, 0.1); border: 1.5px solid var(--lcars-cyan); color: var(--lcars-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+        .sidebar-btn:hover, .sidebar-btn.active { background: var(--lcars-cyan); color: var(--bg-deep); box-shadow: 0 0 10px var(--lcars-cyan); }
+
+        .workspace { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 14px 20px; overflow-y: auto; height: 100%; }
+        
+        .terminal-screen { background: #020b05; border: 1.5px solid var(--magia-verde); border-radius: 8px; padding: 8px 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.75rem; color: var(--magia-verde); height: 42px; overflow-y: auto; flex-shrink: 0; box-shadow: inset 0 0 12px rgba(0, 255, 102, 0.15); }
+        
+        .grid-audit { display: grid; grid-template-columns: 1.6fr 1.4fr; gap: 16px; flex: 1; min-height: 0; }
+        
+        .panel-box { background: rgba(4, 18, 35, 0.95); border: 1.5px solid var(--lcars-cyan); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); height: 100%; min-height: 0; }
+        .panel-box h3 { color: var(--lcars-cyan); border-bottom: 1.5px dashed var(--lcars-cyan); font-size: 0.9rem; font-weight: 800; padding-bottom: 8px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; flex-shrink: 0; }
+
+        .table-scroll-wrapper { flex: 1; overflow-y: auto; border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 8px; min-height: 0; }
+        .eco-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .eco-table th, .eco-table td { border: 1px solid rgba(0, 229, 255, 0.3); padding: 10px 12px; text-align: left; vertical-align: middle; color: #fff; }
+        .eco-table th { background: rgba(0, 229, 255, 0.15); color: var(--lcars-cyan); font-weight: 700; text-transform: uppercase; position: sticky; top: 0; z-index: 2; }
+        
+        .status-select { background: #020b14; border: 1.5px solid var(--lcars-cyan); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; outline: none; }
+        .badge-falta { color: var(--magia-rojo); border-color: var(--magia-rojo); background: rgba(255, 59, 48, 0.1); }
+        .badge-proceso { color: var(--magia-amarillo); border-color: var(--magia-amarillo); background: rgba(255, 204, 0, 0.1); }
+        .badge-culminada { color: var(--magia-verde); border-color: var(--magia-verde); background: rgba(0, 255, 102, 0.1); }
+
+        .cards-scroll-wrapper { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; min-height: 0; padding-right: 4px; }
+        .admin-eval-card { background: rgba(0, 31, 63, 0.6); border: 1.5px solid var(--lcars-cyan); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .admin-eval-card h4 { color: var(--lcars-cyan); font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        .vigencia-badge { background: rgba(0, 229, 255, 0.15); border: 1.5px solid var(--lcars-cyan); color: var(--lcars-cyan); padding: 3px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; }
+        
+        .chart-container { display: flex; align-items: center; justify-content: space-around; gap: 15px; background: rgba(2, 11, 21, 0.6); padding: 10px; border-radius: 8px; border: 1px solid rgba(0, 229, 255, 0.15); }
+        .pie-chart { width: 65px; height: 65px; border-radius: 50%; box-shadow: 0 0 12px rgba(0,229,255,0.4); flex-shrink: 0; }
+        .chart-legend { font-size: 0.75rem; display: flex; flex-direction: column; gap: 4px; color: #fff; font-weight: 600; }
+
+        footer { background: #001122; border-top: 2px solid var(--lcars-cyan); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--lcars-cyan); flex-shrink: 0; }
+        footer strong { color: #fff; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-brand">
+            <div class="logo-container" title="Torre Charam Master" onclick="navegarModulo('portal_master')">
+                <div class="logo-halo"></div>
+                <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo" class="header-logo">
+            </div>
+            <div class="header-title">CONDOLINK GLOBAL V20.8 // PANEL MASTER & AUDITORÍA INDEPENDIENTE</div>
+        </div>
+        <div class="header-actions">
+            <div class="bcv-ticker" id="bcv-display" onclick="sincronizarTasaBCV()" title="Sintonizar tasa BCV oficial">
+                <i class="fa-solid fa-chart-line"></i> Tasa BCV: <span id="tasa-valor-master">881,88 VES</span> <i id="sync-icon" class="fas fa-sync-alt" style="font-size:0.75rem; margin-left:2px;"></i>
+            </div>
+            <button class="btn-arcade danger" onclick="navegarModulo('login_ui', this)"><i class="fa-solid fa-power-off"></i> SALIR</button>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <aside class="lcars-sidebar">
+            <button class="sidebar-btn" onclick="navegarModulo('portal_master', this)" title="Regresar al Portal Master"><i class="fa-solid fa-arrow-left"></i></button>
+            <button class="sidebar-btn" onclick="navegarModulo('panel_master', this)" title="Ir al Panel Master"><i class="fa-solid fa-crown"></i></button>
+            <button class="sidebar-btn active" title="Auditoría Master"><i class="fa-solid fa-shield-halved"></i></button>
+            <button class="sidebar-btn" onclick="navegarModulo('auditar_global_master', this)" title="Diagnóstico 64 Archivos"><i class="fa-solid fa-microchip"></i></button>
+        </aside>
+
+        <main class="workspace">
+            <div class="terminal-screen" id="terminal-logs">
+                [MASTER LOG]: Auditoría activa por ecosistema independiente con paleta Neón Cian [OK].
+            </div>
+            
+            <div class="grid-audit">
+                <div class="panel-box">
+                    <h3><i class="fa-solid fa-user-gear"></i> Tareas y Ecosistemas Independientes por Administrador</h3>
+                    <div class="table-scroll-wrapper">
+                        <table class="eco-table">
+                            <thead>
+                                <tr>
+                                    <th>Administrador / Ecosistema</th>
+                                    <th>Vigencia</th>
+                                    <th>Acción Crítica</th>
+                                    <th>Estado Master</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>admin_torre_norte</strong><br><span style="font-size:0.7rem; color:var(--lcars-cyan)">Residencial Las Palmas</span></td>
+                                    <td><span class="vigencia-badge">3 Meses</span></td>
+                                    <td>Actualización de Parámetros Globales y Tasas</td>
+                                    <td>
+                                        <select class="status-select badge-culminada" data-admin="norte" onchange="recalcular(this)">
+                                            <option value="CULMINADA" selected>CULMINADA</option>
+                                            <option value="PROCESO">EN PROCESO</option>
+                                            <option value="FALTA">FALTA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>admin_torre_norte</strong></td>
+                                    <td><span class="vigencia-badge">3 Meses</span></td>
+                                    <td>Despliegue y Alta de Nuevo Tenant / Drive</td>
+                                    <td>
+                                        <select class="status-select badge-culminada" data-admin="norte" onchange="recalcular(this)">
+                                            <option value="CULMINADA" selected>CULMINADA</option>
+                                            <option value="PROCESO">EN PROCESO</option>
+                                            <option value="FALTA">FALTA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>admin_torre_norte</strong></td>
+                                    <td><span class="vigencia-badge">3 Meses</span></td>
+                                    <td>Ejecución de Cierre Mensual y Auditoría Fiscal</td>
+                                    <td>
+                                        <select class="status-select badge-proceso" data-admin="norte" onchange="recalcular(this)">
+                                            <option value="CULMINADA">CULMINADA</option>
+                                            <option value="PROCESO" selected>EN PROCESO</option>
+                                            <option value="FALTA">FALTA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>admin_inversionista_sur</strong><br><span style="font-size:0.7rem; color:var(--lcars-cyan)">Torre Corporativa</span></td>
+                                    <td><span class="vigencia-badge">1 Año</span></td>
+                                    <td>Actualización de Parámetros Globales y Tasas</td>
+                                    <td>
+                                        <select class="status-select badge-culminada" data-admin="sur" onchange="recalcular(this)">
+                                            <option value="CULMINADA" selected>CULMINADA</option>
+                                            <option value="PROCESO">EN PROCESO</option>
+                                            <option value="FALTA">FALTA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>admin_inversionista_sur</strong></td>
+                                    <td><span class="vigencia-badge">1 Año</span></td>
+                                    <td>Despliegue y Alta de Nuevo Tenant / Drive</td>
+                                    <td>
+                                        <select class="status-select badge-falta" data-admin="sur" onchange="recalcular(this)">
+                                            <option value="CULMINADA">CULMINADA</option>
+                                            <option value="PROCESO">EN PROCESO</option>
+                                            <option value="FALTA" selected>FALTA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>admin_inversionista_sur</strong></td>
+                                    <td><span class="vigencia-badge">1 Año</span></td>
+                                    <td>Ejecución de Cierre Mensual y Auditoría Fiscal</td>
+                                    <td>
+                                        <select class="status-select badge-proceso" data-admin="sur" onchange="recalcular(this)">
+                                            <option value="CULMINADA">CULMINADA</option>
+                                            <option value="PROCESO" selected>EN PROCESO</option>
+                                            <option value="FALTA">FALTA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel-box">
+                    <h3><i class="fa-solid fa-chart-pie"></i> Avance Simultáneo por Ecosistema</h3>
+                    <div class="cards-scroll-wrapper">
+                        <div class="admin-eval-card">
+                            <h4><span>admin_torre_norte</span> <span id="txt-norte" style="color:var(--magia-verde)">66.7% Avance</span></h4>
+                            <div class="chart-container">
+                                <div id="pie-norte" class="pie-chart" style="background: conic-gradient(var(--magia-verde) 0% 66.7%, var(--magia-amarillo) 66.7% 100%, var(--magia-rojo) 100% 100%);"></div>
+                                <div class="chart-legend">
+                                    <span style="color:var(--magia-verde)">■ Culminadas: <strong id="cnt-norte-cul">2</strong></span>
+                                    <span style="color:var(--magia-amarillo)">■ En Proceso: <strong id="cnt-norte-pro">1</strong></span>
+                                    <span style="color:var(--magia-rojo)">■ Faltas: <strong id="cnt-norte-fal">0</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-eval-card">
+                            <h4><span>admin_inversionista_sur</span> <span id="txt-sur" style="color:var(--magia-amarillo)">33.3% Avance</span></h4>
+                            <div class="chart-container">
+                                <div id="pie-sur" class="pie-chart" style="background: conic-gradient(var(--magia-verde) 0% 33.3%, var(--magia-amarillo) 33.3% 66.6%, var(--magia-rojo) 66.6% 100%);"></div>
+                                <div class="chart-legend">
+                                    <span style="color:var(--magia-verde)">■ Culminadas: <strong id="cnt-sur-cul">1</strong></span>
+                                    <span style="color:var(--magia-amarillo)">■ En Proceso: <strong id="cnt-sur-pro">1</strong></span>
+                                    <span style="color:var(--magia-rojo)">■ Faltas: <strong id="cnt-sur-fal">1</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div><strong>CONDOLINK GLOBAL V20.8</strong> // Torre Charam, Caracas - Panel Master & Auditoría</div>
+        <div><button class="btn-arcade" onclick="navegarModulo('panel_master', this)"><i class="fa-solid fa-rotate"></i> Ir a Panel Master</button></div>
+    </footer>
+
+    <script>
+        function normalizarTasaBCV(raw) {
+            if (raw === null || raw === undefined) return 881.88;
+            let str = String(raw).trim().replace(/[^0-9.,]/g, '');
+            if (!str) return 881.88;
+            if (str.includes(',') && !str.includes('.')) {
+                str = str.replace(',', '.');
+            } else if (str.includes('.') && str.includes(',')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            }
+            let num = parseFloat(str);
+            if (isNaN(num) || num <= 0) return 881.88;
+            while (num >= 5000) {
+                num = num / 10;
+            }
+            return Math.round(num * 100) / 100;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            sincronizarTasaBCV();
+            setInterval(sincronizarTasaBCV, 60000);
+        });
+
+        function logTerminalMaster(mensaje) {
+            const terminal = document.getElementById('terminal-logs');
+            const timestamp = new Date().toLocaleTimeString();
+            if (terminal) {
+                terminal.innerHTML += `<br>[MASTER LOG ${timestamp}]: ${mensaje}`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }
+
+        function sincronizarTasaBCV() {
+            const tasaElem = document.getElementById('tasa-valor-master');
+            const syncIcon = document.getElementById('sync-icon');
+            if (syncIcon) syncIcon.className = "fas fa-sync-alt fa-spin";
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                const runner = google.script.run
+                    .withSuccessHandler(function(t) {
+                        let val = (t && typeof t === 'object') ? (t.tasaNumerica || t.tasa) : t;
+                        if (val) {
+                            const num = normalizarTasaBCV(val);
+                            tasaElem.innerText = num.toFixed(2).replace('.', ',') + " VES";
+                            if(syncIcon) syncIcon.className = "fas fa-sync-alt";
+                        } else {
+                            usarTasaRespaldoAPI();
+                        }
+                    })
+                    .withFailureHandler(usarTasaRespaldoAPI);
+
+                if (typeof runner.obtenerTasaBCVOficial === 'function') {
+                    runner.obtenerTasaBCVOficial();
+                } else {
+                    usarTasaRespaldoAPI();
+                }
+            } else {
+                usarTasaRespaldoAPI();
+            }
+        }
+
+        function usarTasaRespaldoAPI() {
+            fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+                .then(res => res.json())
+                .then(data => {
+                    let tasaVal = normalizarTasaBCV(data.promedio || data.price || 881.88);
+                    document.getElementById('tasa-valor-master').innerText = tasaVal.toFixed(2).replace('.', ',') + " VES";
+                    const syncIcon = document.getElementById('sync-icon');
+                    if(syncIcon) syncIcon.className = "fas fa-sync-alt";
+                })
+                .catch(() => {
+                    document.getElementById('tasa-valor-master').innerText = "881,88 VES";
+                });
+        }
+
+        function recalcular(selectElement) {
+            selectElement.className = "status-select";
+            if (selectElement.value === "CULMINADA") selectElement.classList.add("badge-culminada");
+            else if (selectElement.value === "PROCESO") selectElement.classList.add("badge-proceso");
+            else if (selectElement.value === "FALTA") selectElement.classList.add("badge-falta");
+
+            const adminKey = selectElement.getAttribute('data-admin');
+            const selects = document.querySelectorAll(`select[data-admin="${adminKey}"]`);
+            
+            let cul = 0, pro = 0, fal = 0;
+            selects.forEach(s => {
+                if(s.value === "CULMINADA") cul++;
+                else if(s.value === "PROCESO") pro++;
+                else if(s.value === "FALTA") fal++;
+            });
+
+            const total = selects.length;
+            const pctCul = Math.round((cul / total) * 100);
+            
+            const degCul = (cul / total) * 100;
+            const degPro = degCul + ((pro / total) * 100);
+
+            document.getElementById(`cnt-${adminKey}-cul`).innerText = cul;
+            document.getElementById(`cnt-${adminKey}-pro`).innerText = pro;
+            document.getElementById(`cnt-${adminKey}-fal`).innerText = fal;
+            document.getElementById(`txt-${adminKey}`).innerText = `${pctCul}% Avance`;
+            
+            const pie = document.getElementById(`pie-${adminKey}`);
+            pie.style.background = `conic-gradient(var(--magia-verde) 0% ${degCul}%, var(--magia-amarillo) ${degCul}% ${degPro}%, var(--magia-rojo) ${degPro}% 100%)`;
+            logTerminalMaster(`Estado actualizado para el ecosistema: ${adminKey}`);
+        }
+
+        function navegarModulo(mod, btn) {
+            if (btn) btn.classList.add('btn-busy');
+            logTerminalMaster(`Redirigiendo a módulo: ${mod}`);
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+                google.script.run.withSuccessHandler(html => { 
+                    if (mod === 'login_ui') {
+                        window.top.location.href = html || '?p=login_ui';
+                    } else {
+                        document.open(); 
+                        document.write(html); 
+                        document.close(); 
+                    }
+                }).router_backend(mod);
+            } else {
+                window.location.href = "?p=" + mod;
+            }
+        }
+    </script>
+</body>
+</html>

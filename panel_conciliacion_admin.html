@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Conciliación Bancaria (Admin) - Condolink Global V20.6</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-principal: #020617;
+      --bg-card: #0b1329;
+      --bg-card-hover: #111e38;
+      --acento-verde: #00ff66;
+      --acento-rojo: #ef4444;
+      --texto-blanco: #f0f6fc;
+      --gris-texto: #94a3b8;
+      
+      /* Estilo Cian/Neón Artístico V20.6 */
+      --cian-neon: #00e5ff;
+      --cian-secundario: #38bdf8;
+      --cian-glow: 0 0 20px rgba(0, 229, 255, 0.35);
+      --borde-color: rgba(0, 229, 255, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; }
+    body { background-color: var(--bg-principal); color: var(--texto-blanco); display: flex; height: 100vh; overflow: hidden; opacity: 0; transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1); background-image: radial-gradient(circle at 10% 20%, #0b1329 0%, #030712 90%); }
+
+    .app-container { display: flex; width: 100%; height: 100%; }
+
+    /* SIDEBAR CIAN/NEÓN ARTÍSTICO */
+    .sidebar { width: 95px; background: rgba(11, 19, 41, 0.85); backdrop-filter: blur(12px); border-right: 2px solid var(--borde-color); display: flex; flex-direction: column; align-items: center; padding: 20px 8px; gap: 14px; z-index: 10; box-shadow: 6px 0 30px rgba(0,0,0,0.9); }
+    .brand-area { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-bottom: 14px; border-bottom: 1px solid var(--borde-color); width: 100%; }
+    
+    .mystic-logo-container {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 4px 0;
+    }
+
+    .mystic-halo-ring {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border: 2px dashed var(--cian-neon);
+      border-radius: 50%;
+      animation: spinMystic 12s linear infinite;
+      box-shadow: 0 0 15px var(--cian-neon), inset 0 0 10px var(--cian-neon);
+    }
+
+    @keyframes spinMystic {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .brand-logo { 
+      width: 52px; 
+      height: 52px; 
+      background: #030712; 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      overflow: hidden; 
+      border: 2px solid var(--cian-neon); 
+      box-shadow: var(--cian-glow); 
+      z-index: 2;
+    }
+    .brand-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+    .menu-list { display: flex; flex-direction: column; gap: 10px; width: 100%; flex-grow: 1; align-items: center; }
+    .menu-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; height: 72px; border-radius: 14px; color: var(--gris-texto); font-size: 0.6rem; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none; border: 1px solid var(--borde-color); background: rgba(9, 16, 34, 0.6); text-align: center; padding: 4px; text-transform: uppercase; }
+    .menu-item i { font-size: 1.25rem; color: var(--cian-neon); transition: transform 0.3s; }
+    .menu-item:hover, .menu-item.active { background: linear-gradient(135deg, rgba(0,229,255,0.25), rgba(11,19,41,0.95)); color: var(--cian-neon); border: 2px solid var(--cian-neon); box-shadow: var(--cian-glow); transform: translateY(-2px); }
+    .menu-item:hover i { transform: scale(1.15); }
+
+    .sidebar-bottom-actions { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .sidebar-bottom-actions .btn-sidebar-icon { width: 100%; height: 46px; border-radius: 12px; background: rgba(9,16,34,0.8); border: 1.5px solid var(--borde-color); color: var(--cian-neon); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s; font-size: 1.1rem; text-decoration: none; }
+    .sidebar-bottom-actions .btn-sidebar-icon:hover { background: var(--cian-neon); color: #030712; box-shadow: var(--cian-glow); transform: scale(1.05); }
+    .sidebar-bottom-actions .btn-sidebar-icon.btn-danger { color: var(--acento-rojo); border-color: rgba(239, 68, 68, 0.4); }
+    .sidebar-bottom-actions .btn-sidebar-icon.btn-danger:hover { background: var(--acento-rojo); color: #fff; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+
+    /* CONTENEDOR PRINCIPAL */
+    .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 24px; gap: 20px; background: radial-gradient(circle at top right, rgba(0,229,255,0.03) 0%, transparent 60%); }
+
+    /* HEADER SUPERIOR ARTÍSTICO */
+    .top-header { display: flex; justify-content: space-between; align-items: center; background: rgba(11, 19, 41, 0.8); backdrop-filter: blur(10px); padding: 16px 26px; border-radius: 16px; border: 2px solid var(--borde-color); box-shadow: var(--cian-glow); }
+    .header-title-wrapper { display: flex; align-items: center; gap: 16px; }
+    
+    .mystic-header-logo-container {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mystic-header-ring {
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      border: 2px dashed var(--cian-neon);
+      border-radius: 50%;
+      animation: spinMystic 14s linear infinite;
+    }
+    .header-logo-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--cian-neon); object-fit: cover; box-shadow: var(--cian-glow); z-index: 2; }
+    
+    .header-title h2 { font-size: 1.15rem; font-weight: 800; color: #fff; letter-spacing: 0.8px; text-transform: uppercase; text-shadow: 0 0 10px rgba(0,229,255,0.3); }
+    .header-title p { font-size: 0.76rem; color: var(--gris-texto); margin-top: 3px; font-weight: 500; }
+
+    .header-actions { display: flex; align-items: center; gap: 14px; }
+
+    /* TASA BCV BADGE CIAN */
+    .tasa-bcv-badge { display: flex; align-items: center; gap: 12px; background: rgba(3, 7, 18, 0.9); border: 1.5px solid var(--cian-neon); border-radius: 12px; padding: 8px 16px; box-shadow: var(--cian-glow); cursor: pointer; transition: all 0.3s; }
+    .tasa-bcv-badge:hover { transform: scale(1.03); background: rgba(0,229,255,0.08); }
+    .tasa-bcv-badge i { color: var(--cian-neon); font-size: 1.1rem; }
+    .tasa-bcv-info .label { font-size: 0.65rem; color: var(--gris-texto); text-transform: uppercase; font-weight: 700; display: flex; justify-content: space-between; gap: 10px; }
+    .tasa-bcv-info .val { font-size: 0.95rem; font-weight: 800; color: var(--acento-verde); letter-spacing: 0.5px; }
+
+    /* SECCIÓN DE NAVEGACIÓN Y ACCESOS RÁPIDOS */
+    .panels-navigation-container { 
+      background: rgba(11, 19, 41, 0.75); 
+      backdrop-filter: blur(10px);
+      border: 1.5px solid var(--borde-color); 
+      border-radius: 16px; 
+      padding: 24px; 
+      box-shadow: inset 0 0 25px rgba(0, 229, 255, 0.05), var(--cian-glow); 
+      display: flex; 
+      flex-direction: column; 
+      gap: 18px; 
+      align-items: center; 
+      text-align: center; 
+    }
+    .panels-navigation-container h3 { font-size: 1.1rem; color: #fff; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 800; }
+    .panels-navigation-container p { font-size: 0.85rem; color: var(--gris-texto); max-width: 650px; font-weight: 500; }
+
+    .panels-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; width: 100%; }
+    
+    .panel-card-link { background: rgba(15, 25, 50, 0.8); border: 1.5px solid var(--borde-color); border-radius: 14px; padding: 20px 16px; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none; box-shadow: 0 6px 20px rgba(0,0,0,0.5); text-align: center; }
+    .panel-card-link i { font-size: 2rem; color: var(--cian-neon); transition: transform 0.35s ease; filter: drop-shadow(0 0 8px rgba(0,229,255,0.4)); }
+    .panel-card-link span { font-size: 0.92rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; }
+    .panel-card-link p { font-size: 0.75rem; color: var(--gris-texto); margin: 0; font-weight: 500; }
+    
+    .panel-card-link:hover { background: var(--bg-card-hover); border-color: var(--cian-neon); transform: translateY(-4px); box-shadow: var(--cian-glow), 0 10px 25px rgba(0,0,0,0.7); }
+    .panel-card-link:hover i { transform: scale(1.2) rotate(5deg); }
+
+    /* SECCIÓN DE ACORDEONES OPERATIVOS ARTÍSTICOS */
+    .modules-section-wrapper { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+    
+    .accordion-card { background: rgba(11, 19, 41, 0.8); backdrop-filter: blur(10px); border: 1.5px solid var(--borde-color); border-radius: 14px; overflow: hidden; transition: all 0.35s ease; box-shadow: 0 6px 15px rgba(0,0,0,0.4); }
+    .accordion-card.active { border-color: var(--cian-neon); box-shadow: var(--cian-glow); background: rgba(15, 25, 50, 0.95); }
+    .accordion-card .accordion-title i { color: var(--cian-neon); font-size: 1.15rem; }
+
+    .accordion-header { padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; background: rgba(9,16,34,0.6); transition: background 0.3s; }
+    .accordion-header:hover { background: rgba(0,229,255,0.05); }
+    .accordion-title { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 0.92rem; text-transform: uppercase; color: #fff; letter-spacing: 0.5px; }
+    .accordion-arrow { color: var(--cian-neon); transition: transform 0.35s ease; font-size: 0.9rem; }
+    
+    .accordion-card.active .accordion-arrow { transform: rotate(180deg); }
+
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(3, 7, 18, 0.6); padding: 0 22px; }
+    .accordion-card.active .accordion-content { max-height: 500px; padding: 20px 22px; border-top: 1px solid var(--borde-color); }
+
+    /* FOOTER ARTÍSTICO */
+    .footer-master { text-align: center; padding: 18px; font-size: 0.76rem; color: var(--gris-texto); border-top: 1.5px solid var(--borde-color); margin-top: auto; background: rgba(11, 19, 41, 0.6); border-radius: 12px; backdrop-filter: blur(8px); }
+    .footer-master strong { color: #fff; }
+  </style>
+<script>
+  /* BLINDAJE BCV 2 DECIMALES Y PUENTE ADMIN V20.8 */
+  window.normalizarTasaBCV = function(valorRaw) {
+    if (valorRaw === null || valorRaw === undefined) return '445,78';
+    var str = String(valorRaw).replace(/[^0-9.,]/g, '').trim();
+    if (!str) return '445,78';
+    if (str.indexOf(',') !== -1 && str.indexOf('.') !== -1) {
+      str = str.replace(/\./g, '').replace(',', '.');
+    } else if (str.indexOf(',') !== -1) {
+      str = str.replace(',', '.');
+    }
+    var num = parseFloat(str);
+    if (isNaN(num) || num <= 0) return '445,78';
+    return num.toFixed(2).replace('.', ',');
+  };
+</script>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ================= BARRA LATERAL ================= -->
+  <aside class="sidebar">
+    <div class="brand-area">
+      <div class="mystic-logo-container" title="Panel de Conciliación Admin">
+        <div class="mystic-halo-ring"></div>
+        <div class="brand-logo">
+          <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo Condolink Global">
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-list">
+      <a href="#" onclick="navegarModulo('panel_contabilidad_admin'); return false;" class="menu-item" title="Ir a Contabilidad">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Contabilidad</span>
+      </a>
+      <a href="#" onclick="navegarModulo('panel_libro_diario_admin'); return false;" class="menu-item" title="Libro Diario y Balance de Comprobación" style="border-color: var(--acento-verde);">
+        <i class="fa-solid fa-book-open" style="color: var(--acento-verde);"></i>
+        <span>Libro Diario</span>
+      </a>
+      <a href="#" onclick="navegarModulo('panel_conciliacion_admin'); return false;" class="menu-item active" title="Módulo de Conciliación">
+        <i class="fa-solid fa-file-invoice-dollar"></i>
+        <span>Conciliación</span>
+      </a>
+    </div>
+
+    <div class="sidebar-bottom-actions">
+      <a href="#" onclick="navegarModulo('panel_admin'); return false;" class="btn-sidebar-icon" title="Retornar al Panel Admin">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <a href="#" onclick="navegarModulo('login_ui'); return false;" class="btn-sidebar-icon btn-danger" title="Cerrar Sesión / Salir">
+        <i class="fa-solid fa-power-off"></i>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ================= CONTENEDOR PRINCIPAL ================= -->
+  <main class="main-content">
+
+    <!-- ENCABEZADO INSTITUCIONAL -->
+    <header class="top-header">
+      <div class="header-title-wrapper">
+        <div class="mystic-header-logo-container">
+          <div class="mystic-header-ring"></div>
+          <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo CLG" class="header-logo-img">
+        </div>
+        <div class="header-title">
+          <h2>CONDOLINK GLOBAL V20.6 // CONCILIACIÓN BANCARIA</h2>
+          <p>Validación de Pagos, Transferencias y Cruce de Cuentas - Administrador Master</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <div class="tasa-bcv-badge" onclick="inicializarTasaBCV()" title="Clic para forzar sincronización de tasa">
+          <i class="fa-solid fa-chart-line"></i>
+          <div class="tasa-bcv-info">
+            <div class="label"><span>Tasa Oficial BCV:</span> <span style="color: var(--cian-neon); font-weight: bold;">[Auto-Sync]</span></div>
+            <div class="val" id="tasa-hoy-header"><i class="fa-solid fa-spinner fa-spin" style="font-size: 0.8rem;"></i> Sync...</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1. SECCIÓN DE NAVEGACIÓN Y ACCESOS RÁPIDOS -->
+    <section class="panels-navigation-container">
+      <div>
+        <h3><i class="fa-solid fa-network-wired" style="color: var(--cian-neon); margin-right: 8px;"></i> Consola de Navegación del Sistema</h3>
+        <p>Seleccione un destino corporativo para alternar rápidamente entre la administración central y contabilidad.</p>
+      </div>
+
+      <div class="panels-grid">
+        <a href="#" onclick="navegarModulo('panel_admin'); return false;" class="panel-card-link">
+          <i class="fa-solid fa-shield-halved"></i>
+          <div>
+            <span>Panel Admin</span>
+            <p>Consola central de seguridad y accesos.</p>
+          </div>
+        </a>
+
+        <a href="#" onclick="navegarModulo('panel_financiero_admin'); return false;" class="panel-card-link">
+          <i class="fa-solid fa-wallet"></i>
+          <div>
+            <span>Panel Financiero</span>
+            <p>Matriz de control administrativo global.</p>
+          </div>
+        </a>
+
+        <a href="#" onclick="navegarModulo('panel_libro_diario_admin'); return false;" class="panel-card-link" style="border-color: var(--acento-verde);">
+          <i class="fa-solid fa-book-open" style="color: var(--acento-verde);"></i>
+          <div>
+            <span>Libro Diario & Balance</span>
+            <p>Asientos contables y balance de comprobación.</p>
+          </div>
+        </a>
+
+        <a href="#" onclick="navegarModulo('panel_reportes_configuracion_admin'); return false;" class="panel-card-link">
+          <i class="fa-solid fa-chart-column"></i>
+          <div>
+            <span>Reportes Ejecutivos</span>
+            <p>Balances y morosidad consolidada.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. SECCIÓN DE ACORDEONES / OPERACIONES DE CONCILIACIÓN -->
+    <div class="modules-section-wrapper">
+      
+      <div class="accordion-card active">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-title">
+            <i class="fa-solid fa-money-check-dollar"></i>
+            <span>Validación de Pagos Móviles y Transferencias Bancarias</span>
+          </div>
+          <i class="fa-solid fa-chevron-down accordion-arrow"></i>
+        </div>
+        <div class="accordion-content" style="max-height: 500px; padding: 20px 22px; border-top: 1px solid var(--borde-color);">
+          <p style="color: var(--gris-texto); font-size: 0.88rem; line-height: 1.6; font-weight: 500;">
+            Cruce automatizado de las referencias enviadas por los propietarios contra los extractos bancarios institucionales registrados en el sistema, asegurando precisión financiera en Torre Charam, Caracas.
+          </p>
+        </div>
+      </div>
+
+      <div class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-title">
+            <i class="fa-solid fa-building-columns"></i>
+            <span>Carga de Extractos y Conciliación Masiva</span>
+          </div>
+          <i class="fa-solid fa-chevron-down accordion-arrow"></i>
+        </div>
+        <div class="accordion-content">
+          <p style="color: var(--gris-texto); font-size: 0.88rem; line-height: 1.6; font-weight: 500;">
+            Importación de archivos de movimientos bancarios para cotejo masivo de cuotas de condominio y fondos de reserva bajo estándares de seguridad por roles.
+          </p>
+        </div>
+      </div>
+
+      <div class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-title">
+            <i class="fa-solid fa-clipboard-check"></i>
+            <span>Historial de Pagos Conciliados y Auditoría</span>
+          </div>
+          <i class="fa-solid fa-chevron-down accordion-arrow"></i>
+        </div>
+        <div class="accordion-content">
+          <p style="color: var(--gris-texto); font-size: 0.88rem; line-height: 1.6; font-weight: 500;">
+            Registro detallado de transacciones aprobadas, montos en bolívares indexados a divisa oficial y bitácora completa de validaciones administrativas.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer-master">
+      <div style="margin-bottom:6px;">
+        <strong>CONDOLINK GLOBAL V20.6</strong> &copy; 2026 - Torre Charam, Caracas. Todos los derechos reservados.
+      </div>
+      <i class="fa-solid fa-globe" style="color:var(--cian-neon);"></i> <a href="https://www.condolinkglobal.com" target="_blank" style="color:var(--cian-neon); text-decoration:none;">www.condolinkglobal.com</a> | Soporte Master: <span style="color:var(--cian-neon);">0414-1700317</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    verificarSeguridadAdmin();
+    inicializarTasaBCV();
+  });
+
+  function mostrarPortal() {
+    document.body.style.opacity = "1";
+  }
+
+  function verificarSeguridadAdmin() {
+    let respondido = false;
+    let safetyTimer = setTimeout(() => {
+      if (!respondido) { respondido = true; mostrarPortal(); }
+    }, 3500);
+
+    if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.obtenerSesionUsuario === 'function') {
+      google.script.run
+        .withSuccessHandler(function() {
+          if (!respondido) { respondido = true; clearTimeout(safetyTimer); mostrarPortal(); }
+        })
+        .withFailureHandler(function() {
+          if (!respondido) { respondido = true; clearTimeout(safetyTimer); mostrarPortal(); }
+        })
+        .obtenerSesionUsuario();
+    } else {
+      if (!respondido) { respondido = true; clearTimeout(safetyTimer); mostrarPortal(); }
+    }
+  }
+
+  function toggleAccordion(headerElement) {
+    const card = headerElement.parentElement;
+    const isActive = card.classList.contains('active');
+    
+    document.querySelectorAll('.accordion-card').forEach(item => {
+      item.classList.remove('active');
+      const content = item.querySelector('.accordion-content');
+      if(content) content.style.padding = "0 22px";
+    });
+
+    if (!isActive) {
+      card.classList.add('active');
+      const content = card.querySelector('.accordion-content');
+      if(content) content.style.padding = "20px 22px";
+    }
+  }
+
+  function inicializarTasaBCV() {
+    const spanTasa = document.getElementById('tasa-hoy-header');
+    if (spanTasa) spanTasa.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sync...`;
+
+    let backendRespondio = false;
+    const temporizadorFalla = setTimeout(() => {
+      if (!backendRespondio) {
+        backendRespondio = true;
+        usarTasaRespaldoApi();
+      }
+    }, 3000);
+
+    if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.obtenerTasaBCV === 'function') {
+      google.script.run
+        .withSuccessHandler(function(t) {
+          if (!backendRespondio) {
+            backendRespondio = true;
+            clearTimeout(temporizadorFalla);
+            let rawValor = t;
+            if (typeof t === 'object' && t !== null) {
+              rawValor = t.tasa || t.valor || 0;
+            }
+            if (typeof rawValor === 'string') {
+              rawValor = rawValor.replace(/\./g, '').replace(',', '.');
+            }
+            const valorTasa = Number(rawValor || 0);
+            if (valorTasa > 0) {
+              spanTasa.innerText = valorTasa.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Bs.";
+            } else {
+              usarTasaRespaldoApi();
+            }
+          }
+        })
+        .withFailureHandler(() => {
+          if (!backendRespondio) {
+            backendRespondio = true;
+            clearTimeout(temporizadorFalla);
+            usarTasaRespaldoApi();
+          }
+        })
+        .obtenerTasaBCV();
+    } else {
+      backendRespondio = true;
+      clearTimeout(temporizadorFalla);
+      usarTasaRespaldoApi();
+    }
+  }
+
+  function usarTasaRespaldoApi() {
+    const spanTasa = document.getElementById('tasa-hoy-header');
+    fetch('https://open.er-api.com/v6/latest/USD')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.rates && data.rates.VES) {
+          let tasaVes = data.rates.VES.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Bs.";
+          if (spanTasa) spanTasa.innerText = tasaVes;
+        } else {
+          asignarTasaLocal();
+        }
+      })
+      .catch(() => asignarTasaLocal());
+  }
+
+  function asignarTasaLocal() {
+    const spanTasa = document.getElementById('tasa-hoy-header');
+    if (spanTasa) spanTasa.innerText = "445,78 Bs.";
+  }
+
+  function navegarModulo(nombreModulo) {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(html => {
+          document.open();
+          document.write(html);
+          document.close();
+        })
+        .router_backend(nombreModulo);
+    } else {
+      alert("Navegación simulada hacia el módulo: " + nombreModulo);
+    }
+  }
+</script>
+
+</body>
+</html>

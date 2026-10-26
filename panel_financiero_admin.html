@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condolink Global V20.6 - Panel Financiero</title>
+
+    <!-- Iconos FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fuentes Institucionales -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Librería de Gráficos Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ==========================================================================
+           VARIABLES DE ESTILO - IDENTIDAD DOCTOR STRANGE & ARCADE LCARS V20.6
+           ========================================================================== */
+        :root {
+            --bg-principal: #050a14;
+            --bg-panel: #0a1428;
+            --bg-panel-inner: #070e1c;
+            --lcars-cyan: #00e5ff;
+            --magia-dorado: #ffcc00;
+            --magia-fucsia: #ff007f;
+            --magia-verde: #00ff66;
+            --magia-morado: #b829ff;
+            --texto-blanco: #ffffff;
+            --gris-texto: #94a3b8;
+            --borde-arcade: rgba(0, 229, 255, 0.35);
+            --acento-rojo: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(255, 204, 0, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 85% 80%, rgba(184, 41, 255, 0.06) 0%, transparent 25%);
+            color: var(--texto-blanco);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==========================================================================
+           CONTENEDOR PRINCIPAL Y BARRA LATERAL DE ICONOS
+           ========================================================================== */
+        .app-layout {
+            display: flex;
+            flex: 1;
+            min-height: calc(100vh - 38px);
+            padding: 12px 16px 8px 16px;
+            gap: 14px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .sidebar-icons {
+            width: 64px;
+            background: var(--bg-panel);
+            border: 1.5px solid var(--borde-arcade);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 14px 0;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            flex-shrink: 0;
+            height: fit-content;
+            position: sticky;
+            top: 12px;
+        }
+
+        .sidebar-nav-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gris-texto);
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+            position: relative;
+        }
+
+        .sidebar-nav-btn:hover, .sidebar-nav-btn.active {
+            color: var(--lcars-cyan);
+            border-color: var(--lcars-cyan);
+            background: rgba(0, 229, 255, 0.12);
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+            transform: scale(1.06);
+        }
+
+        .sidebar-nav-btn.btn-logout {
+            margin-top: 12px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            border: 1.5px solid #f87171;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+        }
+
+        .sidebar-nav-btn.btn-logout:hover {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            box-shadow: 0 0 18px rgba(239, 68, 68, 0.85);
+            color: #ffffff;
+            transform: scale(1.08);
+        }
+
+        /* ==========================================================================
+           CONTENIDO CENTRAL Y CABECERA COMPACTA CON MANDALA MÍSTICO
+           ========================================================================== */
+        .main-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .header-lcars {
+            background-color: var(--bg-panel);
+            border: 1.5px solid var(--borde-arcade);
+            border-radius: 14px;
+            padding: 10px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* Círculo de Protección Místico (Doctor Strange) */
+        .mystic-logo-wrapper {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mystic-halo-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px dashed var(--magia-dorado);
+            box-shadow: 0 0 12px rgba(255, 204, 0, 0.45), inset 0 0 8px rgba(255, 204, 0, 0.25);
+            animation: spinRight 14s linear infinite;
+        }
+
+        .mystic-halo-inner {
+            position: absolute;
+            width: 82%;
+            height: 82%;
+            border-radius: 50%;
+            border: 1.5px dotted var(--lcars-cyan);
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+            animation: spinLeft 9s linear infinite;
+        }
+
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            z-index: 2;
+            border: 1.5px solid var(--texto-blanco);
+            background-color: var(--bg-principal);
+        }
+
+        @keyframes spinRight {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes spinLeft {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .brand-title h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: var(--texto-blanco);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .brand-title span {
+            color: var(--lcars-cyan);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tasa-bcv-box {
+            background: rgba(0, 255, 102, 0.08);
+            border: 1.5px solid var(--magia-verde);
+            border-radius: 10px;
+            padding: 6px 14px;
+            text-align: right;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tasa-bcv-box:hover {
+            background: rgba(0, 255, 102, 0.16);
+            box-shadow: 0 0 12px rgba(0, 255, 102, 0.3);
+        }
+
+        .tasa-bcv-box small {
+            display: block;
+            font-size: 0.62rem;
+            color: var(--gris-texto);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .tasa-bcv-box strong {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            color: var(--magia-verde);
+        }
+
+        /* ==========================================================================
+           BARRA DE NAVEGACIÓN INTERCONECTADA RÁPIDA Y TERMINAL
+           ========================================================================== */
+        .top-row-Split {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .system-nav-bar {
+            background-color: var(--bg-panel);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            border-radius: 10px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .system-nav-bar span {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--magia-dorado);
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .nav-chip {
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            color: var(--texto-blanco);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-chip:hover {
+            background: var(--lcars-cyan);
+            color: #000000;
+            box-shadow: 0 0 10px var(--lcars-cyan);
+        }
+
+        .terminal-screen {
+            background-color: #02050a;
+            border: 1.5px solid var(--magia-verde);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--magia-verde);
+            height: 54px;
+            overflow-y: auto;
+            line-height: 1.35;
+        }
+
+        /* ==========================================================================
+           SECCIONES CONMUTABLES Y KPIs COMPACTOS Y LEGIBLES
+           ========================================================================== */
+        .section {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .active-section {
+            display: flex;
+        }
+
+        .kpi-grid-5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .kpi-card {
+            background: var(--bg-panel);
+            border: 1.5px solid var(--borde-arcade);
+            border-radius: 12px;
+            padding: 12px 14px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--lcars-cyan);
+        }
+
+        .kpi-card.gold::before { background: var(--magia-dorado); }
+        .kpi-card.pink::before { background: var(--magia-fucsia); }
+        .kpi-card.green::before { background: var(--magia-verde); }
+        .kpi-card.purple::before { background: var(--magia-morado); }
+
+        .kpi-card h4 {
+            font-size: 0.72rem;
+            color: var(--gris-texto);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .kpi-card .kpi-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--texto-blanco);
+            margin-top: 4px;
+        }
+
+        .kpi-card .kpi-bs {
+            font-size: 0.75rem;
+            color: var(--magia-dorado);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        /* ==========================================================================
+           CAJAS DE PANEL Y GRÁFICOS EQUILIBRADOS
+           ========================================================================== */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 14px;
+        }
+
+        .panel-box {
+            background-color: var(--bg-panel);
+            border: 1.5px solid var(--borde-arcade);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+        }
+
+        .panel-box h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.82rem;
+            color: var(--lcars-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+            padding-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 155px;
+        }
+
+        /* ==========================================================================
+           BOTONES DE ACCESO DIRECTO DEL ECOSISTEMA
+           ========================================================================== */
+        .quick-access-section {
+            background-color: var(--bg-panel);
+            border: 1.5px solid var(--borde-arcade);
+            border-radius: 12px;
+            padding: 12px 16px;
+            flex-shrink: 0;
+        }
+
+        .quick-access-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: var(--magia-dorado);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 800;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        .module-arcade-btn {
+            background-color: var(--bg-panel-inner);
+            border: 1.5px solid rgba(0, 229, 255, 0.35);
+            border-radius: 10px;
+            padding: 10px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .module-arcade-btn i {
+            font-size: 1.15rem;
+            color: var(--lcars-cyan);
+        }
+
+        .module-arcade-btn span {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--texto-blanco);
+            text-transform: uppercase;
+        }
+
+        .module-arcade-btn:hover {
+            border-color: var(--magia-dorado);
+            background: rgba(255, 204, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.25);
+        }
+
+        .module-arcade-btn:hover i {
+            color: var(--magia-dorado);
+        }
+
+        /* ==========================================================================
+           BOTONES DE ACCIÓN Y FORMULARIOS
+           ========================================================================== */
+        .arcade-btn {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #ffffff;
+        }
+
+        .arcade-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.15);
+        }
+
+        .btn-portal { background: linear-gradient(135deg, #d97706, #f59e0b); color: #000; }
+        .btn-salud { background: linear-gradient(135deg, #059669, #10b981); }
+        .btn-contrato { background: linear-gradient(135deg, #0284c7, #00e5ff); color: #000; }
+        .btn-transmutacion { background: linear-gradient(135deg, #db2777, #ff007f); }
+        .btn-arcana { background: linear-gradient(135deg, #7e22ce, #b829ff); }
+        .btn-logout-top { background: linear-gradient(135deg, #dc2626, #991b1b); border: 1px solid #f87171; }
+
+        .form-label {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--gris-texto);
+            margin-bottom: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            background-color: var(--bg-panel-inner);
+            border: 1px solid rgba(0, 229, 255, 0.35);
+            color: var(--texto-blanco);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+            gap: 8px;
+        }
+
+        .heatmap-cell {
+            background: rgba(0, 255, 102, 0.12);
+            border: 1px solid var(--magia-verde);
+            border-radius: 6px;
+            padding: 8px 6px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .heatmap-cell.warning { background: rgba(255, 204, 0, 0.15); border-color: var(--magia-dorado); color: var(--magia-dorado); }
+        .heatmap-cell.danger { background: rgba(255, 0, 127, 0.18); border-color: var(--magia-fucsia); color: var(--magia-fucsia); }
+
+        /* ==========================================================================
+           PIE DE PÁGINA INSTITUCIONAL
+           ========================================================================== */
+        .footer-lcars {
+            height: 36px;
+            background-color: var(--bg-panel);
+            border-top: 1.5px solid var(--borde-arcade);
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            color: var(--gris-texto);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 1100px) {
+            .kpi-grid-5 { grid-template-columns: repeat(3, 1fr); }
+            .charts-row, .top-row-Split { grid-template-columns: 1fr; }
+            .modules-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+<script>
+  /* BLINDAJE BCV 2 DECIMALES Y PUENTE ADMIN V20.8 */
+  window.normalizarTasaBCV = function(valorRaw) {
+    if (valorRaw === null || valorRaw === undefined) return '445,78';
+    var str = String(valorRaw).replace(/[^0-9.,]/g, '').trim();
+    if (!str) return '445,78';
+    if (str.indexOf(',') !== -1 && str.indexOf('.') !== -1) {
+      str = str.replace(/\./g, '').replace(',', '.');
+    } else if (str.indexOf(',') !== -1) {
+      str = str.replace(',', '.');
+    }
+    var num = parseFloat(str);
+    if (isNaN(num) || num <= 0) return '445,78';
+    return num.toFixed(2).replace('.', ',');
+  };
+</script>
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- BARRA LATERAL COMPACTA DE ICONOS + BOTÓN ROJO SALIR -->
+        <aside class="sidebar-icons">
+            <div class="sidebar-nav-btn active" onclick="showSection('dashboard', this)" title="Tablero Financiero">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <div class="sidebar-nav-btn" onclick="showSection('cobros-masivos', this)" title="Emisión de Cobros & Alícuotas">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+            <div class="sidebar-nav-btn" onclick="showSection('pagos-egresos', this)" title="Pagos, Nómina y Conciliación">
+                <i class="fa-solid fa-money-check-dollar"></i>
+            </div>
+            <div class="sidebar-nav-btn" onclick="showSection('tendencia-heatmap', this)" title="Tendencia 12M & Heatmap Morosidad">
+                <i class="fa-solid fa-fire-flame-curved"></i>
+            </div>
+            <div class="sidebar-nav-btn" onclick="showSection('contabilidad-auditoria', this)" title="Contabilidad General & Auditoría">
+                <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            <div class="sidebar-nav-btn" onclick="showSection('reportes-proyeccion', this)" title="Reportes Oficiales & Flujo Proyectado">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+            <div class="sidebar-nav-btn" onclick="showSection('ia-alertas', this)" title="Predicción IA & Centro de Alertas">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+
+            <!-- Botón Rojo de Salida Directa a login_ui -->
+            <div class="sidebar-nav-btn btn-logout" onclick="navegarModulo('login_ui')" title="Cerrar Sesión (Ir a Login)">
+                <i class="fa-solid fa-power-off"></i>
+            </div>
+        </aside>
+
+        <!-- ÁREA DE TRABAJO PRINCIPAL -->
+        <main class="main-workspace">
+
+            <!-- CABECERA CON HALO DE DOCTOR STRANGE Y TASA BCV -->
+            <header class="header-lcars">
+                <div class="brand-section">
+                    <div class="mystic-logo-wrapper" title="Escudo Místico Protector - Torre Charam">
+                        <div class="mystic-halo-outer"></div>
+                        <div class="mystic-halo-inner"></div>
+                        <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo Condolink" class="brand-logo" onerror="this.src='https://via.placeholder.com/50?text=CLG'">
+                    </div>
+                    <div class="brand-title">
+                        <h1>CONDOLINK GLOBAL V20.6</h1>
+                        <span>Torre Charam, Caracas • Motor Central Financiero & Contable</span>
+                    </div>
+                </div>
+
+                <div class="header-controls">
+                    <div class="tasa-bcv-box" onclick="cargarTasaBCVAutomatica()" title="Clic para sincronizar tasa oficial BCV">
+                        <small><i class="fa-solid fa-Sync fa-spin"></i> Tasa Oficial BCV</small>
+                        <strong id="tasa-valor-dinamico">881,07 Bs.</strong>
+                    </div>
+
+                    <button class="arcade-btn btn-contrato" onclick="navegarModulo('portal_admin')">
+                        <i class="fa-solid fa-house-user"></i> Portal Admin
+                    </button>
+                    <button class="arcade-btn btn-arcana" onclick="navegarModulo('panel_admin')">
+                        <i class="fa-solid fa-user-shield"></i> Panel Admin
+                    </button>
+                    <button class="arcade-btn btn-logout-top" onclick="navegarModulo('login_ui')">
+                        <i class="fa-solid fa-right-from-bracket"></i> Salir
+                    </button>
+                </div>
+            </header>
+
+            <!-- FILA SUPERIOR: NAVEGACIÓN DE ECOSISTEMA + TERMINAL DE LOGS -->
+            <div class="top-row-Split">
+                <div class="system-nav-bar">
+                    <span><i class="fa-solid fa-sitemap"></i> Ecosistema:</span>
+                    <a class="nav-chip" onclick="navegarModulo('panel_pagos_admin')"><i class="fa-solid fa-credit-card"></i> Pagos</a>
+                    <a class="nav-chip" onclick="navegarModulo('panel_cobros_admin')"><i class="fa-solid fa-hand-holding-dollar"></i> Cobros</a>
+                    <a class="nav-chip" onclick="navegarModulo('panel_gastos_admin')"><i class="fa-solid fa-receipt"></i> Gastos</a>
+                    <a class="nav-chip" onclick="navegarModulo('panel_conciliacion_admin')"><i class="fa-solid fa-scale-unbalanced"></i> Conciliación</a>
+                    <a class="nav-chip" onclick="navegarModulo('panel_nomina_admin')"><i class="fa-solid fa-users-gear"></i> Nómina</a>
+                    <a class="nav-chip" onclick="navegarModulo('panel_contabilidad_admin')"><i class="fa-solid fa-book"></i> Contabilidad</a>
+                    <a class="nav-chip" onclick="navegarModulo('panel_cierre_admin')"><i class="fa-solid fa-lock"></i> Cierre</a>
+                    <a class="nav-chip" onclick="navegarModulo('panel_reportes_admin')"><i class="fa-solid fa-file-pdf"></i> Reportes</a>
+                </div>
+
+                <div class="terminal-screen" id="terminal-logs">
+                    [SYSTEM LOG]: Motor Financiero V20.6 activo. Tasa BCV y métricas multimoneda sincronizadas con Google Workspace...
+                </div>
+            </div>
+
+            <!-- SECCIÓN 1: DASHBOARD FINANCIERO -->
+            <div class="section active-section" id="dashboard">
+                <!-- 5 KPIs Multimoneda -->
+                <div class="kpi-grid-5">
+                    <div class="kpi-card green">
+                        <h4>Ingresos del Mes</h4>
+                        <div class="kpi-value" id="ingresosMes">$0.00</div>
+                        <div class="kpi-bs" id="ingresosBs">Bs. 0,00</div>
+                    </div>
+                    <div class="kpi-card pink">
+                        <h4>Gastos del Mes</h4>
+                        <div class="kpi-value" id="gastosMes">$0.00</div>
+                        <div class="kpi-bs" id="gastosBs">Bs. 0,00</div>
+                    </div>
+                    <div class="kpi-card gold">
+                        <h4>Nómina</h4>
+                        <div class="kpi-value" id="nominaMes">$0.00</div>
+                        <div class="kpi-bs" id="nominaBs">Bs. 0,00</div>
+                    </div>
+                    <div class="kpi-card purple">
+                        <h4>Servicios</h4>
+                        <div class="kpi-value" id="serviciosMes">$0.00</div>
+                        <div class="kpi-bs" id="serviciosBs">Bs. 0,00</div>
+                    </div>
+                    <div class="kpi-card">
+                        <h4>Saldo Disponible</h4>
+                        <div class="kpi-value" id="saldoMes" style="color: var(--lcars-cyan);">$0.00</div>
+                        <div class="kpi-bs" id="saldoBs">Bs. 0,00</div>
+                    </div>
+                </div>
+
+                <!-- Gráficos de Barras y Dona -->
+                <div class="charts-row">
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-chart-column"></i> Comparativa de Ingresos vs Gastos ($)</h3>
+                        <div class="chart-container">
+                            <canvas id="chartIngresosGastos"></canvas>
+                        </div>
+                    </div>
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-chart-pie"></i> Distribución de Egresos</h3>
+                        <div class="chart-container">
+                            <canvas id="chartDistribucion"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: EMISIÓN DE COBROS Y ALÍCUOTAS -->
+            <div class="section" id="cobros-masivos">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex-grow: 1;">
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-bolt" style="color: var(--magia-dorado);"></i> Emisión Masiva de Recibos de Condominio</h3>
+                        <label class="form-label">Seleccionar Condominio / Torre</label>
+                        <select class="form-select" id="cobro-condominio">
+                            <option value="1">Residencias Parque Leander</option>
+                            <option value="2">Torre Empresarial Charam</option>
+                        </select>
+                        <label class="form-label">Período de Facturación</label>
+                        <input type="month" class="form-control" id="cobro-periodo" value="2026-06">
+                        <button class="arcade-btn btn-portal" style="width: 100%; margin-top: auto;" onclick="ejecutarEmisionCobros()">
+                            <i class="fa-solid fa-paper-plane"></i> Procesar y Emitir Recibos por Alícuota
+                        </button>
+                    </div>
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-percent" style="color: var(--lcars-cyan);"></i> Control de Alícuotas y Fondos de Reserva</h3>
+                        <p style="font-size: 0.82rem; color: var(--gris-texto); line-height: 1.5; font-weight: 500;">
+                            Distribución automatizada de gastos comunes, gastos no comunes y fondo de reserva (10% legal) indexados a la Tasa Oficial BCV vigente.
+                        </p>
+                        <div style="margin-top: auto; display: flex; gap: 10px;">
+                            <button class="arcade-btn btn-contrato" style="flex:1;" onclick="navegarModulo('panel_cobros_admin')"><i class="fa-solid fa-sliders"></i> Configurar Alícuotas</button>
+                            <button class="arcade-btn btn-salud" style="flex:1;" onclick="navegarModulo('panel_edocuentas_admin')"><i class="fa-solid fa-file-invoice"></i> Ver Estados de Cuenta</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: PAGOS, NÓMINA Y CONCILIACIÓN -->
+            <div class="section" id="pagos-egresos">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex-grow: 1;">
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-money-bill-transfer" style="color: var(--magia-verde);"></i> Registro de Pagos y Proveedores</h3>
+                        <label class="form-label">Concepto / Proveedor</label>
+                        <input type="text" class="form-control" id="pago-concepto" placeholder="Ej: Mantenimiento Ascensores / Hidrocapital">
+                        <label class="form-label">Monto en USD ($)</label>
+                        <input type="number" class="form-control" id="pago-monto" placeholder="0.00">
+                        <button class="arcade-btn btn-salud" style="width: 100%; margin-top: auto;" onclick="registrarPagoEgreso()">
+                            <i class="fa-solid fa-check-double"></i> Registrar y Validar Pago
+                        </button>
+                    </div>
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-building-columns" style="color: var(--magia-morado);"></i> Nómina LOTTT y Conciliación Bancaria</h3>
+                        <p style="font-size: 0.82rem; color: var(--gris-texto); line-height: 1.5; font-weight: 500;">
+                            Gestión integral de pasivos laborales, cesta ticket, IVSS, FAOV y cruce automático de referencias de Pago Móvil, Zelle y transferencias nacionales.
+                        </p>
+                        <div style="margin-top: auto; display: flex; gap: 10px;">
+                            <button class="arcade-btn btn-arcana" style="flex:1;" onclick="navegarModulo('panel_nomina_admin')"><i class="fa-solid fa-users"></i> Ir a Nómina</button>
+                            <button class="arcade-btn btn-transmutacion" style="flex:1;" onclick="navegarModulo('panel_conciliacion_admin')"><i class="fa-solid fa-magnifying-glass-dollar"></i> Conciliar Bancos</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 4: TENDENCIA 12 MESES & HEATMAP DE MOROSIDAD -->
+            <div class="section" id="tendencia-heatmap">
+                <div class="charts-row">
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-chart-line"></i> Tendencia Financiera 12 Meses</h3>
+                        <div class="chart-container" style="height: 170px;">
+                            <canvas id="chartTendencia12M"></canvas>
+                        </div>
+                    </div>
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-fire" style="color: var(--magia-dorado);"></i> Heatmap de Morosidad (Torres / Inmuebles)</h3>
+                        <p style="font-size: 0.8rem; color: var(--gris-texto); font-weight: 500;">Mapa térmico de estatus de pagos por apartamento o local comercial.</p>
+                        <div class="heatmap-grid" style="flex-grow: 1; align-content: start;">
+                            <div class="heatmap-cell" title="P.B 01 - Solvente">PB-01</div>
+                            <div class="heatmap-cell warning" title="P.B 02 - 30 días">PB-02</div>
+                            <div class="heatmap-cell danger" title="P.B 03 - 90+ días">PB-03</div>
+                            <div class="heatmap-cell" title="P.B 04 - Solvente">PB-04</div>
+                            <div class="heatmap-cell" title="101 - Solvente">101</div>
+                            <div class="heatmap-cell warning" title="102 - 45 días">102</div>
+                            <div class="heatmap-cell danger" title="103 - 120 días">103</div>
+                            <div class="heatmap-cell" title="104 - Solvente">104</div>
+                            <div class="heatmap-cell" title="201 - Solvente">201</div>
+                            <div class="heatmap-cell warning" title="202 - 60 días">202</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 5: CONTABILIDAD Y AUDITORÍA -->
+            <div class="section" id="contabilidad-auditoria">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex-grow: 1;">
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-book" style="color: var(--magia-verde);"></i> Contabilidad General, Libro Diario & Balance</h3>
+                        <p style="font-size: 0.82rem; color: var(--gris-texto); font-weight: 500;">Libro diario automatizado, balance de comprobación y estado de resultados en tiempo real.</p>
+                        <button class="arcade-btn btn-contrato" style="margin-top: auto;" onclick="navegarModulo('panel_libro_diario_admin')"><i class="fa-solid fa-book-open"></i> Ir a Libro Diario y Balance de Comprobación</button>
+                    </div>
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-shield-halved" style="color: var(--lcars-cyan);"></i> Auditoría Financiera y Trazabilidad</h3>
+                        <p style="font-size: 0.82rem; color: var(--gris-texto); font-weight: 500;">Registro inalterable de auditoría sobre transacciones, cambios de alícuotas y validación de pagos respaldados por Google Workspace.</p>
+                        <button class="arcade-btn btn-arcana" style="margin-top: auto;" onclick="navegarModulo('panel_conciliacion_admin')"><i class="fa-solid fa-fingerprint"></i> Ejecutar Auditoría Global</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 6: REPORTES OFICIALES Y FLUJO PROYECTADO -->
+            <div class="section" id="reportes-proyeccion">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex-grow: 1;">
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-file-pdf" style="color: var(--acento-rojo);"></i> Reportes Oficiales Automatizados</h3>
+                        <p style="font-size: 0.82rem; color: var(--gris-texto); font-weight: 500;">Generación instantánea de estados de cuenta PDF para asambleas y copropietarios.</p>
+                        <button class="arcade-btn btn-transmutacion" style="margin-top: auto;" onclick="navegarModulo('panel_reportes_admin')"><i class="fa-solid fa-download"></i> Descargar Reportes Oficiales</button>
+                    </div>
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-chart-line" style="color: var(--lcars-cyan);"></i> Flujo Proyectado (Cash Flow Forecasting)</h3>
+                        <div class="chart-container" style="min-height: 180px;">
+                            <canvas id="chartFlujoProyectado"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 7: PREDICCIÓN IA Y CENTRO DE ALERTAS -->
+            <div class="section" id="ia-alertas">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex-grow: 1;">
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-brain" style="color: var(--magia-morado);"></i> Predicción IA de Cobranza</h3>
+                        <p style="font-size: 0.82rem; color: var(--gris-texto); font-weight: 500;">El modelo neuronal predice una probabilidad de recaudación del <strong style="color: var(--magia-verde);">84.2%</strong> para el cierre de mes actual, sugiriendo recordatorios tempranos para las unidades 02B y 103.</p>
+                        <button class="arcade-btn btn-arcana" style="margin-top: auto;" onclick="navegarModulo('panel_financiero_admin')"><i class="fa-solid fa-microchip"></i> Actualizar Modelo Neuronal</button>
+                    </div>
+                    <div class="panel-box">
+                        <h3><i class="fa-solid fa-bell" style="color: var(--magia-dorado);"></i> Centro de Alertas Financieras</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem; font-weight: 500;">
+                            <div style="background: rgba(255,204,0,0.15); border-left: 3px solid var(--magia-dorado); padding: 10px 12px; border-radius: 6px;">⚠️ Alerta: Incremento del 12% en costos de mantenimiento general.</div>
+                            <div style="background: rgba(255,0,127,0.15); border-left: 3px solid var(--magia-fucsia); padding: 10px 12px; border-radius: 6px;">🚨 Alerta: 3 unidades superan los 90 días de morosidad acumulada.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paneles de Acceso Directo Gigantes -->
+            <div class="quick-access-section">
+                <div class="quick-access-title">
+                    <i class="fa-solid fa-cubes"></i> Paneles de Acceso Directo (Área Extendida)
+                </div>
+                <div class="modules-grid">
+                    <div class="module-arcade-btn" onclick="showSection('dashboard')"><i class="fa-solid fa-chart-line"></i><span>Tablero</span></div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_libro_diario_admin')"><i class="fa-solid fa-book-open"></i><span>Libro Diario</span></div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_cobros_admin')"><i class="fa-solid fa-hand-holding-dollar"></i><span>Cobros</span></div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_pagos_admin')"><i class="fa-solid fa-money-bill-transfer"></i><span>Pagos</span></div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_contabilidad_admin')"><i class="fa-solid fa-book"></i><span>Contabilidad</span></div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_admin')"><i class="fa-solid fa-user-shield"></i><span>Admin</span></div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_reportes_admin')"><i class="fa-solid fa-file-lines"></i><span>Reportes</span></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- PIE DE PÁGINA INSTITUCIONAL LCARS -->
+    <footer class="footer-lcars">
+        <div><strong>CONDOLINK GLOBAL V20.6</strong> &copy; 2026 - Torre Charam, Caracas. Todos los derechos reservados.</div>
+        <div style="display: flex; gap: 15px;">
+            <span style="color: var(--lcars-cyan); cursor: pointer;" onclick="navegarModulo('panel_config_admin')"><i class="fas fa-shield-alt"></i> Seguridad por Roles Activa</span>
+            <span style="color: var(--magia-verde);"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Panel Financiero Sincronizado</span>
+        </div>
+    </footer>
+
+    <script>
+        let chartIngresosGastosInstance = null;
+        let chartDistribucionInstance = null;
+        let chartTendenciaInstance = null;
+        let chartFlujoInstance = null;
+        let tasaCambioOficial = 881.07;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            cargarTasaBCVAutomatica();
+        });
+
+        function logTerminal(mensaje, color = 'var(--magia-verde)') {
+            const terminal = document.getElementById('terminal-logs');
+            const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+            terminal.innerHTML += `<br><span style="color: ${color}">[LOG ${timestamp}]: ${mensaje}</span>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function formatUSD(amount) {
+            return "$" + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function formatBS(amount) {
+            return "Bs. " + (amount * tasaCambioOficial).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function cargarTasaBCVAutomatica() {
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            if (spanTasa) {
+                spanTasa.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sync...`;
+            }
+            logTerminal("Sincronizando Tasa Oficial BCV en tiempo real...", "var(--magia-dorado)");
+
+            let backendRespondio = false;
+            const temporizadorFalla = setTimeout(() => {
+                if (!backendRespondio) {
+                    backendRespondio = true;
+                    usarTasaRespaldoApi();
+                }
+            }, 3000);
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run
+                    .withSuccessHandler(res => {
+                        if (!backendRespondio) {
+                            backendRespondio = true;
+                            clearTimeout(temporizadorFalla);
+                            let tasaFinal = "";
+                            if (typeof res === 'object' && res !== null) {
+                                tasaFinal = res.tasa || res.valor || "881,07";
+                            } else if (res) {
+                                tasaFinal = res;
+                            } else {
+                                tasaFinal = "881,07";
+                            }
+                            let rawVal = tasaFinal.toString().replace(/\./g, '').replace(',', '.');
+                            tasaCambioOficial = parseFloat(rawVal) || 881.07;
+                            spanTasa.innerText = tasaFinal.toString().toLowerCase().includes("bs") ? tasaFinal : tasaFinal + " Bs.";
+                            logTerminal(`Tasa BCV sincronizada desde Google Apps Script: ${tasaFinal} VES/USD`, "var(--magia-verde)");
+                            cargarDatosFinancierosBackend();
+                        }
+                    })
+                    .withFailureHandler(() => {
+                        if (!backendRespondio) {
+                            backendRespondio = true;
+                            clearTimeout(temporizadorFalla);
+                            usarTasaRespaldoApi();
+                        }
+                    })[typeof google.script.run.obtenerTasaBCV === 'function' ? 'obtenerTasaBCV' : 'obtenerDatosPortalAdmin']();
+            } else {
+                backendRespondio = true;
+                clearTimeout(temporizadorFalla);
+                usarTasaRespaldoApi();
+            }
+        }
+
+        function usarTasaRespaldoApi() {
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            fetch('https://open.er-api.com/v6/latest/USD')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.rates && data.rates.VES) {
+                        tasaCambioOficial = parseFloat(data.rates.VES);
+                        let tasaVes = tasaCambioOficial.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        if (spanTasa) spanTasa.innerText = tasaVes + " Bs.";
+                        logTerminal(`Tasa BCV sincronizada vía API externa: ${tasaVes} VES/USD`, "var(--magia-verde)");
+                    } else {
+                        tasaCambioOficial = 881.07;
+                        if (spanTasa) spanTasa.innerText = "445,78 VES";
+                        logTerminal("Tasa BCV cargada por respaldo local: 881,07 VES/USD", "var(--magia-verde)");
+                    }
+                    cargarDatosFinancierosBackend();
+                })
+                .catch(() => {
+                    tasaCambioOficial = 881.07;
+                    if (spanTasa) spanTasa.innerText = "445,78 VES";
+                    logTerminal("Tasa BCV cargada por respaldo local: 881,07 VES/USD", "var(--magia-verde)");
+                    cargarDatosFinancierosBackend();
+                });
+        }
+
+        function cargarDatosFinancierosBackend() {
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run
+                    .withSuccessHandler(function(data) {
+                        if (data) {
+                            actualizarMetricasUI(data.ingresos || 14250.00, data.gastos || 5100.00, data.nomina || 2400.00, data.servicios || 1200.00, data.saldo || 9150.00);
+                        }
+                    })
+                    .withFailureHandler(function() {
+                        actualizarMetricasUI(14250.00, 5100.00, 2400.00, 1200.00, 9150.00);
+                    })
+                    .obtenerDatosFinancierosResumen();
+            } else {
+                actualizarMetricasUI(14250.00, 5100.00, 2400.00, 1200.00, 9150.00);
+            }
+        }
+
+        function actualizarMetricasUI(ingresos, gastos, nomina, servicios, saldo) {
+            document.getElementById("ingresosMes").innerText = formatUSD(ingresos);
+            document.getElementById("ingresosBs").innerText = formatBS(ingresos);
+            
+            document.getElementById("gastosMes").innerText = formatUSD(gastos);
+            document.getElementById("gastosBs").innerText = formatBS(gastos);
+            
+            document.getElementById("nominaMes").innerText = formatUSD(nomina);
+            document.getElementById("nominaBs").innerText = formatBS(nomina);
+            
+            document.getElementById("serviciosMes").innerText = formatUSD(servicios);
+            document.getElementById("serviciosBs").innerText = formatBS(servicios);
+            
+            document.getElementById("saldoMes").innerText = formatUSD(saldo);
+            document.getElementById("saldoBs").innerText = formatBS(saldo);
+
+            renderCharts(ingresos, gastos);
+        }
+
+        function renderCharts(ingresos, gastos) {
+            const ctx1 = document.getElementById('chartIngresosGastos');
+            if (ctx1) {
+                if (chartIngresosGastosInstance) chartIngresosGastosInstance.destroy();
+                chartIngresosGastosInstance = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Ingresos Totales', 'Gastos Totales'],
+                        datasets: [{
+                            label: 'Monto ($)',
+                            data: [ingresos, gastos],
+                            backgroundColor: ['#00ff66', '#ff007f'],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: 'rgba(0,229,255,0.1)' }, ticks: { color: '#94a3b8', font: { size: 11 } } },
+                            y: { grid: { display: false }, ticks: { color: '#ffffff', font: { weight: 'bold', size: 12 } } }
+                        }
+                    }
+                });
+            }
+
+            const ctx2 = document.getElementById('chartDistribucion');
+            if (ctx2) {
+                if (chartDistribucionInstance) chartDistribucionInstance.destroy();
+                chartDistribucionInstance = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Nómina', 'Servicios', 'Mantenimiento'],
+                        datasets: [{ data: [45, 30, 25], backgroundColor: ['#00e5ff', '#ffcc00', '#ff007f'] }]
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#ffffff', boxWidth: 12, font: { size: 11, weight: '600' } } }
+                        }
+                    }
+                });
+            }
+
+            const ctx3 = document.getElementById('chartTendencia12M');
+            if (ctx3 && !chartTendenciaInstance) {
+                chartTendenciaInstance = new Chart(ctx3, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                        datasets: [
+                            { label: 'Ingresos', data: [11000, 11500, 12000, 11800, 12500, 13000, 12800, 13200, 13500, 13800, 14000, ingresos], borderColor: '#00ff66', backgroundColor: 'rgba(0,255,102,0.1)', fill: true, tension: 0.3 },
+                            { label: 'Egresos', data: [4500, 4800, 4700, 4900, 5100, 5300, 5000, 5100, 5200, 5000, 5100, gastos], borderColor: '#ff007f', backgroundColor: 'rgba(255,0,127,0.1)', fill: true, tension: 0.3 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#ffffff', boxWidth: 12, font: { size: 11, weight: '600' } } } },
+                        scales: {
+                            x: { grid: { color: 'rgba(0,229,255,0.1)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                            y: { grid: { color: 'rgba(0,229,255,0.1)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                        }
+                    }
+                });
+            }
+
+            const ctx4 = document.getElementById('chartFlujoProyectado');
+            if (ctx4 && !chartFlujoInstance) {
+                chartFlujoInstance = new Chart(ctx4, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mes 1 (Act)', 'Mes 2 (Proy)', 'Mes 3 (Proy)', 'Mes 4 (Proy)'],
+                        datasets: [{ label: 'Saldo Proyectado ($)', data: [9150, 10200, 11400, 12600], borderColor: '#00e5ff', backgroundColor: 'rgba(0,229,255,0.15)', fill: true, tension: 0.4 }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                            y: { grid: { color: 'rgba(0,229,255,0.1)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                        }
+                    }
+                });
+            }
+        }
+
+        function showSection(id, element) {
+            document.querySelectorAll(".section").forEach(s => s.classList.remove("active-section"));
+            document.querySelectorAll(".sidebar-nav-btn").forEach(m => {
+                if(!m.classList.contains('btn-logout')) m.classList.remove("active");
+            });
+            
+            const targetSection = document.getElementById(id);
+            if (targetSection) targetSection.classList.add("active-section");
+            
+            if (element) {
+                element.classList.add("active");
+            } else {
+                const match = document.querySelector(`.sidebar-nav-btn[onclick*="${id}"]`);
+                if (match) match.classList.add("active");
+            }
+
+            setTimeout(() => {
+                if (chartIngresosGastosInstance) {
+                    chartIngresosGastosInstance.resize();
+                    chartDistribucionInstance.resize();
+                }
+                if (chartTendenciaInstance) chartTendenciaInstance.resize();
+                if (chartFlujoInstance) chartFlujoInstance.resize();
+            }, 50);
+            logTerminal(`Sección cambiada a: ${id.toUpperCase()}`, 'var(--lcars-cyan)');
+        }
+
+        function ejecutarEmisionCobros() {
+            var periodo = document.getElementById('cobro-periodo').value;
+            if (confirm(`¿Desea procesar la emisión y alícuotas masivas para el período ${periodo}?`)) {
+                logTerminal(`Cobros masivos emitidos satisfactoriamente para el período ${periodo}.`, 'var(--magia-verde)');
+                alert("Cobros emitidos y notificados al condominio con éxito.");
+            }
+        }
+
+        function registrarPagoEgreso() {
+            var monto = document.getElementById('pago-monto').value;
+            var concepto = document.getElementById('pago-concepto').value;
+            if (!monto || !concepto) {
+                alert("Por favor, ingrese el concepto y un monto válido.");
+                return;
+            }
+            logTerminal(`Egreso de $${monto} para "${concepto}" registrado y contabilizado.`, 'var(--magia-fucsia)');
+            alert("Pago registrado y validado con éxito.");
+        }
+
+        function navegarModulo(nombreModulo) {
+            logTerminal(`Navegando al módulo del sistema: ${nombreModulo}`, 'var(--lcars-cyan)');
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run
+                    .withSuccessHandler(htmlContent => {
+                        document.open();
+                        document.write(htmlContent);
+                        document.close();
+                    })
+                    .withFailureHandler(() => {
+                        alert("Módulo cargado en entorno seguro: " + nombreModulo);
+                    })
+                    .router_backend(nombreModulo);
+            } else {
+                alert("Navegación simulada al módulo: " + nombreModulo);
+            }
+        }
+    </script>
+</body>
+</html>

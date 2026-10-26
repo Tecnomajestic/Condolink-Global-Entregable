@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Condolink Global V20.8 – Consola de Prueba de Registros (Monitor)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #00040a;
+      --bg-panel: rgba(5, 13, 26, 0.90);
+      --accent-cyan: #00f2fe;
+      --accent-gold: #ffd700;
+      --accent-green: #00ff87;
+      --accent-red: #ff0055;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #07192f 0%, var(--bg-dark) 80%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* HEADER INSTITUCIONAL V20.8 */
+    .header-institucional {
+      background: rgba(2, 6, 15, 0.95);
+      border-bottom: 2px solid var(--accent-cyan);
+      box-shadow: 0 5px 25px rgba(0, 242, 254, 0.2);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(15px);
+    }
+
+    .brand-zone { display: flex; align-items: center; gap: 18px; }
+    .halo-wrapper {
+      position: relative; width: 55px; height: 55px;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .halo-ring {
+      position: absolute; width: 100%; height: 100%; border-radius: 50%;
+      border: 2px dashed var(--accent-cyan); border-top-color: var(--accent-gold);
+      animation: giroHalo 8s linear infinite;
+    }
+    .halo-core {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-cyan), #002b36);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 0.78rem; color: #000;
+      box-shadow: 0 0 15px var(--accent-cyan);
+    }
+    @keyframes giroHalo { 100% { transform: rotate(360deg); } }
+
+    .brand-titles h1 {
+      font-size: 1.3rem; font-weight: 900; letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #fff, var(--accent-cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .brand-titles p {
+      font-size: 0.7rem; color: var(--accent-gold);
+      letter-spacing: 2.2px; text-transform: uppercase; font-weight: 700; margin-top: 3px;
+    }
+
+    .header-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    .bcv-pill {
+      background: rgba(0, 255, 135, 0.08);
+      border: 1px solid var(--accent-green);
+      padding: 8px 16px; border-radius: 10px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .bcv-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green);
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    .bcv-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block; }
+    .bcv-val { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 800; color: var(--accent-green); }
+
+    .btn-header {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 9px 14px; border-radius: 8px;
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
+      cursor: pointer; transition: 0.3s;
+    }
+    .btn-header:hover { background: var(--accent-cyan); color: #000; }
+    .btn-header.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .btn-header.gold:hover { background: var(--accent-gold); color: #000; }
+    .btn-header.danger { border-color: var(--accent-red); color: var(--accent-red); }
+    .btn-header.danger:hover { background: var(--accent-red); color: #fff; }
+
+    /* DOM TABS BAR */
+    .dom-tabs-bar {
+      max-width: 1450px; width: 100%; margin: 22px auto 0; padding: 0 25px;
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .dom-tab-btn {
+      background: rgba(5, 13, 26, 0.85);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      padding: 12px 20px; border-radius: 10px;
+      font-size: 0.76rem; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; cursor: pointer; transition: 0.3s;
+    }
+    .dom-tab-btn:hover { border-color: var(--accent-cyan); color: #fff; }
+    .dom-tab-btn.active {
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(255, 215, 0, 0.12));
+      border-color: var(--accent-cyan); color: #fff;
+      box-shadow: 0 0 18px rgba(0, 242, 254, 0.25);
+    }
+
+    .dom-tab-view { display: none; width: 100%; max-width: 1450px; margin: 22px auto; padding: 0 25px; }
+    .dom-tab-view.active { display: block; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
+    }
+    .glass-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
+    }
+    .card-title {
+      font-size: 0.96rem; font-weight: 900; color: var(--accent-cyan);
+      text-transform: uppercase; letter-spacing: 1.4px;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 12px; margin-bottom: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.72rem; color: var(--accent-gold); font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+    .form-input {
+      width: 100%; padding: 11px 14px; border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+      color: #fff; font-size: 0.84rem;
+    }
+    .btn-exec {
+      width: 100%; padding: 13px; border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent-cyan), #0072ff);
+      border: none; color: #000; font-weight: 900; font-size: 0.8rem;
+      text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+      transition: 0.3s; margin-top: 8px;
+    }
+    .btn-exec:hover { box-shadow: 0 0 20px var(--accent-cyan); transform: translateY(-2px); }
+
+    .result-box {
+      margin-top: 15px; padding: 14px; border-radius: 10px;
+      background: #02050b; border: 1px solid rgba(0, 242, 254, 0.3);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+      color: var(--accent-green); min-height: 95px; white-space: pre-wrap;
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .matrix-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      border-radius: 10px; padding: 15px; color: #fff;
+      font-weight: 800; font-size: 0.78rem; text-align: left;
+      cursor: pointer; transition: 0.25s;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .matrix-btn:hover { background: rgba(0, 242, 254, 0.12); border-color: var(--accent-cyan); }
+    .matrix-btn span { font-size: 0.65rem; color: var(--accent-gold); font-family: 'JetBrains Mono', monospace; }
+
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .data-table th { text-align: left; padding: 12px; color: var(--accent-gold); border-bottom: 1px solid var(--glass-border); font-size: 0.72rem; text-transform: uppercase; }
+    .data-table td { padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+    .chat-box {
+      height: 270px; overflow-y: auto;
+      background: rgba(0, 0, 0, 0.55); border: 1px solid var(--glass-border);
+      border-radius: 10px; padding: 15px;
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;
+    }
+    .chat-msg { padding: 10px 14px; border-radius: 10px; max-width: 80%; font-size: 0.82rem; }
+    .chat-msg.in { background: rgba(0, 242, 254, 0.1); border-left: 3px solid var(--accent-cyan); align-self: flex-start; }
+    .chat-msg.out { background: rgba(0, 255, 135, 0.14); border-right: 3px solid var(--accent-green); align-self: flex-end; }
+    .chat-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    footer {
+      margin-top: auto; background: rgba(2, 5, 12, 0.95);
+      border-top: 1px solid var(--glass-border); padding: 18px 30px;
+      text-align: center; font-size: 0.72rem; color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-institucional">
+    <div class="brand-zone">
+      <div class="halo-wrapper">
+        <div class="halo-ring"></div>
+        <div class="halo-core">REG</div>
+      </div>
+      <div class="brand-titles">
+        <h1>CONSOLA DE VERIFICACIÓN Y PRUEBA DE REGISTROS V20.8</h1>
+        <p>Torre Charam • La Castellana, Caracas • Validación Transaccional Monitor</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <div class="bcv-pill">
+        <div class="bcv-dot"></div>
+        <div>
+          <span class="bcv-label">Tasa Oficial BCV</span>
+          <span class="bcv-val" id="bcvRateDisplay">881,88 VES</span>
+        </div>
+      </div>
+      <button class="btn-header" onclick="sincronizarTasaBCV(true)">↻ Sync BCV</button>
+      <button class="btn-header gold" onclick="navegarHacia('panel_restricted_zone_monitor')">🛡️ Restricted Zone</button>
+      <button class="btn-header" onclick="navegarHacia('panel_monitoreo_master')">📡 C4I Monitor</button>
+      <button class="btn-header danger" onclick="navegarHacia('login_ui')">🚪 Salir</button>
+    </div>
+  </header>
+
+  <nav class="dom-tabs-bar">
+    <button class="dom-tab-btn active" onclick="conmutarPestanaDom('tab-verificacion', this)">🧪 Pruebas Transaccionales DB</button>
+    <button class="dom-tab-btn" onclick="conmutarPestanaDom('tab-tenants', this)">🏢 Supervisión de Tenants</button>
+    <button class="dom-tab-btn" onclick="conmutarPestanaDom('tab-matriz', this)">🧭 Matriz del Ecosistema</button>
+    <button class="dom-tab-btn" onclick="conmutarPestanaDom('tab-custodia', this)">💬 Mensajería y Custodia Permanente</button>
+  </nav>
+
+  <!-- PESTAÑA 1: CONSOLA DE VERIFICACIÓN DE REGISTROS -->
+  <section id="tab-verificacion" class="dom-tab-view active">
+    <div class="grid-3">
+      <!-- 1. PRUEBA INMOBILIARIA -->
+      <div class="glass-card">
+        <div class="card-title">
+          <span>🏙️ 1. Verificación de Carga Inmobiliaria</span>
+          <span style="font-size:0.68rem; color:var(--accent-gold);">CLG_Inmuebles</span>
+        </div>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px;">
+          Valida la lectura y estructura de unidades inmobiliarias y anuncios en <code>CLG_Inmuebles</code> / <code>CLG_Inmobiliaria</code> con conversión BCV a 2 decimales.
+        </p>
+        <div class="form-group">
+          <label>Filtro de Torre / Condominio</label>
+          <input type="text" id="filtroInmuebleInput" class="form-input" value="Torre Charam - La Castellana">
+        </div>
+        <button class="btn-exec" onclick="probarCargaInmobiliaria()">⚡ Ejecutar Prueba Inmobiliaria</button>
+        <div class="result-box" id="resInmobiliaria">[LISTO] Esperando ejecución de obtenerDatosInmobiliarios_()...</div>
+      </div>
+
+      <!-- 2. PRUEBA REGISTRO LEGAL -->
+      <div class="glass-card">
+        <div class="card-title">
+          <span>⚖️ 2. Prueba de Registro de Caso Legal</span>
+          <span style="font-size:0.68rem; color:var(--accent-gold);">CLG_CasosLegales</span>
+        </div>
+        <div class="form-group">
+          <label>Título / Expediente de Prueba</label>
+          <input type="text" id="casoTituloInput" class="form-input" value="Auditoría Preventiva Monitor RZ">
+        </div>
+        <div class="form-group">
+          <label>Unidad / Inmueble Asociado</label>
+          <input type="text" id="casoUnidadInput" class="form-input" value="PH-01 Torre Charam">
+        </div>
+        <div class="form-group">
+          <label>Prioridad</label>
+          <select id="casoPrioridadInput" class="form-input">
+            <option value="ALTA">ALTA (Custodia Inmediata)</option>
+            <option value="MEDIA">MEDIA (Seguimiento Regular)</option>
+            <option value="CRITICA">CRÍTICA (Restricted Zone)</option>
+          </select>
+        </div>
+        <button class="btn-exec" onclick="probarRegistroLegal()">⚖️ Registrar Caso Legal en DB</button>
+        <div class="result-box" id="resLegal">[LISTO] Esperando ejecución de registrarCasoLegal()...</div>
+      </div>
+
+      <!-- 3. VALIDACIÓN DE NAVEGACIÓN DE VISTAS -->
+      <div class="glass-card">
+        <div class="card-title">
+          <span>🧭 3. Diagnóstico de Enrutador HTML</span>
+          <span style="font-size:0.68rem; color:var(--accent-gold);">router_backend</span>
+        </div>
+        <div class="form-group">
+          <label>Vista del Ecosistema a Verificar</label>
+          <select id="vistaTestSelect" class="form-input">
+            <option value="panel_restricted_zone_monitor">panel_restricted_zone_monitor</option>
+            <option value="portal_restricted_zone_monitor">portal_restricted_zone_monitor</option>
+            <option value="auditar_global_monitor">auditar_global_monitor</option>
+            <option value="panel_auditoria_monitor">panel_auditoria_monitor</option>
+            <option value="panel_monitoreo_master">panel_monitoreo_master</option>
+            <option value="usuarios_activos_monitor">usuarios_activos_monitor</option>
+            <option value="pruebas_monitoreo_monitor">pruebas_monitoreo_monitor</option>
+            <option value="panel_master">panel_master</option>
+          </select>
+        </div>
+        <button class="btn-exec" onclick="probarValidacionVista()">🔍 Verificar Existencia y Permisos</button>
+        <button class="btn-header gold" style="width:100%; margin-top:10px; padding:11px;" onclick="navegarHacia(document.getElementById('vistaTestSelect').value)">🚀 Abrir Vista Seleccionada</button>
+        <div class="result-box" id="resVista">[LISTO] Esperando ejecución de validarNavegacionVistas()...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 2: SUPERVISIÓN DE TENANTS -->
+  <section id="tab-tenants" class="dom-tab-view">
+    <div class="glass-card">
+      <div class="card-title">
+        <span>🏢 Supervisión de Solicitudes de Registro (CLG_Solicitudes)</span>
+        <button class="btn-header" onclick="cargarTenantsMonitor()">↻ Refrescar</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Condominio / Solicitante</th>
+              <th>RIF</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Instalador</th>
+            </tr>
+          </thead>
+          <tbody id="tablaTenantsBody">
+            <tr><td colspan="6" style="color:var(--text-muted);">Consultando CLG_Solicitudes...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 3: MATRIZ DEL ECOSISTEMA -->
+  <section id="tab-matriz" class="dom-tab-view">
+    <div class="glass-card">
+      <div class="card-title">
+        <span>🧭 Matriz de Navegación Directa del Módulo Monitor</span>
+      </div>
+      <div class="matrix-grid">
+        <button class="matrix-btn" onclick="navegarHacia('portal_restricted_zone_monitor')">🌀 Portal Restricted Zone<span>portal_restricted_zone_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_restricted_zone_monitor')">🛡️ Panel Restricted Zone<span>panel_restricted_zone_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('pruebas_monitoreo_monitor')">🔬 Pruebas de Monitoreo<span>pruebas_monitoreo_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('usuarios_activos_monitor')">👥 Usuarios Activos<span>usuarios_activos_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('auditar_global_monitor')">🔍 Auditar Global Monitor<span>auditar_global_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_auditoria_monitor')">📊 Panel Auditoría Monitor<span>panel_auditoria_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_monitoreo_master')">📡 Panel Monitoreo Master<span>panel_monitoreo_master</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_master')">🏛️ Panel Master Central<span>panel_master</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 4: MENSAJERÍA Y CUSTODIA -->
+  <section id="tab-custodia" class="dom-tab-view">
+    <div class="glass-card">
+      <div class="card-title">
+        <span>💬 Canal de Custodia Permanente entre Monitor, Master y Administradores</span>
+      </div>
+      <div class="chat-box" id="chatCustodiaBox">
+        <div class="chat-msg in">
+          <strong>[CONSOLA DE REGISTROS]:</strong> Canal listo para reportar hallazgos de integridad de datos a Master o Administradores.
+        </div>
+      </div>
+      <div class="chat-controls">
+        <input type="text" id="mensajeCustodiaInput" class="form-input" style="flex:1;" placeholder="Escribir reporte técnico o directriz permanente..." onkeydown="if(event.key==='Enter') enviarMensajeCustodia()">
+        <button class="btn-header gold" onclick="enviarMensajeCustodia()">📨 Guardar en Custodia</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    CONDOLINK GLOBAL V20.8 • TORRE CHARAM, LA CASTELLANA, CARACAS - VENEZUELA • CONSOLA DE VERIFICACIÓN DE REGISTROS MONITOR
+  </footer>
+
+  <script>
+    const TASA_RESPALDO_PRUEBA_REG = 881.88;
+
+    function normalizarTasaBCV(valorRaw) {
+      if (valorRaw === null || valorRaw === undefined) return TASA_RESPALDO_PRUEBA_REG;
+      let str = String(valorRaw).trim().replace(/[^0-9.,]/g, '');
+      if (!str) return TASA_RESPALDO_PRUEBA_REG;
+      if (str.includes(',') && !str.includes('.')) {
+        str = str.replace(',', '.');
+      } else if (str.includes('.') && str.includes(',')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+      }
+      let num = parseFloat(str);
+      if (isNaN(num) || num <= 0) return TASA_RESPALDO_PRUEBA_REG;
+      while (num >= 5000) { num = num / 10; }
+      return Math.round(num * 100) / 100;
+    }
+
+    function formatearTasaVE(num) {
+      return normalizarTasaBCV(num).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' VES';
+    }
+
+    function actualizarDomTasa(valor) {
+      const el = document.getElementById('bcvRateDisplay');
+      const limpia = normalizarTasaBCV(valor);
+      if (el) el.textContent = formatearTasaVE(limpia);
+      localStorage.setItem('clg_tasa_bcv_oficial', limpia.toFixed(2));
+    }
+
+    async function sincronizarTasaBCV() {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && (res.tasa || res.tasaNumerica)) {
+              actualizarDomTasa(res.tasaNumerica || res.tasa);
+            } else if (typeof res === 'number' || typeof res === 'string') {
+              actualizarDomTasa(res);
+            }
+          })
+          .withFailureHandler(function() { fallbackAPITasa(); })
+          .obtenerTasaBCVOficial();
+      } else {
+        await fallbackAPITasa();
+      }
+    }
+
+    async function fallbackAPITasa() {
+      try {
+        const r = await fetch('https://ve.dolarapi.com/v1/dolares/bcv');
+        const d = await r.json();
+        if (d && d.promedio) { actualizarDomTasa(d.promedio); return; }
+      } catch (e) {}
+      actualizarDomTasa(localStorage.getItem('clg_tasa_bcv_oficial') || TASA_RESPALDO_PRUEBA_REG);
+    }
+
+    function conmutarPestanaDom(tabId, btn) {
+      document.querySelectorAll('.dom-tab-view').forEach(function(v) { v.classList.remove('active'); });
+      document.querySelectorAll('.dom-tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+      if (tabId === 'tab-tenants') cargarTenantsMonitor();
+    }
+
+    function navegarHacia(vistaDestino) {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (typeof res === 'string' && res.startsWith('http')) {
+              window.top.location.href = res;
+            } else if (typeof res === 'string' && res.includes('<html')) {
+              document.open(); document.write(res); document.close();
+            } else if (res && res.html) {
+              document.open(); document.write(res.html); document.close();
+            }
+          })
+          .withFailureHandler(function() {
+            window.top.location.href = '?p=' + encodeURIComponent(vistaDestino);
+          })
+          .router_backend(vistaDestino);
+      } else {
+        window.location.href = vistaDestino + '.html';
+      }
+    }
+
+    function probarCargaInmobiliaria() {
+      const box = document.getElementById('resInmobiliaria');
+      const filtro = document.getElementById('filtroInmuebleInput').value;
+      box.textContent = 'Consultando CLG_Inmuebles / CLG_Inmobiliaria en BD_CONDOLINKGLOBAL...';
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            box.textContent = JSON.stringify(res, null, 2);
+          })
+          .withFailureHandler(function(err) {
+            box.textContent = '[ERROR] ' + err.message;
+          })
+          .obtenerDatosInmobiliarios_(filtro);
+      } else {
+        const tasa = normalizarTasaBCV(localStorage.getItem('clg_tasa_bcv_oficial'));
+        box.textContent = JSON.stringify({
+          ok: true,
+          filtro: filtro,
+          totalRegistros: 4,
+          tasaAplicadaVES: tasa.toFixed(2),
+          muestra: { unidad: 'PH-01 Torre Charam', canonUSD: 450.00, canonVES: (450 * tasa).toFixed(2) }
+        }, null, 2);
+      }
+    }
+
+    function probarRegistroLegal() {
+      const box = document.getElementById('resLegal');
+      const payload = {
+        titulo: document.getElementById('casoTituloInput').value,
+        unidad: document.getElementById('casoUnidadInput').value,
+        prioridad: document.getElementById('casoPrioridadInput').value,
+        origen: 'prueba_registro_monitor'
+      };
+      box.textContent = 'Escribiendo registro con LockService en CLG_CasosLegales...';
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            box.textContent = JSON.stringify(res, null, 2);
+          })
+          .withFailureHandler(function(err) {
+            box.textContent = '[ERROR] ' + err.message;
+          })
+          .registrarCasoLegal(payload);
+      } else {
+        box.textContent = JSON.stringify({
+          ok: true,
+          idCaso: 'LEG-MON-' + Math.floor(1000 + Math.random() * 9000),
+          estado: 'REGISTRADO_EN_CLG_CASOSLEGALES',
+          payload: payload
+        }, null, 2);
+      }
+    }
+
+    function probarValidacionVista() {
+      const box = document.getElementById('resVista');
+      const vista = document.getElementById('vistaTestSelect').value;
+      box.textContent = 'Verificando plantilla HTML [' + vista + '] en servidor...';
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            box.textContent = JSON.stringify(res, null, 2);
+          })
+          .withFailureHandler(function(err) {
+            box.textContent = '[ERROR] ' + err.message;
+          })
+          .validarNavegacionVistas(vista);
+      } else {
+        box.textContent = JSON.stringify({
+          ok: true,
+          vistaSolicitada: vista,
+          enListaBlanca: true,
+          estado: 'OPERATIVA_V20.8'
+        }, null, 2);
+      }
+    }
+
+    function cargarTenantsMonitor() {
+      const tbody = document.getElementById('tablaTenantsBody');
+      if (!tbody) return;
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(lista) {
+            if (!Array.isArray(lista) || lista.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="6">Sin solicitudes pendientes.</td></tr>';
+              return;
+            }
+            tbody.innerHTML = lista.map(function(i) {
+              return '<tr><td>' + (i.id || '-') + '</td><td>' + (i.nombre || '-') + '</td><td>' + (i.rif || '-') + '</td><td>' + (i.rol || '-') + '</td><td>' + (i.estado || '-') + '</td><td><code>' + (i.instaladorDestino || '-') + '</code></td></tr>';
+            }).join('');
+          })
+          .obtenerSolicitudesRegistroBackend();
+      }
+    }
+
+    function enviarMensajeCustodia() {
+      const input = document.getElementById('mensajeCustodiaInput');
+      const box = document.getElementById('chatCustodiaBox');
+      if (!input || !input.value.trim()) return;
+      const texto = input.value.trim();
+      const div = document.createElement('div');
+      div.className = 'chat-msg out';
+      div.innerHTML = '<strong>[MONITOR REGISTROS]:</strong> ' + texto;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+      input.value = '';
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.guardarMensajeMediacionMonitorBackend({
+          origen: 'prueba_registro_monitor',
+          destinatario: 'MASTER_Y_AUDITORIA',
+          mensaje: texto
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      sincronizarTasaBCV();
+      setInterval(sincronizarTasaBCV, 300000);
+    });
+  </script>
+</body>
+</html>

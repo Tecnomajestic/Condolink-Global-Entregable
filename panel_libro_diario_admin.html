@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Condolink Global V20.8 // Libro Diario y Balance de Comprobación Multi-Tenant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-principal: #030810;
+      --bg-card: #0b1120;
+      --bg-card-hover: #131c31;
+      --acento-verde: #00ff66;
+      --acento-rojo: #ff3333;
+      --magia-dorado: #ffcc00;     
+      --magia-cian: #00e5ff;        
+      --gris-texto: #94a3b8;
+      --texto-blanco: #f0f6fc;
+      --borde-color: rgba(0, 229, 255, 0.3);
+      --arcade-shadow: 0 15px 35px -5px rgba(0,0,0,0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      background: radial-gradient(circle at top right, #0b1120 0%, #030810 70%);
+      color: var(--texto-blanco);
+      padding: 15px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .main-container {
+      max-width: 1450px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .header-card {
+      background: var(--bg-card); 
+      border: 2px solid var(--magia-dorado);
+      padding: 15px 25px; 
+      border-radius: 16px; 
+      box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.1), 0 6px 20px rgba(0,0,0,0.5); 
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .brand-box { display: flex; align-items: center; gap: 15px; }
+
+    @keyframes spinSlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes spinSlowRev { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+    @keyframes cyan-pulse { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 6px currentColor); } 50% { opacity: 1; filter: drop-shadow(0 0 14px currentColor); } }
+
+    .mystic-logo-wrapper {
+      position: relative;
+      width: 65px;
+      height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mystic-halo-outer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 2px dashed var(--magia-dorado);
+      border-radius: 50%;
+      animation: spinSlowRev 18s linear infinite;
+    }
+    .mystic-halo-inner {
+      position: absolute;
+      width: 76%;
+      height: 76%;
+      border: 1.5px dotted var(--magia-cian);
+      border-radius: 50%;
+      animation: spinSlow 10s linear infinite;
+    }
+    .brand-logo {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #030810;
+      padding: 2px;
+      border: 2px solid var(--magia-dorado);
+      z-index: 2;
+      animation: cyan-pulse 3s ease-in-out infinite;
+    }
+    .brand-title h1 { 
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.68rem; 
+      margin: 0; 
+      color: var(--magia-cian); 
+      letter-spacing: 0.8px; 
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+    }
+
+    .bcv-ticker {
+      background: rgba(0, 0, 0, 0.75);
+      border: 1.5px solid var(--magia-dorado);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      color: var(--magia-dorado);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+      transition: transform 0.2s;
+    }
+    .bcv-ticker:hover { transform: scale(1.02); }
+
+    .horizontal-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      border: 2px solid var(--magia-dorado);
+      padding: 10px 18px;
+      border-radius: 14px;
+      box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.08);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav-group-left, .nav-group-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-nav-arcade {
+      background: linear-gradient(135deg, #131c31 0%, #0b1120 100%);
+      border: 2px solid var(--magia-dorado);
+      color: var(--magia-dorado);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    .btn-nav-arcade:hover, .btn-nav-arcade.active {
+      background: var(--magia-dorado);
+      color: #030810;
+      border-color: #fff;
+      box-shadow: 0 0 18px var(--magia-dorado);
+      transform: translateY(-2px);
+    }
+
+    .btn-nav-cyan {
+      border-color: var(--magia-cian) !important;
+      color: var(--magia-cian) !important;
+    }
+    .btn-nav-cyan:hover, .btn-nav-cyan.active {
+      background: var(--magia-cian) !important;
+      color: #030810 !important;
+      box-shadow: 0 0 18px var(--magia-cian) !important;
+    }
+
+    .btn-logout-arcade {
+      background: linear-gradient(135deg, #ff3333 0%, #b30000 100%) !important;
+      border-color: #ff3333 !important;
+      color: #fff !important;
+      box-shadow: 0 4px 12px rgba(255, 51, 51, 0.4);
+    }
+    .btn-logout-arcade:hover {
+      background: linear-gradient(135deg, #ff4d4d 0%, #cc0000 100%) !important;
+      border-color: #fff !important;
+      box-shadow: 0 0 20px var(--acento-rojo) !important;
+    }
+
+    .system-log-box {
+      background: #030810;
+      border: 2px solid var(--acento-verde);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+      color: var(--acento-verde);
+      box-shadow: inset 0 0 15px rgba(0, 255, 102, 0.2);
+      line-height: 1.4;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+
+    .action-panel-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 20px;
+      border: 2px solid var(--magia-dorado);
+      box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.08), 0 6px 20px rgba(0,0,0,0.4);
+    }
+    .panel-heading {
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--magia-dorado);
+      border-bottom: 1.5px dashed rgba(255, 204, 0, 0.3);
+      padding-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .grid-filtros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .form-group { margin-bottom: 6px; }
+    .form-label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--magia-cian); text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.05em; }
+    .form-control, .form-select {
+      width: 100%;
+      background: var(--bg-card-hover);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: white;
+      font-size: 0.85rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-control:focus, .form-select:focus { border-color: var(--magia-dorado); box-shadow: 0 0 10px rgba(255, 204, 0, 0.3); }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .kpi-card {
+      background: rgba(3, 8, 16, 0.75);
+      border: 1.5px solid var(--borde-color);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .kpi-label { font-size: 0.7rem; color: var(--gris-texto); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
+    .kpi-val { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; font-weight: 800; }
+
+    .table-container { overflow-x: auto; border-radius: 12px; border: 1.5px solid var(--borde-color); background: #030810; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th {
+      background: rgba(0, 229, 255, 0.12);
+      color: var(--magia-cian);
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 12px 10px;
+      border-bottom: 2px solid var(--borde-color);
+      font-size: 0.72rem;
+      text-align: left;
+    }
+    td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    tr:hover { background: rgba(0, 229, 255, 0.05); }
+    .num-col { text-align: right; font-family: 'Courier New', monospace; font-weight: 700; }
+
+    .arcade-footer {
+      background: var(--bg-card);
+      border: 1.5px solid var(--magia-cian);
+      border-radius: 12px;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.75rem;
+      color: var(--gris-texto);
+      box-shadow: 0 4px 15px rgba(0, 229, 255, 0.15);
+      margin-top: auto;
+    }
+    .arcade-footer strong { color: #f0f6fc; }
+
+    @media (max-width: 992px) {
+      .grid-filtros, .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 576px) {
+      .grid-filtros, .kpi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body onload="inicializarLibroDiarioYBalance()">
+
+  <div class="main-container">
+    
+    <!-- CABECERA INSTITUCIONAL -->
+    <div class="header-card">
+      <div class="brand-box">
+        <div class="mystic-logo-wrapper" title="Torre Charam Sede Principal - La Castellana, Caracas">
+          <div class="mystic-halo-outer"></div>
+          <div class="mystic-halo-inner"></div>
+          <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo Condolink Global" class="brand-logo" onerror="this.src='https://imgur.com/nIZmQFJ.png'">
+        </div>
+        <div class="brand-title">
+          <h1>CONDOLINK GLOBAL V20.8 // LIBRO DIARIO Y BALANCE DE COMPROBACIÓN</h1>
+          <small style="color:var(--gris-texto); font-size:0.75rem;">Contabilidad Bimonetaria PCGA Venezuela (USD / VES a Tasa Oficial BCV de 2 Decimales)</small>
+        </div>
+      </div>
+      <div class="bcv-ticker" id="bcvTickerDisplay" onclick="sincronizarTasaBcvLibro()" title="Clic para sincronizar tasa oficial BCV (2 decimales)">
+        <i class="fa-solid fa-bolt"></i> Tasa Oficial BCV: <span id="tasaBcvValor" style="color: #fff; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> Sync...</span> [Auto-Sync]
+      </div>
+    </div>
+
+    <!-- BARRA DE NAVEGACIÓN HORIZONTAL CON PESTAÑAS DOM Y BOTÓN ROJO SALIR -->
+    <div class="horizontal-nav-bar">
+      <div class="nav-group-left">
+        <button class="btn-nav-arcade active" id="btnTabAmbos" onclick="conmutarPestanaLibroDom('ambos', this)">
+          <i class="fa-solid fa-layer-group"></i> Libro Diario + Balance
+        </button>
+        <button class="btn-nav-arcade btn-nav-cyan" id="btnTabDiario" onclick="conmutarPestanaLibroDom('diario', this)">
+          <i class="fa-solid fa-book"></i> Solo Libro Diario
+        </button>
+        <button class="btn-nav-arcade btn-nav-cyan" id="btnTabBalance" onclick="conmutarPestanaLibroDom('balance', this)">
+          <i class="fa-solid fa-scale-balanced"></i> Solo Balance de Comprobación
+        </button>
+        <button class="btn-nav-arcade btn-nav-cyan" onclick="abrirFormularioNuevoAsiento()">
+          <i class="fa-solid fa-plus-circle"></i> Nuevo Asiento Contable
+        </button>
+      </div>
+      <div class="nav-group-right">
+        <button class="btn-nav-arcade btn-nav-cyan" onclick="navegarModulo('panel_admin')">
+          <i class="fa-solid fa-user-shield"></i> Panel Admin
+        </button>
+        <button class="btn-nav-arcade btn-nav-cyan" onclick="navegarModulo('panel_contabilidad_admin')">
+          <i class="fa-solid fa-calculator"></i> Contabilidad
+        </button>
+        <button class="btn-nav-arcade btn-nav-cyan" onclick="navegarModulo('instalador_tenant_admin')">
+          <i class="fa-solid fa-sliders"></i> Juntas & Alícuotas
+        </button>
+        <button class="btn-nav-arcade btn-logout-arcade" onclick="navegarModulo('login_ui')">
+          <i class="fa-solid fa-power-off"></i> Salir
+        </button>
+      </div>
+    </div>
+
+    <!-- CONSOLA DE LOGS / MENSAJERÍA DEL SISTEMA -->
+    <div class="system-log-box" id="systemLogBox">
+      [SYS ARCADE 11:00:00Z]: Motor Contable de Libro Diario y Balance de Comprobación V20.8 inicializado. Cuadre de Partida Doble verificado.
+    </div>
+
+    <!-- FILTROS MULTI-JUNTA Y PERÍODO -->
+    <div class="action-panel-card">
+      <div class="panel-heading">
+        <span><i class="fa-solid fa-filter"></i> Parámetros Multi-Junta y Período Contable</span>
+        <span style="font-size:0.75rem; color:var(--acento-verde);"><i class="fa-solid fa-check-double"></i> Partida Doble Cuadrada (Debe = Haber)</span>
+      </div>
+      <div class="grid-filtros">
+        <div class="form-group">
+          <label class="form-label">Junta Independiente / Ecosistema:</label>
+          <select class="form-select" id="filtroJuntaLibro" onchange="filtrarAsientosPorJunta()">
+            <option value="TODAS">Consolidado Todas las Juntas</option>
+            <option value="ejemplo01">Junta: ejemplo01 (Res. Parque Leander)</option>
+            <option value="torre_norte">Junta: torre_norte (Edificio Vertical)</option>
+            <option value="torre_charam">Junta: torre_charam (Sede Principal)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Período Fiscal:</label>
+          <input type="month" class="form-control" id="filtroPeriodoLibro" value="2026-10" onchange="filtrarAsientosPorJunta()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Moneda de Visualización:</label>
+          <select class="form-select" id="filtroMonedaLibro" onchange="renderizarTablasContables()">
+            <option value="BIMONETARIO">Bimonetario (USD + VES BCV)</option>
+            <option value="USD">Solo Dólares ($ USD)</option>
+            <option value="VES">Solo Bolívares (Bs. VES)</option>
+          </select>
+        </div>
+        <div class="form-group" style="display:flex; align-items:flex-end;">
+          <button class="btn-nav-arcade" style="width:100%; justify-content:center;" onclick="window.print()">
+            <i class="fa-solid fa-file-pdf"></i> Exportar / Imprimir Libro Oficial
+          </button>
+        </div>
+      </div>
+
+      <!-- KPIs DE CUADRE CONTABLE -->
+      <div class="kpi-grid" style="margin-top:12px;">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Debe ($ USD)</div>
+          <div class="kpi-val" id="kpiTotalDebeUsd" style="color:var(--acento-verde);">$ 0,00</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Total Haber ($ USD)</div>
+          <div class="kpi-val" id="kpiTotalHaberUsd" style="color:var(--magia-cian);">$ 0,00</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Equivalente Total (Bs. VES BCV)</div>
+          <div class="kpi-val" id="kpiTotalVes" style="color:var(--magia-dorado);">0,00 VES</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Diferencia de Cuadre</div>
+          <div class="kpi-val" id="kpiDiferenciaCuadre" style="color:var(--acento-verde);">$ 0,00 [OK]</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULARIO DESPLEGABLE PARA REGISTRAR NUEVO ASIENTO EN EL LIBRO DIARIO -->
+    <div class="action-panel-card" id="cardNuevoAsiento" style="display:none; border-color:var(--acento-verde);">
+      <div class="panel-heading" style="color:var(--acento-verde);">
+        <span><i class="fa-solid fa-pen-to-square"></i> Registrar Nuevo Asiento Contable (Partida Doble)</span>
+        <button class="btn-nav-arcade btn-logout-arcade" style="padding:4px 10px; font-size:0.7rem;" onclick="document.getElementById('cardNuevoAsiento').style.display='none'">Cerrar</button>
+      </div>
+      <div class="grid-filtros">
+        <div class="form-group">
+          <label class="form-label">Junta Independiente:</label>
+          <select class="form-select" id="asientoJunta">
+            <option value="ejemplo01">ejemplo01 (Res. Parque Leander)</option>
+            <option value="torre_norte">torre_norte (Edificio Vertical)</option>
+            <option value="torre_charam">torre_charam (Sede Principal)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Código y Cuenta Debe (Cargo):</label>
+          <select class="form-select" id="asientoCuentaDebe">
+            <option value="1.1.01.001|Banco Banesco Recaudadora">1.1.01.001 - Banco Banesco Recaudadora</option>
+            <option value="1.1.02.001|Cuentas por Cobrar Condominio">1.1.02.001 - Cuentas por Cobrar Condominio</option>
+            <option value="5.1.01.001|Gastos Mantenimiento Bombas">5.1.01.001 - Gastos Mantenimiento Bombas</option>
+            <option value="5.1.02.001|Gastos Nómina Residencial LOTTT">5.1.02.001 - Gastos Nómina Residencial LOTTT</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Código y Cuenta Haber (Abono):</label>
+          <select class="form-select" id="asientoCuentaHaber">
+            <option value="4.1.01.001|Ingresos por Cuota Condominio (Alícuota)">4.1.01.001 - Ingresos Cuota Condominio (Alícuota)</option>
+            <option value="1.1.01.001|Banco Banesco Recaudadora">1.1.01.001 - Banco Banesco Recaudadora</option>
+            <option value="2.1.01.001|Cuentas por Pagar Proveedores">2.1.01.001 - Cuentas por Pagar Proveedores</option>
+            <option value="3.1.01.001|Fondo de Reserva Legal Condominio">3.1.01.001 - Fondo de Reserva Legal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Monto de la Operación ($ USD):</label>
+          <input type="number" step="0.01" class="form-control" id="asientoMontoUsd" value="250.00">
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns: 3fr 1fr; gap:12px; margin-top:8px;">
+        <input type="text" class="form-control" id="asientoConcepto" placeholder="Descripción / Glosa del asiento contable y referencia bancaria...">
+        <button class="btn-nav-arcade" style="justify-content:center; background:var(--acento-verde); color:#030810;" onclick="guardarNuevoAsientoContable()">
+          <i class="fa-solid fa-floppy-disk"></i> Asentar Partida Doble
+        </button>
+      </div>
+    </div>
+
+    <!-- VISTA 1: LIBRO DIARIO CONTABLE -->
+    <div class="action-panel-card" id="seccionLibroDiarioDom">
+      <div class="panel-heading">
+        <span><i class="fa-solid fa-book"></i> 1. Libro Diario Legal Cronológico (Asientos de Partida Doble)</span>
+        <span style="font-size:0.75rem; color:var(--magia-cian);">Folio Legal Digital V20.8</span>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Asiento #</th>
+              <th>Junta</th>
+              <th>Código</th>
+              <th>Cuenta Contable y Glosa</th>
+              <th class="num-col">Debe ($ USD)</th>
+              <th class="num-col">Haber ($ USD)</th>
+              <th class="num-col">Debe (VES BCV)</th>
+              <th class="num-col">Haber (VES BCV)</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyLibroDiario"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VISTA 2: BALANCE DE COMPROBACIÓN DE SUMAS Y SALDOS -->
+    <div class="action-panel-card" id="seccionBalanceComprobacionDom" style="border-color:var(--magia-cian);">
+      <div class="panel-heading" style="color:var(--magia-cian);">
+        <span><i class="fa-solid fa-scale-balanced"></i> 2. Balance de Comprobación de Sumas y Saldos</span>
+        <span style="font-size:0.75rem; color:var(--acento-verde);">Cuadre Automático PCGA</span>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Código PCGA</th>
+              <th>Denominación de la Cuenta Mayor</th>
+              <th>Tipo</th>
+              <th class="num-col">Suma Debe ($)</th>
+              <th class="num-col">Suma Haber ($)</th>
+              <th class="num-col">Saldo Deudor ($)</th>
+              <th class="num-col">Saldo Acreedor ($)</th>
+              <th class="num-col">Saldo Neto (VES BCV)</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyBalanceComprobacion"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer class="arcade-footer">
+      <div><strong>CONDOLINK GLOBAL V20.8</strong> &copy; 2026 - Torre Charam, La Castellana, Caracas. Todos los derechos reservados.</div>
+      <div>STATUS: <span style="color: var(--acento-verde);">LIBRO DIARIO & BALANCE SINCRONIZADOS</span></div>
+    </footer>
+
+  </div>
+
+  <script>
+    const BASE_URL = typeof window.BASE_URL !== 'undefined' ? window.BASE_URL : window.location.href.split('?')[0];
+    let tasaNumericaActual = 445.78;
+
+    let ASIENTOS_LIBRO_DIARIO = [
+      { id: 'ASI-1001', fecha: '2026-10-01', junta: 'ejemplo01', codigo: '1.1.01.001', cuenta: 'Banco Banesco Recaudadora (Cobro Alícuotas)', tipo: 'ACTIVO', debeUsd: 3250.00, haberUsd: 0.00 },
+      { id: 'ASI-1001', fecha: '2026-10-01', junta: 'ejemplo01', codigo: '4.1.01.001', cuenta: 'Ingresos por Cuota Condominio (50 Unidades)', tipo: 'INGRESO', debeUsd: 0.00, haberUsd: 3250.00 },
+      { id: 'ASI-1002', fecha: '2026-10-05', junta: 'ejemplo01', codigo: '5.1.02.001', cuenta: 'Gastos Nómina Residencial LOTTT (1ra Quincena)', tipo: 'EGRESO', debeUsd: 440.00, haberUsd: 0.00 },
+      { id: 'ASI-1002', fecha: '2026-10-05', junta: 'ejemplo01', codigo: '1.1.01.001', cuenta: 'Banco Banesco Recaudadora (Pago Nómina)', tipo: 'ACTIVO', debeUsd: 0.00, haberUsd: 440.00 },
+      { id: 'ASI-1003', fecha: '2026-10-10', junta: 'torre_norte', codigo: '5.1.01.001', cuenta: 'Gastos Mantenimiento Bombas Hidroneumáticas', tipo: 'EGRESO', debeUsd: 380.00, haberUsd: 0.00 },
+      { id: 'ASI-1003', fecha: '2026-10-10', junta: 'torre_norte', codigo: '2.1.01.001', cuenta: 'Cuentas por Pagar Proveedores (HidroServicios)', tipo: 'PASIVO', debeUsd: 0.00, haberUsd: 380.00 },
+      { id: 'ASI-1004', fecha: '2026-10-15', junta: 'torre_charam', codigo: '1.1.02.001', cuenta: 'Cuentas por Cobrar Condominio (Emisión Recibos)', tipo: 'ACTIVO', debeUsd: 5200.00, haberUsd: 0.00 },
+      { id: 'ASI-1004', fecha: '2026-10-15', junta: 'torre_charam', codigo: '3.1.01.001', cuenta: 'Fondo de Reserva Legal Condominio (10%)', tipo: 'PATRIMONIO', debeUsd: 0.00, haberUsd: 520.00 },
+      { id: 'ASI-1004', fecha: '2026-10-15', junta: 'torre_charam', codigo: '4.1.01.001', cuenta: 'Ingresos por Cuota Condominio (Alícuota)', tipo: 'INGRESO', debeUsd: 0.00, haberUsd: 4680.00 }
+    ];
+
+    function normalizarTasaBCV(valorRaw) {
+      if (valorRaw === null || valorRaw === undefined) return '445,78';
+      let str = String(valorRaw).replace(/[^0-9.,]/g, '').trim();
+      if (!str) return '445,78';
+      if (str.includes(',') && str.includes('.')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+      } else if (str.includes(',')) {
+        str = str.replace(',', '.');
+      }
+      const num = parseFloat(str);
+      if (isNaN(num) || num <= 0) return '445,78';
+      tasaNumericaActual = Number(num.toFixed(2));
+      return num.toFixed(2).replace('.', ',');
+    }
+
+    function fmtMoneda(num) {
+      return Number(num || 0).toFixed(2).replace('.', ',');
+    }
+
+    function logTerminal(mensaje, color = 'var(--acento-verde)') {
+      const logBox = document.getElementById('systemLogBox');
+      const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+      if (logBox) {
+        logBox.innerHTML += `<br><span style="color: ${color}">[SYS ARCADE ${timestamp}]: ${mensaje}</span>`;
+        logBox.scrollTop = logBox.scrollHeight;
+      }
+    }
+
+    function inicializarLibroDiarioYBalance() {
+      try {
+        const guardados = localStorage.getItem('clg_asientos_libro_diario');
+        if (guardados) ASIENTOS_LIBRO_DIARIO = JSON.parse(guardados);
+      } catch (e) {}
+      sincronizarTasaBcvLibro();
+      renderizarTablasContables();
+    }
+
+    function conmutarPestanaLibroDom(modo, btnEl) {
+      document.querySelectorAll('.horizontal-nav-bar .btn-nav-arcade').forEach(b => {
+        if (!b.classList.contains('btn-logout-arcade')) b.classList.remove('active');
+      });
+      if (btnEl) btnEl.classList.add('active');
+      const secDiario = document.getElementById('seccionLibroDiarioDom');
+      const secBalance = document.getElementById('seccionBalanceComprobacionDom');
+      if (modo === 'diario') {
+        secDiario.style.display = 'block';
+        secBalance.style.display = 'none';
+      } else if (modo === 'balance') {
+        secDiario.style.display = 'none';
+        secBalance.style.display = 'block';
+      } else {
+        secDiario.style.display = 'block';
+        secBalance.style.display = 'block';
+      }
+      logTerminal(`Vista contable conmutada a: [${modo.toUpperCase()}].`, 'var(--magia-cian)');
+    }
+
+    function sincronizarTasaBcvLibro() {
+      const spanTasa = document.getElementById('tasaBcvValor');
+      if (spanTasa) spanTasa.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sync...`;
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        const fn = typeof google.script.run.obtenerTasaBCVOficial === 'function' ? 'obtenerTasaBCVOficial' : 'obtenerTasaBCV';
+        google.script.run
+          .withSuccessHandler(res => {
+            let raw = (typeof res === 'object' && res !== null) ? (res.tasaFormateada || res.tasa || res.valor) : res;
+            const fmt = normalizarTasaBCV(raw || '445,78') + ' VES';
+            if (spanTasa) spanTasa.textContent = fmt;
+            renderizarTablasContables();
+            logTerminal(`Tasa Oficial BCV sincronizada a 2 decimales: ${fmt}`);
+          })
+          .withFailureHandler(usarRespaldoBcvLibro)[fn]();
+      } else {
+        usarRespaldoBcvLibro();
+      }
+    }
+
+    function usarRespaldoBcvLibro() {
+      const spanTasa = document.getElementById('tasaBcvValor');
+      fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+        .then(r => r.json())
+        .then(d => {
+          const fmt = normalizarTasaBCV(d.promedio || d.price || 445.78) + ' VES';
+          if (spanTasa) spanTasa.textContent = fmt;
+          renderizarTablasContables();
+        })
+        .catch(() => {
+          const fmt = normalizarTasaBCV('445,78') + ' VES';
+          if (spanTasa) spanTasa.textContent = fmt;
+          renderizarTablasContables();
+        });
+    }
+
+    function filtrarAsientosPorJunta() {
+      renderizarTablasContables();
+      const j = document.getElementById('filtroJuntaLibro').value;
+      logTerminal(`Filtrando Libro Diario y Balance de Comprobación para Junta: [${j}].`, 'var(--magia-dorado)');
+    }
+
+    function renderizarTablasContables() {
+      const juntaFiltro = document.getElementById('filtroJuntaLibro').value;
+      const filtrados = ASIENTOS_LIBRO_DIARIO.filter(a => juntaFiltro === 'TODAS' || a.junta === juntaFiltro);
+
+      let totalDebeUsd = 0;
+      let totalHaberUsd = 0;
+      const tbodyDiario = document.getElementById('tbodyLibroDiario');
+      let htmlDiario = '';
+
+      const mapaMayor = {};
+
+      filtrados.forEach(item => {
+        totalDebeUsd += Number(item.debeUsd || 0);
+        totalHaberUsd += Number(item.haberUsd || 0);
+        const debeVes = Number(item.debeUsd || 0) * tasaNumericaActual;
+        const haberVes = Number(item.haberUsd || 0) * tasaNumericaActual;
+
+        htmlDiario += `
+          <tr>
+            <td>${item.fecha}</td>
+            <td><strong style="color:var(--magia-dorado);">${item.id}</strong></td>
+            <td><code>${item.junta}</code></td>
+            <td>${item.codigo}</td>
+            <td>${item.cuenta}</td>
+            <td class="num-col" style="color:${item.debeUsd > 0 ? 'var(--acento-verde)' : 'var(--gris-texto)'};">$ ${fmtMoneda(item.debeUsd)}</td>
+            <td class="num-col" style="color:${item.haberUsd > 0 ? 'var(--magia-cian)' : 'var(--gris-texto)'};">$ ${fmtMoneda(item.haberUsd)}</td>
+            <td class="num-col">${fmtMoneda(debeVes)} Bs.</td>
+            <td class="num-col">${fmtMoneda(haberVes)} Bs.</td>
+          </tr>
+        `;
+
+        if (!mapaMayor[item.codigo]) {
+          mapaMayor[item.codigo] = {
+            codigo: item.codigo,
+            cuenta: item.cuenta.split('(')[0].trim(),
+            tipo: item.tipo || 'MAYOR',
+            debe: 0,
+            haber: 0
+          };
+        }
+        mapaMayor[item.codigo].debe += Number(item.debeUsd || 0);
+        mapaMayor[item.codigo].haber += Number(item.haberUsd || 0);
+      });
+
+      if (tbodyDiario) tbodyDiario.innerHTML = htmlDiario;
+
+      const tbodyBalance = document.getElementById('tbodyBalanceComprobacion');
+      let htmlBalance = '';
+      let sumSaldoDeudor = 0;
+      let sumSaldoAcreedor = 0;
+
+      Object.values(mapaMayor).sort((a, b) => a.codigo.localeCompare(b.codigo)).forEach(cta => {
+        const diff = cta.debe - cta.haber;
+        const saldoDeudor = diff > 0 ? diff : 0;
+        const saldoAcreedor = diff < 0 ? Math.abs(diff) : 0;
+        sumSaldoDeudor += saldoDeudor;
+        sumSaldoAcreedor += saldoAcreedor;
+        const netoVes = Math.abs(diff) * tasaNumericaActual;
+
+        htmlBalance += `
+          <tr>
+            <td><strong style="color:var(--magia-cian);">${cta.codigo}</strong></td>
+            <td>${cta.cuenta}</td>
+            <td><span style="font-size:0.7rem; padding:2px 6px; border-radius:4px; background:rgba(0,229,255,0.1); color:var(--magia-cian);">${cta.tipo}</span></td>
+            <td class="num-col">$ ${fmtMoneda(cta.debe)}</td>
+            <td class="num-col">$ ${fmtMoneda(cta.haber)}</td>
+            <td class="num-col" style="color:var(--acento-verde);">$ ${fmtMoneda(saldoDeudor)}</td>
+            <td class="num-col" style="color:var(--magia-dorado);">$ ${fmtMoneda(saldoAcreedor)}</td>
+            <td class="num-col">${fmtMoneda(netoVes)} Bs.</td>
+          </tr>
+        `;
+      });
+
+      htmlBalance += `
+        <tr style="background:rgba(255,204,0,0.12); font-weight:800;">
+          <td colspan="3">TOTALES BALANCE DE COMPROBACIÓN</td>
+          <td class="num-col" style="color:var(--acento-verde);">$ ${fmtMoneda(totalDebeUsd)}</td>
+          <td class="num-col" style="color:var(--magia-cian);">$ ${fmtMoneda(totalHaberUsd)}</td>
+          <td class="num-col" style="color:var(--acento-verde);">$ ${fmtMoneda(sumSaldoDeudor)}</td>
+          <td class="num-col" style="color:var(--magia-dorado);">$ ${fmtMoneda(sumSaldoAcreedor)}</td>
+          <td class="num-col">${fmtMoneda(totalDebeUsd * tasaNumericaActual)} Bs.</td>
+        </tr>
+      `;
+      if (tbodyBalance) tbodyBalance.innerHTML = htmlBalance;
+
+      document.getElementById('kpiTotalDebeUsd').textContent = `$ ${fmtMoneda(totalDebeUsd)}`;
+      document.getElementById('kpiTotalHaberUsd').textContent = `$ ${fmtMoneda(totalHaberUsd)}`;
+      document.getElementById('kpiTotalVes').textContent = `${fmtMoneda(totalDebeUsd * tasaNumericaActual)} VES`;
+      const dif = Math.abs(totalDebeUsd - totalHaberUsd);
+      document.getElementById('kpiDiferenciaCuadre').textContent = `$ ${fmtMoneda(dif)} ${dif < 0.01 ? '[CUADRADO]' : '[DESCUADRE]'}`;
+    }
+
+    function abrirFormularioNuevoAsiento() {
+      const card = document.getElementById('cardNuevoAsiento');
+      card.style.display = card.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function guardarNuevoAsientoContable() {
+      const junta = document.getElementById('asientoJunta').value;
+      const [codDebe, nomDebe] = document.getElementById('asientoCuentaDebe').value.split('|');
+      const [codHaber, nomHaber] = document.getElementById('asientoCuentaHaber').value.split('|');
+      const monto = parseFloat(document.getElementById('asientoMontoUsd').value) || 0;
+      const concepto = document.getElementById('asientoConcepto').value.trim() || 'Operación contable ordinaria';
+      if (monto <= 0) {
+        logTerminal("El monto del asiento debe ser mayor a 0.", "var(--acento-rojo)");
+        return;
+      }
+      const idAsiento = 'ASI-' + Math.floor(1000 + Math.random() * 9000);
+      const fecha = new Date().toISOString().split('T')[0];
+
+      ASIENTOS_LIBRO_DIARIO.unshift(
+        { id: idAsiento, fecha: fecha, junta: junta, codigo: codHaber, cuenta: `${nomHaber} (${concepto})`, tipo: 'HABER', debeUsd: 0, haberUsd: monto },
+        { id: idAsiento, fecha: fecha, junta: junta, codigo: codDebe, cuenta: `${nomDebe} (${concepto})`, tipo: 'DEBE', debeUsd: monto, haberUsd: 0 }
+      );
+      localStorage.setItem('clg_asientos_libro_diario', JSON.stringify(ASIENTOS_LIBRO_DIARIO));
+      renderizarTablasContables();
+      document.getElementById('cardNuevoAsiento').style.display = 'none';
+      logTerminal(`Asiento de Partida Doble [${idAsiento}] registrado por $${fmtMoneda(monto)} USD en la Junta [${junta}].`, 'var(--acento-verde)');
+
+      if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.registrarAsientoLibroDiarioAdminBackend === 'function') {
+        google.script.run.registrarAsientoLibroDiarioAdminBackend({
+          idAsiento: idAsiento,
+          juntaId: junta,
+          codigoDebe: codDebe,
+          cuentaDebe: nomDebe,
+          codigoHaber: codHaber,
+          cuentaHaber: nomHaber,
+          montoUsd: monto,
+          tasaBcv: tasaNumericaActual,
+          concepto: concepto
+        });
+      }
+    }
+
+    function navegarModulo(nombreModulo) {
+      logTerminal(`Navegando al módulo: ${nombreModulo}`, 'var(--magia-cian)');
+      if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+        google.script.run
+          .withSuccessHandler(html => {
+            if (nombreModulo === 'login_ui' && html && html.startsWith('http')) {
+              window.top.location.href = html;
+            } else if (html) {
+              document.open();
+              document.write(html);
+              document.close();
+            } else {
+              window.top.location.href = `${BASE_URL}?p=${nombreModulo}&tenant=default&rol=admin`;
+            }
+          })
+          .withFailureHandler(() => {
+            window.top.location.href = `${BASE_URL}?p=${nombreModulo}&tenant=default&rol=admin`;
+          })
+          .router_backend(nombreModulo);
+      } else {
+        window.top.location.href = `${BASE_URL}?p=${nombreModulo}&tenant=default&rol=admin`;
+      }
+    }
+  </script>
+</body>
+</html>

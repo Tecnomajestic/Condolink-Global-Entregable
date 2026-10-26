@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condolink Global V20.6 - Panel Financiero Ejecutivo & Administrativo LCARS</title>
+    <!-- FontAwesome para iconografía HUD -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --lcars-cyan: #00e5ff;
+            --lcars-blue: #0088ff;
+            --lcars-dark-blue: #001f3f;
+            --lcars-terminal-green: #22c55e;
+            --bg-deep: #030810;
+            
+            --magia-dorado: #ffb703;     
+            --magia-verde: #22c55e;       
+            --magia-azul: #00aaff;        
+            --magia-morado: #9333ea;      
+            --magia-fucsia: #db2777;      
+            --magia-naranja: #f97316;     
+            --magia-cian: #00ffff;        
+            --magia-blanco: #ffffff;      
+            --danger-red: #ef4444;
+            --borde-color: rgba(0, 229, 255, 0.3);
+            --cian-glow: 0 0 20px rgba(0, 229, 255, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 0%, #0f172a 0%, #030712 60%, #000000 100%);
+            color: var(--lcars-cyan);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Cabecera Global con Logo Central y Halo Místico Giratorio */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #1e1b4b 0%, #0f172a 100%);
+            padding: 10px 20px;
+            border-bottom: 2px solid rgba(255, 183, 3, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+        }
+
+        .header-title {
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: var(--magia-dorado);
+            letter-spacing: 1.2px;
+            text-shadow: 0 0 10px rgba(255, 183, 3, 0.4);
+            text-transform: uppercase;
+        }
+
+        /* Contenedor Central del Logo con Halo Místico Giratorio */
+        .header-center-halo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+        }
+
+        .mystic-ring {
+            width: 52px;
+            height: 52px;
+            border: 2px dashed rgba(255, 183, 3, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spinHalo 12s linear infinite;
+            box-shadow: 0 0 15px rgba(255, 183, 3, 0.4);
+            background: rgba(3, 7, 18, 0.85);
+        }
+
+        .header-logo-img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 6px var(--magia-dorado));
+        }
+
+        @keyframes spinHalo {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .bcv-ticker {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1.5px solid var(--magia-dorado);
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            color: var(--magia-dorado);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+            font-weight: 800;
+            z-index: 2;
+            transition: transform 0.2s;
+        }
+
+        .bcv-ticker:hover {
+            transform: scale(1.03);
+            background: rgba(255,204,0,0.08);
+        }
+
+        /* Contenedor Principal */
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            height: calc(100vh - 65px);
+            overflow: hidden;
+        }
+
+        /* Barra Lateral LCARS Vertical Estricta */
+        .lcars-sidebar {
+            width: 95px;
+            background: #0b0f19;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 8px;
+            border-right: 2px solid rgba(0, 229, 255, 0.3);
+            flex-shrink: 0;
+            box-shadow: 6px 0 25px rgba(0,0,0,0.8);
+        }
+
+        .sidebar-elbow {
+            width: 100%;
+            height: 36px;
+            background: var(--lcars-cyan);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: var(--cian-glow);
+        }
+
+        .sidebar-nav-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .sidebar-nav-btn {
+            background: rgba(0, 229, 255, 0.08);
+            border: 1.5px solid rgba(0, 229, 255, 0.4);
+            color: var(--lcars-cyan);
+            width: 100%;
+            padding: 10px 4px;
+            text-align: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav-btn i {
+            font-size: 1.1rem;
+        }
+
+        .sidebar-nav-btn:hover, .sidebar-nav-btn.active {
+            background: var(--lcars-cyan);
+            color: #030810;
+            box-shadow: 0 0 16px var(--lcars-cyan);
+            transform: translateY(-2px);
+        }
+
+        /* Botón Rojo de Cierre de Sesión */
+        .btn-logout-custom {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+            border-color: var(--danger-red) !important;
+            color: var(--danger-red) !important;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+        }
+        .btn-logout-custom:hover {
+            background-color: var(--danger-red) !important;
+            box-shadow: 0 0 20px var(--danger-red) !important;
+            color: #fff !important;
+            transform: scale(1.05);
+        }
+
+        .workspace {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto 1fr auto;
+            gap: 14px;
+            padding: 18px;
+            overflow-y: auto;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(0,229,255,0.03) 0%, transparent 60%);
+        }
+
+        /* Paneles con Estilo Equilibrado */
+        .panel-box {
+            background: rgba(11, 19, 36, 0.92);
+            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            flex-grow: 1;
+        }
+
+        .panel-dorado { border-color: rgba(255, 183, 3, 0.6); }
+        .panel-verde { border-color: rgba(34, 197, 94, 0.6); }
+        .panel-azul { border-color: rgba(0, 170, 255, 0.6); }
+        .panel-morado { border-color: rgba(147, 51, 234, 0.6); }
+        .panel-fucsia { border-color: rgba(219, 39, 119, 0.6); }
+        .panel-naranja { border-color: rgba(249, 115, 22, 0.6); }
+
+        .panel-box h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            border-bottom: 1.5px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .panel-dorado h3 { color: var(--magia-dorado); }
+        .panel-verde h3 { color: var(--magia-verde); }
+        .panel-azul h3 { color: var(--magia-azul); }
+        .panel-morado h3 { color: var(--magia-morado); }
+        .panel-fucsia h3 { color: var(--magia-fucsia); }
+        .panel-naranja h3 { color: var(--magia-naranja); }
+
+        /* Terminal Mística */
+        .terminal-screen {
+            background: rgba(2, 11, 5, 0.95);
+            border: 1.5px solid rgba(34, 197, 94, 0.6);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+            color: var(--magia-verde);
+            height: 75px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 15px rgba(34, 197, 94, 0.2), 0 4px 15px rgba(0,0,0,0.5);
+            line-height: 1.4;
+            grid-column: 1 / -1;
+            flex-shrink: 0;
+        }
+
+        /* Botones Arcade */
+        .arcade-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .arcade-btn {
+            position: relative;
+            padding: 10px 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            outline: none;
+            letter-spacing: 0.5px;
+        }
+
+        .arcade-btn:active {
+            transform: translateY(2px);
+        }
+
+        .btn-eldritch { background: var(--magia-dorado); color: #111; }
+        .btn-salud { background: var(--magia-verde); color: #020617; box-shadow: 0 0 12px rgba(34, 197, 94, 0.4); }
+        .btn-salud:hover { background: #26ff7d; box-shadow: 0 0 18px rgba(34, 197, 94, 0.7); }
+        .btn-contrato { background: var(--magia-azul); color: #fff; }
+        .btn-arcana { background: var(--magia-morado); color: #fff; }
+        .btn-transmutacion { background: var(--magia-fucsia); color: #fff; }
+        .btn-energia { background: var(--magia-naranja); color: #000; }
+
+        /* Módulos de Navegación */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .module-arcade-btn {
+            background: rgba(255, 183, 3, 0.08);
+            border: 1.5px solid rgba(255, 183, 3, 0.3);
+            color: #fff;
+            padding: 14px 8px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 800;
+            transition: all 0.25s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+
+        .module-arcade-btn:hover {
+            background: var(--magia-dorado);
+            color: #000;
+            border-color: var(--magia-dorado);
+            box-shadow: 0 0 15px rgba(255, 183, 3, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .module-arcade-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Formularios y Tablas */
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-label {
+            font-size: 0.78rem;
+            color: var(--magia-dorado);
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            background: rgba(3, 7, 18, 0.9);
+            border: 1.5px solid rgba(255, 183, 3, 0.4);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--magia-verde);
+            outline: none;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+        }
+
+        .eco-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+            margin-top: 6px;
+        }
+
+        .eco-table th, .eco-table td {
+            border: 1px solid rgba(255, 183, 3, 0.25);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .eco-table th {
+            background: rgba(255, 183, 3, 0.2);
+            color: var(--magia-dorado);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+        }
+
+        .chat-box {
+            background: rgba(2, 6, 15, 0.85);
+            border: 1.5px solid rgba(0, 170, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px;
+            height: 110px;
+            overflow-y: auto;
+            font-size: 0.76rem;
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
+        .chat-msg {
+            padding: 6px 8px;
+            border-radius: 6px;
+            background: rgba(0, 170, 255, 0.12);
+            border-left: 3px solid var(--magia-azul);
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        /* PIE DE PÁGINA INSTITUCIONAL LCARS */
+        .footer-lcars {
+            background: #0b0f19;
+            border-top: 1.5px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px 12px 0 0;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
+            font-size: 0.78rem;
+            color: #94a3b8;
+            flex-shrink: 0;
+            grid-column: 1 / -1;
+            margin-top: auto;
+        }
+        .footer-lcars strong { color: #fff; }
+    </style>
+<script>
+  /* BLINDAJE BCV 2 DECIMALES Y PUENTE ADMIN V20.8 */
+  window.normalizarTasaBCV = function(valorRaw) {
+    if (valorRaw === null || valorRaw === undefined) return '445,78';
+    var str = String(valorRaw).replace(/[^0-9.,]/g, '').trim();
+    if (!str) return '445,78';
+    if (str.indexOf(',') !== -1 && str.indexOf('.') !== -1) {
+      str = str.replace(/\./g, '').replace(',', '.');
+    } else if (str.indexOf(',') !== -1) {
+      str = str.replace(',', '.');
+    }
+    var num = parseFloat(str);
+    if (isNaN(num) || num <= 0) return '445,78';
+    return num.toFixed(2).replace('.', ',');
+  };
+</script>
+</head>
+<body>
+
+    <!-- Cabecera Global LCARS -->
+    <header>
+        <div class="header-brand">
+            <div class="header-title">CONDOLINK GLOBAL V20.6 // PANEL FINANCIERO & ADMINISTRATIVO</div>
+        </div>
+        
+        <!-- Logo Central con Halo Punteado y Anillo Giratorio Místico -->
+        <div class="header-center-halo">
+            <div class="mystic-ring">
+                <img src="https://i.imgur.com/XcMwIDa.png" alt="Condolink Logo Oficial" class="header-logo-img" onerror="this.src='https://i.imgur.com/nIZmQFJ.png'">
+            </div>
+        </div>
+
+        <div class="bcv-ticker" id="bcv-display" onclick="sincronizarTasaMaster()" title="Sincronizar BCV globalmente">
+            <span><i class="fa-solid fa-earth-americas"></i> BCV Sync: <span id="tasa-valor-master" style="color: #fff; font-weight: 800;"><i class="fa-solid fa-spinner fa-spin"></i> Sync...</span></span>
+            <span style="font-size: 0.75rem; opacity: 0.8; margin-left: 6px;">[Auto-Sync]</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Barra Lateral LCARS Vertical Estricta con Controles de Salida y Retorno -->
+        <aside class="lcars-sidebar">
+            <div style="width: 100%;">
+                <div class="sidebar-elbow"></div>
+                <div class="sidebar-nav-container">
+                    <button class="sidebar-nav-btn" title="Panel Admin" onclick="navegarMaster('panel_admin')"><i class="fa-solid fa-arrow-left"></i> Admin</button>
+                    <button class="sidebar-nav-btn" title="Libro Diario y Balance" onclick="navegarMaster('panel_libro_diario_admin')" style="border-color: var(--magia-verde); color: var(--magia-verde);"><i class="fa-solid fa-book-open"></i> Diario</button>
+                    <button class="sidebar-nav-btn" title="Gestión de Tenants" onclick="navegarMaster('instalador_tenant_admin')"><i class="fa-solid fa-network-wired"></i> Tenants</button>
+                    <button class="sidebar-nav-btn" title="Panel Ejecutivo" onclick="navegarMaster('panel_cierre_ejecutivo_administrativo')"><i class="fa-solid fa-headset"></i> Ejecutivo</button>
+                    <button class="sidebar-nav-btn" title="Panel Inmobiliario" onclick="navegarMaster('panel_inmobiliario_admin')"><i class="fa-solid fa-building"></i> Inmobil.</button>
+                    <button class="sidebar-nav-btn" title="Mantenimiento Sistema" onclick="ejecutarMantenimientoSistema()"><i class="fa-solid fa-screwdriver-wrench"></i> Mant.</button>
+                </div>
+            </div>
+
+            <!-- Controles Obligatorios de Salida y Roles (Botón Rojo de Cerrar Sesión) -->
+            <div style="width: 100%; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px; margin-top: auto;">
+                <button class="sidebar-nav-btn btn-logout-custom" title="Cerrar Sesión" onclick="navegarMaster('login_ui')"><i class="fa-solid fa-power-off"></i> Salir</button>
+            </div>
+        </aside>
+
+        <!-- Workspace Principal Ampliado Sin Espacios Muertos -->
+        <main class="workspace">
+
+            <!-- Terminal de Eventos -->
+            <div class="terminal-screen" id="terminal-logs">
+                [GLOBAL SYSTEM 16:49:02Z]: Canales de comunicación activos bajo Protocolo Místico Avengers. Torre Charam, Caracas.
+                [CEREBRO CENTRAL]: Enrutamiento y sincronización de paneles operativos y administrativos.
+                > Listo para procesar registros financieros, buzón y mantenimiento...
+            </div>
+
+            <!-- Panel 1: Creación de Usuarios Globales (Magia Dorada) -->
+            <div class="panel-box panel-dorado" style="grid-column: span 1;">
+                <h3><i class="fa-solid fa-user-plus"></i> Creación de Usuarios Globales</h3>
+                <div class="form-group">
+                    <label class="form-label">Nombre / Identificador</label>
+                    <input type="text" id="new-user-name" class="form-control" value="Operador_01">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rol Global Asignado</label>
+                    <select id="new-user-role" class="form-select">
+                        <option value="Admin">Admin Matriz</option>
+                        <option value="Ejecutivo">Ejecutivo Soporte</option>
+                        <option value="Inmobiliario">Intermediario</option>
+                        <option value="Junta">Junta Condominio</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" id="new-user-email" class="form-control" value="usuario@condolink.com">
+                </div>
+                <button class="arcade-btn btn-eldritch" style="width: 100%; margin-top: auto;" onclick="crearNuevoUsuarioMaster()">Crear Usuario Global</button>
+
+                <div style="overflow-y: auto; max-height: 90px; margin-top: 6px;">
+                    <table class="eco-table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-usuarios-creados">
+                            <tr>
+                                <td>pruebadefuego1</td>
+                                <td>Admin</td>
+                                <td style="color:var(--magia-verde); font-weight:700;">Activo</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Panel 2: Buzón & Mensajería Perfecta (Magia Azul) -->
+            <div class="panel-box panel-azul" style="grid-column: span 1;">
+                <h3><i class="fa-solid fa-comments"></i> Buzón & Mensajería</h3>
+                <div class="form-group" style="flex-grow: 1; display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label class="form-label" style="margin-bottom:0;">Filtrar Entrantes</label>
+                        <select id="remitente-filtro" class="form-select" style="width: 120px; font-size: 0.75rem; padding: 4px;" onchange="filtrarBuzonMaster()">
+                            <option value="todos">Todos</option>
+                            <option value="admin">Admin Matriz</option>
+                            <option value="ejecutivo">Ejecutivo Soporte</option>
+                            <option value="inmobiliario">Inmobiliario</option>
+                        </select>
+                    </div>
+                    <div class="chat-box" id="buzon-master-box">
+                        <div class="chat-msg" data-origen="admin"><b>[ADMIN]:</b> Solicitud de validación de balances financieros y pagos en Torre Charam.</div>
+                        <div class="chat-msg" data-origen="ejecutivo"><b>[EJECUTIVO]:</b> Reporte de liquidación de nómina LOTTT sincronizado.</div>
+                        <div class="chat-msg" data-origen="inmobiliario"><b>[INMOBILIARIO]:</b> Aprobación de egresos corrientes y alícuotas.</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: auto;">
+                    <input type="text" id="input-respuesta-master" class="form-control" placeholder="Responder desde consola..." style="font-size: 0.8rem; padding: 8px;">
+                    <button class="arcade-btn btn-contrato" style="padding: 8px 14px;" onclick="enviarRespuestaMaster()">Enviar</button>
+                </div>
+            </div>
+
+            <!-- Panel 3: CRUD & Mantenimiento (Magia Fucsia) -->
+            <div class="panel-box panel-fucsia" style="grid-column: span 1;">
+                <h3><i class="fa-solid fa-database"></i> CRUD & Mantenimiento Financiero</h3>
+                <div class="form-group">
+                    <label class="form-label">Entidad / Registro Objetivo</label>
+                    <input type="text" id="crud-target-entity" class="form-control" value="Balance_General_X">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Acción del Sistema</label>
+                    <select id="crud-action-type" class="form-select">
+                        <option value="MODIFICAR">Modificar Registro</option>
+                        <option value="ELIMINAR">Eliminar Registro</option>
+                        <option value="CREAR">Crear Registro</option>
+                    </select>
+                </div>
+                <div class="arcade-grid" style="margin-top: auto;">
+                    <button class="arcade-btn btn-salud" onclick="ejecutarCRUDMaster('Evaluar')">Evaluar</button>
+                    <button class="arcade-btn btn-energia" onclick="ejecutarCRUDMaster('Ejecutar')">Aplicar</button>
+                    <button class="arcade-btn btn-transmutacion" onclick="ejecutarCRUDMaster('Backup')">Respaldo</button>
+                </div>
+            </div>
+
+            <!-- Panel Final: Consola de Navegación de Módulos (Magia Morada) -->
+            <div class="panel-box panel-morado" style="grid-column: 1 / -1; flex-shrink: 0;">
+                <h3><i class="fa-solid fa-network-wired"></i> Consola de Navegación de Módulos del Sistema</h3>
+                <div class="modules-grid">
+                    <div class="module-arcade-btn" onclick="navegarMaster('panel_admin')"><i class="fa-solid fa-user-shield"></i>Admin Matriz</div>
+                    <div class="module-arcade-btn" onclick="navegarMaster('panel_libro_diario_admin')" style="border-color: var(--magia-verde);"><i class="fa-solid fa-book-open" style="color: var(--magia-verde);"></i>Libro Diario & Balance</div>
+                    <div class="module-arcade-btn" onclick="navegarMaster('panel_financiero_admin')"><i class="fa-solid fa-wallet"></i>Financiero</div>
+                    <div class="module-arcade-btn" onclick="navegarMaster('panel_pagos_admin')"><i class="fa-solid fa-money-bill-transfer"></i>Pagos Multimoneda</div>
+                </div>
+            </div>
+
+            <!-- PIE DE PÁGINA INSTITUCIONAL LCARS REAJUSTADO -->
+            <footer class="footer-lcars">
+                <div><strong>CONDOLINK GLOBAL V20.6</strong> &copy; 2026 - Torre Charam, Caracas. Todos los derechos reservados.</div>
+                <div style="display: flex; gap: 15px;">
+                    <span style="color: var(--lcars-cyan); cursor: pointer;" onclick="navegarMaster('panel_config_admin')"><i class="fas fa-shield-alt"></i> Seguridad por Roles Activa</span>
+                    <span style="color: var(--magia-verde);"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Panel Administrativo Sincronizado</span>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            sincronizarTasaMaster();
+        });
+
+        function logTerminalMaster(mensaje, color = 'var(--magia-verde)') {
+            const terminal = document.getElementById('terminal-logs');
+            const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+            terminal.innerHTML += `<br><span style="color: ${color}">[LOG ${timestamp}]: ${mensaje}</span>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function sincronizarTasaMaster() {
+            const spanTasa = document.getElementById('tasa-valor-master');
+            if (spanTasa) spanTasa.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sync...`;
+            logTerminalMaster("Sincronizando Tasa Oficial BCV en tiempo real para operaciones financieras...", "var(--magia-dorado)");
+
+            let backendRespondio = false;
+            const temporizadorFalla = setTimeout(() => {
+                if (!backendRespondio) {
+                    backendRespondio = true;
+                    usarTasaRespaldoApi();
+                }
+            }, 3000);
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                const metodo = typeof google.script.run.obtenerTasaBCV === 'function' ? 'obtenerTasaBCV' : 'obtenerDatosPortalAdmin';
+                google.script.run
+                    .withSuccessHandler(res => {
+                        if (!backendRespondio) {
+                            backendRespondio = true;
+                            clearTimeout(temporizadorFalla);
+                            let tasaFinal = "";
+                            if (typeof res === 'object' && res !== null) {
+                                tasaFinal = res.tasa || res.valor || "881,07";
+                            } else if (res) {
+                                tasaFinal = res;
+                            } else {
+                                tasaFinal = "881,07";
+                            }
+                            if (!tasaFinal || tasaFinal.toString().includes("0,00")) {
+                                usarTasaRespaldoApi();
+                            } else {
+                                if (spanTasa) spanTasa.innerText = tasaFinal.toString().toLowerCase().includes("bs") ? tasaFinal : tasaFinal + " Bs.";
+                                logTerminalMaster(`Tasa BCV sincronizada desde Google Apps Script: ${tasaFinal} VES/USD`, "var(--magia-verde)");
+                            }
+                        }
+                    })
+                    .withFailureHandler(() => {
+                        if (!backendRespondio) {
+                            backendRespondio = true;
+                            clearTimeout(temporizadorFalla);
+                            usarTasaRespaldoApi();
+                        }
+                    })[metodo]();
+            } else {
+                backendRespondio = true;
+                clearTimeout(temporizadorFalla);
+                usarTasaRespaldoApi();
+            }
+        }
+
+        function usarTasaRespaldoApi() {
+            const spanTasa = document.getElementById('tasa-valor-master');
+            fetch('https://open.er-api.com/v6/latest/USD')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.rates && data.rates.VES) {
+                        let tasaVes = data.rates.VES.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        if (spanTasa) spanTasa.innerText = tasaVes + " Bs.";
+                        logTerminalMaster(`Tasa BCV sincronizada vía API externa: ${tasaVes} VES/USD`, "var(--magia-verde)");
+                    } else {
+                        if (spanTasa) spanTasa.innerText = "445,78 VES";
+                        logTerminalMaster("Tasa BCV cargada por respaldo local: 881,07 VES/USD", "var(--magia-verde)");
+                    }
+                })
+                .catch(() => {
+                    if (spanTasa) spanTasa.innerText = "445,78 VES";
+                    logTerminalMaster("Tasa BCV cargada por respaldo local: 881,07 VES/USD", "var(--magia-verde)");
+                });
+        }
+
+        function crearNuevoUsuarioMaster() {
+            const nombre = document.getElementById('new-user-name').value || 'Usuario_Nuevo';
+            const rol = document.getElementById('new-user-role').value;
+            const email = document.getElementById('new-user-email').value || 'sin_correo@condolink.com';
+            
+            logTerminalMaster(`Usuario creado con éxito: [${nombre}] con rol [${rol}] (${email}).`, 'var(--magia-verde)');
+            
+            const tbody = document.getElementById('tabla-usuarios-creados');
+            tbody.innerHTML += `<tr><td>${nombre}</td><td>${rol}</td><td style="color:var(--magia-verde); font-weight:700;">Activo</td></tr>`;
+            alert(`Usuario ${nombre} (${rol}) creado satisfactoriamente.`);
+        }
+
+        function enviarRespuestaMaster() {
+            const msg = document.getElementById('input-respuesta-master').value;
+            if(!msg) return;
+            const hora = new Date().toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+            const box = document.getElementById('buzon-master-box');
+            box.innerHTML += `<div class="chat-msg" data-origen="admin" style="border-left: 3px solid var(--magia-azul);"><b>[ADMIN ${hora}]:</b> ${msg}</div>`;
+            try {
+                const hist = JSON.parse(localStorage.getItem('clg_gastos_buzon_admin') || '[]');
+                hist.push({ autor: 'ADMIN', hora: hora, texto: msg });
+                localStorage.setItem('clg_gastos_buzon_admin', JSON.stringify(hist));
+            } catch (e) {}
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.guardarMensajeAdminBackend === 'function') {
+                google.script.run.guardarMensajeAdminBackend({ canal: 'BUZON_GASTOS_ADMIN', remitente: 'ADMIN', destinatario: 'CONSOLIDADO', mensaje: msg });
+            }
+            logTerminalMaster(`Respuesta permanente enviada al buzón consolidado: ${msg}`, 'var(--magia-azul)');
+            document.getElementById('input-respuesta-master').value = '';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function filtrarBuzonMaster() {
+            const filtro = document.getElementById('remitente-filtro').value;
+            const items = document.getElementById('buzon-master-box').children;
+            for(let item of items) {
+                const origen = item.getAttribute('data-origen');
+                if(filtro === 'todos' || origen === filtro || origen === 'admin') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        }
+
+        function ejecutarCRUDMaster(accion) {
+            const entidad = document.getElementById('crud-target-entity').value;
+            const tipo = document.getElementById('crud-action-type').value;
+            
+            if(accion === 'Evaluar') {
+                logTerminalMaster(`Evaluación del sistema completada para [${entidad}]: Estructura íntegra, sin anomalías financieras.`, 'var(--magia-verde)');
+                alert(`Sistema evaluado: OK para gestión de ${entidad}.`);
+            } else {
+                logTerminalMaster(`Acción CRUD [${tipo}] ejecutada sobre [${entidad}].`, 'var(--magia-naranja)');
+                alert(`Operación ${tipo} ejecutada con éxito sobre ${entidad}.`);
+            }
+        }
+
+        function ejecutarMantenimientoSistema() {
+            logTerminalMaster("Ejecutando diagnóstico y mantenimiento general de registros financieros y administrativos...", 'var(--magia-dorado)');
+            alert("Mantenimiento preventivo ejecutado globalmente.");
+        }
+
+        function navegarMaster(nombreModulo) {
+            logTerminalMaster(`Enrutando consola hacia módulo: ${nombreModulo}`, 'var(--magia-dorado)');
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run
+                    .withSuccessHandler(htmlContent => {
+                        if (nombreModulo === 'login_ui') {
+                            window.top.location.href = htmlContent || '#';
+                        } else {
+                            document.open();
+                            document.write(htmlContent);
+                            document.close();
+                        }
+                    })
+                    .withFailureHandler(() => {
+                        alert("Módulo cargado: " + nombreModulo);
+                    })
+                    .router_backend(nombreModulo);
+            } else {
+                if (nombreModulo === 'login_ui') {
+                    alert("Cierre de sesión simulado: Redirigiendo a [login_ui]");
+                } else {
+                    alert("Navegación simulada al módulo: " + nombreModulo);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

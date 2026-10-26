@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Condolink Global V20.8 – Portal Restricted Zone (Monitor)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #00040a;
+      --bg-panel: rgba(5, 13, 26, 0.90);
+      --accent-cyan: #00f2fe;
+      --accent-gold: #ffd700;
+      --accent-green: #00ff87;
+      --accent-purple: #9d4edd;
+      --accent-red: #ff0055;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-glow: rgba(255, 0, 85, 0.35);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #1a0510 0%, var(--bg-dark) 80%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* HEADER INSTITUCIONAL V20.8 */
+    .header-institucional {
+      background: rgba(2, 6, 15, 0.95);
+      border-bottom: 2px solid var(--accent-red);
+      box-shadow: 0 5px 25px rgba(255, 0, 85, 0.25);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(15px);
+    }
+
+    .brand-zone { display: flex; align-items: center; gap: 18px; }
+    .halo-wrapper {
+      position: relative; width: 55px; height: 55px;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .halo-ring {
+      position: absolute; width: 100%; height: 100%; border-radius: 50%;
+      border: 2px dashed var(--accent-red); border-top-color: var(--accent-gold);
+      animation: giroHalo 8s linear infinite;
+    }
+    .halo-core {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-red), #300010);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 0.78rem; color: #fff;
+      box-shadow: 0 0 15px var(--accent-red);
+    }
+    @keyframes giroHalo { 100% { transform: rotate(360deg); } }
+
+    .brand-titles h1 {
+      font-size: 1.35rem; font-weight: 900; letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #fff, var(--accent-red));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .brand-titles p {
+      font-size: 0.7rem; color: var(--accent-gold);
+      letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; margin-top: 3px;
+    }
+
+    .header-controls { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+
+    /* WIDGET BCV ESTRICTO 2 DECIMALES */
+    .bcv-pill {
+      background: rgba(0, 255, 135, 0.08);
+      border: 1px solid var(--accent-green);
+      padding: 8px 16px; border-radius: 10px;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 0 15px rgba(0, 255, 135, 0.15);
+    }
+    .bcv-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green);
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    .bcv-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block; }
+    .bcv-val { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 800; color: var(--accent-green); }
+
+    .btn-header {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 9px 14px; border-radius: 8px;
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
+      cursor: pointer; transition: 0.3s;
+    }
+    .btn-header:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 12px var(--accent-cyan); }
+    .btn-header.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .btn-header.gold:hover { background: var(--accent-gold); color: #000; }
+    .btn-header.danger { border-color: var(--accent-red); color: var(--accent-red); }
+    .btn-header.danger:hover { background: var(--accent-red); color: #fff; }
+
+    /* BARRA DE PESTAÑAS DOM (DOM TABS STATE CONTROLLER) */
+    .dom-tabs-bar {
+      max-width: 1450px; width: 100%; margin: 22px auto 0; padding: 0 25px;
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .dom-tab-btn {
+      background: rgba(5, 13, 26, 0.85);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      padding: 12px 20px; border-radius: 10px;
+      font-size: 0.76rem; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dom-tab-btn:hover { border-color: var(--accent-red); color: #fff; }
+    .dom-tab-btn.active {
+      background: linear-gradient(135deg, rgba(255, 0, 85, 0.22), rgba(255, 215, 0, 0.12));
+      border-color: var(--accent-red); color: #fff;
+      box-shadow: 0 0 18px rgba(255, 0, 85, 0.3);
+    }
+
+    .dom-tab-view { display: none; width: 100%; max-width: 1450px; margin: 22px auto; padding: 0 25px; animation: fadeIn 0.35s ease; }
+    .dom-tab-view.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* PORTAL DIMENSIONAL CENTRAL */
+    .portal-stage {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 45px 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+    }
+
+    .dimensional-ring-box {
+      position: relative;
+      width: 240px; height: 240px;
+      margin: 0 auto 28px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .dim-ring-1 {
+      position: absolute; width: 100%; height: 100%; border-radius: 50%;
+      border: 2px solid rgba(255, 0, 85, 0.35);
+      border-top: 3px solid var(--accent-red);
+      border-bottom: 3px solid var(--accent-gold);
+      animation: giroHalo 10s linear infinite;
+      box-shadow: 0 0 35px rgba(255, 0, 85, 0.3);
+    }
+    .dim-ring-2 {
+      position: absolute; width: 82%; height: 82%; border-radius: 50%;
+      border: 2px dashed rgba(0, 242, 254, 0.45);
+      animation: giroHalo 6s linear infinite reverse;
+    }
+    .dim-core {
+      width: 145px; height: 145px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 0, 85, 0.35) 0%, #050a14 80%);
+      border: 2px solid var(--accent-gold);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.35);
+      transition: transform 0.3s;
+    }
+    .dimensional-ring-box:hover .dim-core { transform: scale(1.06); box-shadow: 0 0 45px var(--accent-red); }
+
+    .portal-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+      margin-top: 30px;
+    }
+    .action-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 22px;
+      text-align: left;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .action-card:hover {
+      border-color: var(--accent-red);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(255, 0, 85, 0.2);
+    }
+    .action-card h4 { font-size: 0.95rem; color: var(--accent-gold); margin-bottom: 8px; text-transform: uppercase; }
+    .action-card p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
+    .action-badge {
+      display: inline-block; padding: 4px 10px; border-radius: 6px;
+      font-size: 0.68rem; font-weight: 800; background: rgba(255, 0, 85, 0.15);
+      color: var(--accent-red); border: 1px solid var(--accent-red);
+    }
+
+    /* PANELES GENERALES EN PESTAÑAS */
+    .glass-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 22px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
+    }
+    .card-title {
+      font-size: 1rem; font-weight: 900; color: var(--accent-cyan);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 12px; margin-bottom: 18px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .matrix-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      border-radius: 10px;
+      padding: 15px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.25s;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .matrix-btn:hover {
+      background: rgba(0, 242, 254, 0.12);
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+    }
+    .matrix-btn span { font-size: 0.65rem; color: var(--accent-gold); font-family: 'JetBrains Mono', monospace; }
+
+    /* TABLA SUPERVISIÓN TENANTS */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .data-table th {
+      text-align: left; padding: 12px; color: var(--accent-gold);
+      border-bottom: 1px solid var(--glass-border); text-transform: uppercase; font-size: 0.72rem;
+    }
+    .data-table td { padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+    /* CHAT DE CUSTODIA */
+    .chat-box {
+      height: 290px; overflow-y: auto;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px; padding: 15px;
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;
+    }
+    .chat-msg {
+      padding: 10px 14px; border-radius: 10px; max-width: 80%; font-size: 0.82rem; line-height: 1.4;
+    }
+    .chat-msg.in { background: rgba(0, 242, 254, 0.1); border-left: 3px solid var(--accent-cyan); align-self: flex-start; }
+    .chat-msg.out { background: rgba(255, 0, 85, 0.18); border-right: 3px solid var(--accent-red); align-self: flex-end; }
+    .chat-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+    .chat-input, .chat-select {
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+      color: #fff; padding: 11px 14px; border-radius: 8px; font-size: 0.82rem;
+    }
+    .chat-input { flex: 1; min-width: 220px; }
+
+    /* TERMINAL LOGS */
+    .terminal-console {
+      max-width: 1450px; width: 100%; margin: 10px auto 25px; padding: 0 25px;
+    }
+    .terminal-body {
+      background: #020408; border: 1px solid rgba(255, 0, 85, 0.35);
+      border-radius: 10px; padding: 14px 18px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.74rem;
+      color: var(--accent-green); max-height: 130px; overflow-y: auto;
+    }
+
+    footer {
+      margin-top: auto;
+      background: rgba(2, 5, 12, 0.95);
+      border-top: 1px solid var(--glass-border);
+      padding: 18px 30px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER INSTITUCIONAL V20.8 -->
+  <header class="header-institucional">
+    <div class="brand-zone">
+      <div class="halo-wrapper">
+        <div class="halo-ring"></div>
+        <div class="halo-core">PRZ</div>
+      </div>
+      <div class="brand-titles">
+        <h1>PORTAL RESTRICTED ZONE – MONITOR V20.8</h1>
+        <p>Torre Charam • La Castellana, Caracas • Esclusa Dimensional Nivel 02</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <div class="bcv-pill" title="Sincronizado con CLG_Configuracion!B2 (2 Decimales)">
+        <div class="bcv-dot"></div>
+        <div>
+          <span class="bcv-label">Tasa Oficial BCV</span>
+          <span class="bcv-val" id="bcvRateDisplay">881,88 VES</span>
+        </div>
+      </div>
+      <button class="btn-header" onclick="sincronizarTasaBCV(true)">↻ Sync BCV</button>
+      <button class="btn-header gold" onclick="navegarHacia('panel_restricted_zone_monitor')">⚡ Entrar a Panel RZ</button>
+      <button class="btn-header" onclick="navegarHacia('panel_monitoreo_master')">📡 C4I Monitor</button>
+      <button class="btn-header danger" onclick="navegarHacia('login_ui')">🚪 Salir</button>
+    </div>
+  </header>
+
+  <!-- CONTROLADOR DE PESTAÑAS DOM -->
+  <nav class="dom-tabs-bar">
+    <button class="dom-tab-btn active" onclick="conmutarPestanaDom('tab-portal', this)">🌀 Esclusa Dimensional RZ</button>
+    <button class="dom-tab-btn" onclick="conmutarPestanaDom('tab-tenants', this)">🏢 Supervisión de Tenants</button>
+    <button class="dom-tab-btn" onclick="conmutarPestanaDom('tab-matriz', this)">🧭 Matriz del Ecosistema</button>
+    <button class="dom-tab-btn" onclick="conmutarPestanaDom('tab-custodia', this)">💬 Mensajería y Custodia Permanente</button>
+  </nav>
+
+  <!-- PESTAÑA 1: ESCLUSA DIMENSIONAL -->
+  <section id="tab-portal" class="dom-tab-view active">
+    <div class="portal-stage">
+      <div class="dimensional-ring-box" onclick="navegarHacia('panel_restricted_zone_monitor')" title="Clic para ingresar a la Bóveda Restricted Zone">
+        <div class="dim-ring-1"></div>
+        <div class="dim-ring-2"></div>
+        <div class="dim-core">
+          <span style="font-size:1.8rem;">🔐</span>
+          <strong style="font-size:0.78rem; color:var(--accent-gold); letter-spacing:1.5px; margin-top:4px;">INGRESAR RZ</strong>
+          <small style="font-size:0.6rem; color:var(--accent-cyan); margin-top:2px;">NIVEL 02 MONITOR</small>
+        </div>
+      </div>
+
+      <h2 style="font-size:1.5rem; font-weight:900; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">
+        COMPUERTA DE SEGURIDAD RESTRICTED ZONE
+      </h2>
+      <p style="color:var(--text-muted); font-size:0.86rem; max-width:740px; margin:0 auto;">
+        Acceso directo y desacoplado al perímetro de aislamiento criptográfico, monitoreo de sesiones en tiempo real, pruebas de integridad de registros y auditoría de nodos de Condolink Global V20.8.
+      </p>
+
+      <div class="portal-actions-grid">
+        <div class="action-card" onclick="navegarHacia('panel_restricted_zone_monitor')">
+          <span class="action-badge">BÓVEDA CENTRAL</span>
+          <h4 style="margin-top:10px;">🛡️ Panel Restricted Zone</h4>
+          <p>Bitácora de incidentes críticos, bloqueo de intrusiones, exportación CSV y protocolos de aislamiento perimetral.</p>
+        </div>
+
+        <div class="action-card" onclick="navegarHacia('usuarios_activos_monitor')">
+          <span class="action-badge">TIEMPO REAL</span>
+          <h4 style="margin-top:10px;">👥 Usuarios y Sesiones Activas</h4>
+          <p>Inspección en vivo de usuarios conectados en <code>CLG_Usuario</code> y <code>CLG_Sesiones</code> con validación de roles.</p>
+        </div>
+
+        <div class="action-card" onclick="navegarHacia('pruebas_monitoreo_monitor')">
+          <span class="action-badge">DIAGNÓSTICO C4I</span>
+          <h4 style="margin-top:10px;">🔬 Pruebas de Monitoreo</h4>
+          <p>Ejecución de telemetría profunda sobre el motor Apps Script, latencia de hojas CLG_* y salud de disparadores.</p>
+        </div>
+
+        <div class="action-card" onclick="navegarHacia('prueba_registro_monitor')">
+          <span class="action-badge">VERIFICACIÓN DB</span>
+          <h4 style="margin-top:10px;">🧪 Consola de Prueba de Registros</h4>
+          <p>Validación transaccional de carga inmobiliaria, registro de actuaciones legales y enrutamiento de vistas HTML.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 2: SUPERVISIÓN DE TENANTS -->
+  <section id="tab-tenants" class="dom-tab-view">
+    <div class="glass-card">
+      <div class="card-title">
+        <span>🏢 Supervisión de Solicitudes y Tenants (CLG_Solicitudes / CLG_Configuracion)</span>
+        <button class="btn-header" onclick="cargarTenantsMonitor()">↻ Actualizar Lista</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID / Fecha</th>
+              <th>Condominio / Empresa</th>
+              <th>RIF</th>
+              <th>Rol Solicitado</th>
+              <th>Estado</th>
+              <th>Instalador Destino</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tablaTenantsBody">
+            <tr><td colspan="7" style="color:var(--text-muted);">Sincronizando registros desde BD_CONDOLINKGLOBAL...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 3: MATRIZ DEL ECOSISTEMA -->
+  <section id="tab-matriz" class="dom-tab-view">
+    <div class="glass-card">
+      <div class="card-title">
+        <span>🧭 Matriz de Hipervínculos del Ecosistema Monitor & Master</span>
+        <span style="font-size:0.72rem; color:var(--accent-gold);">12 Nodos Operativos</span>
+      </div>
+      <div class="matrix-grid">
+        <button class="matrix-btn" onclick="navegarHacia('panel_restricted_zone_monitor')">🛡️ Panel Restricted Zone<span>panel_restricted_zone_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_monitoreo_master')">📡 Panel Monitoreo Master<span>panel_monitoreo_master</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('auditar_global_monitor')">🔍 Auditar Global Monitor<span>auditar_global_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_auditoria_monitor')">📊 Panel Auditoría Monitor<span>panel_auditoria_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('usuarios_activos_monitor')">👥 Usuarios Activos Monitor<span>usuarios_activos_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('pruebas_monitoreo_monitor')">🔬 Pruebas de Monitoreo<span>pruebas_monitoreo_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('prueba_registro_monitor')">🧪 Prueba de Registro<span>prueba_registro_monitor</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('portal_master')">👑 Portal Master<span>portal_master</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_master')">🏛️ Panel Master Central<span>panel_master</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('instalador_tenant_admin_master')">⚙️ Instalador Tenant Admin<span>instalador_tenant_admin_master</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_inmobiliario_master')">🏙️ Inmobiliario Master<span>panel_inmobiliario_master</span></button>
+        <button class="matrix-btn" onclick="navegarHacia('panel_servicios_contratados_master')">🛠️ Servicios Contratados<span>panel_servicios_contratados_master</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 4: CANAL DE MENSAJERÍA Y CUSTODIA PERMANENTE -->
+  <section id="tab-custodia" class="dom-tab-view">
+    <div class="glass-card">
+      <div class="card-title">
+        <span>💬 Canal Directo de Mensajería y Custodia Permanente (CLG_NotificacionesResidenciales)</span>
+        <span style="font-size:0.72rem; color:var(--accent-green);">● PERSISTENCIA ACTIVA</span>
+      </div>
+      <div class="chat-box" id="chatCustodiaBox">
+        <div class="chat-msg in">
+          <strong>[SISTEMA RESTRICTED ZONE]:</strong> Canal de custodia criptográfica enlazado con Master, Administradores, Juntas e Inversionistas.
+        </div>
+      </div>
+      <div class="chat-controls">
+        <select id="destinatarioCustodia" class="chat-select">
+          <option value="GLOBAL_MONITOR">📡 Todos los Nodos Monitor & Master</option>
+          <option value="MASTER_CENTRAL">👑 Dirección General Master</option>
+          <option value="ADMINISTRADORES">🏢 Administradores de Condominios</option>
+          <option value="JUNTAS_CONDOMINIO">🤝 Juntas de Condominio</option>
+          <option value="AUDITORIA_LEGAL">⚖️ Auditoría Legal y Seguridad</option>
+        </select>
+        <input type="text" id="mensajeCustodiaInput" class="chat-input" placeholder="Escriba directriz o alerta de custodia permanente..." onkeydown="if(event.key==='Enter') enviarMensajeCustodia()">
+        <button class="btn-header gold" onclick="enviarMensajeCustodia()">📨 Transmitir y Custodiar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSOLA TERMINAL DE TELEMETRÍA -->
+  <div class="terminal-console">
+    <div class="terminal-body" id="terminalLog">
+      <div>[SISTEMA V20.8] Portal Restricted Zone Monitor inicializado en Torre Charam, La Castellana.</div>
+    </div>
+  </div>
+
+  <footer>
+    CONDOLINK GLOBAL V20.8 • TORRE CHARAM, LA CASTELLANA, CARACAS - VENEZUELA • ARQUITECTURA DE SEGURIDAD RESTRICTED ZONE
+  </footer>
+
+  <script>
+    const TASA_RESPALDO_PORTAL_RZ = 881.88;
+
+    function registrarLog(msg) {
+      const box = document.getElementById('terminalLog');
+      if (!box) return;
+      const line = document.createElement('div');
+      line.textContent = '[' + new Date().toLocaleTimeString('es-VE') + '] ' + msg;
+      box.appendChild(line);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function normalizarTasaBCV(valorRaw) {
+      if (valorRaw === null || valorRaw === undefined) return TASA_RESPALDO_PORTAL_RZ;
+      let str = String(valorRaw).trim().replace(/[^0-9.,]/g, '');
+      if (!str) return TASA_RESPALDO_PORTAL_RZ;
+      if (str.includes(',') && !str.includes('.')) {
+        str = str.replace(',', '.');
+      } else if (str.includes('.') && str.includes(',')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+      }
+      let num = parseFloat(str);
+      if (isNaN(num) || num <= 0) return TASA_RESPALDO_PORTAL_RZ;
+      while (num >= 5000) { num = num / 10; }
+      return Math.round(num * 100) / 100;
+    }
+
+    function formatearTasaVE(num) {
+      return normalizarTasaBCV(num).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' VES';
+    }
+
+    function actualizarDomTasa(valor, origen) {
+      const el = document.getElementById('bcvRateDisplay');
+      const limpia = normalizarTasaBCV(valor);
+      if (el) el.textContent = formatearTasaVE(limpia);
+      localStorage.setItem('clg_tasa_bcv_oficial', limpia.toFixed(2));
+      registrarLog('Tasa Oficial BCV sincronizada (' + origen + '): ' + limpia.toFixed(2) + ' VES');
+    }
+
+    async function sincronizarTasaBCV(manual) {
+      if (manual) registrarLog('Solicitando sincronización de Tasa Oficial BCV...');
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && (res.tasa || res.tasaNumerica)) {
+              actualizarDomTasa(res.tasaNumerica || res.tasa, 'CLG_Configuracion!B2');
+            } else if (typeof res === 'number' || typeof res === 'string') {
+              actualizarDomTasa(res, 'CLG_Configuracion!B2');
+            }
+          })
+          .withFailureHandler(function() { fallbackAPITasa(); })
+          .obtenerTasaBCVOficial();
+      } else {
+        await fallbackAPITasa();
+      }
+    }
+
+    async function fallbackAPITasa() {
+      try {
+        const r = await fetch('https://ve.dolarapi.com/v1/dolares/bcv');
+        const d = await r.json();
+        if (d && d.promedio) {
+          actualizarDomTasa(d.promedio, 'DolarAPI BCV');
+          return;
+        }
+      } catch (e) {}
+      const cache = localStorage.getItem('clg_tasa_bcv_oficial');
+      actualizarDomTasa(cache || TASA_RESPALDO_PORTAL_RZ, 'Resguardo Local');
+    }
+
+    // CONTROLADOR DE PESTAÑAS DOM (DOM Tabs State Controller)
+    function conmutarPestanaDom(tabId, btn) {
+      document.querySelectorAll('.dom-tab-view').forEach(function(v) { v.classList.remove('active'); });
+      document.querySelectorAll('.dom-tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+      registrarLog('Vista DOM conmutada a: ' + tabId);
+      if (tabId === 'tab-tenants') cargarTenantsMonitor();
+    }
+
+    function navegarHacia(vistaDestino) {
+      registrarLog('Enrutando hacia: ' + vistaDestino + '...');
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (typeof res === 'string' && res.startsWith('http')) {
+              window.top.location.href = res;
+            } else if (typeof res === 'string' && res.includes('<html')) {
+              document.open(); document.write(res); document.close();
+            } else if (res && res.html) {
+              document.open(); document.write(res.html); document.close();
+            }
+          })
+          .withFailureHandler(function(err) {
+            registrarLog('Fallback URL directa hacia ' + vistaDestino + ': ' + err.message);
+            window.top.location.href = '?p=' + encodeURIComponent(vistaDestino);
+          })
+          .router_backend(vistaDestino);
+      } else {
+        window.location.href = vistaDestino + '.html';
+      }
+    }
+
+    function cargarTenantsMonitor() {
+      const tbody = document.getElementById('tablaTenantsBody');
+      if (!tbody) return;
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(lista) {
+            if (!Array.isArray(lista) || lista.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-muted);">No hay solicitudes pendientes en CLG_Solicitudes.</td></tr>';
+              return;
+            }
+            tbody.innerHTML = lista.map(function(item) {
+              return '<tr>' +
+                '<td><strong>' + (item.id || '-') + '</strong><br><small style="color:var(--text-muted);">' + (item.fecha || '') + '</small></td>' +
+                '<td>' + (item.nombre || '-') + '<br><small style="color:var(--accent-cyan);">' + (item.email || '') + '</small></td>' +
+                '<td>' + (item.rif || '-') + '</td>' +
+                '<td>' + (item.rol || 'Administrador') + '</td>' +
+                '<td><span class="action-badge">' + (item.estado || 'PENDIENTE') + '</span></td>' +
+                '<td><code>' + (item.instaladorDestino || 'instalador_tenant_admin_master') + '</code></td>' +
+                '<td><button class="btn-header" onclick="navegarHacia(\'' + (item.instaladorDestino || 'instalador_tenant_admin_master') + '\')">Abrir Instalador</button></td>' +
+              '</tr>';
+            }).join('');
+          })
+          .obtenerSolicitudesRegistroBackend();
+      } else {
+        tbody.innerHTML = '<tr><td>SOL-901</td><td>Res. La Castellana Suite</td><td>J-41200991-0</td><td>Administrador</td><td><span class="action-badge">VERIFICADO</span></td><td><code>instalador_tenant_admin_master</code></td><td><button class="btn-header" onclick="navegarHacia(\'instalador_tenant_admin_master\')">Abrir Instalador</button></td></tr>';
+      }
+    }
+
+    function enviarMensajeCustodia() {
+      const input = document.getElementById('mensajeCustodiaInput');
+      const dest = document.getElementById('destinatarioCustodia');
+      const box = document.getElementById('chatCustodiaBox');
+      if (!input || !input.value.trim()) return;
+      const texto = input.value.trim();
+      const destinatario = dest ? dest.value : 'GLOBAL_MONITOR';
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'chat-msg out';
+      msgDiv.innerHTML = '<strong>[MONITOR RZ → ' + destinatario + ']:</strong> ' + texto;
+      box.appendChild(msgDiv);
+      box.scrollTop = box.scrollHeight;
+      input.value = '';
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function() {
+            registrarLog('Mensaje custodiado permanentemente en CLG_NotificacionesResidenciales para ' + destinatario);
+          })
+          .guardarMensajeMediacionMonitorBackend({
+            origen: 'portal_restricted_zone_monitor',
+            destinatario: destinatario,
+            mensaje: texto
+          });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      sincronizarTasaBCV(false);
+      setInterval(function() { sincronizarTasaBCV(false); }, 300000);
+    });
+  </script>
+</body>
+</html>

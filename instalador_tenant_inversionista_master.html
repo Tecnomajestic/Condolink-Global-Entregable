@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Condolink Global V20.8 - Instalador Tenant Inversionista Master</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-principal: #030810;
+            --bg-card: #0b1120;
+            --bg-card-hover: #131c31;
+            --acento-verde: #00ff66;
+            --acento-rojo: #ff3333;
+            --magia-dorado: #ffcc00;     
+            --magia-cian: #00e5ff;
+            --magia-morado: #a855f7;        
+            --gris-texto: #94a3b8;
+            --texto-blanco: #f0f6fc;
+            --borde-color: rgba(0, 229, 255, 0.3);
+            --arcade-shadow: 0 15px 35px -5px rgba(0,0,0,0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #0b1120 0%, #030810 70%);
+            color: var(--texto-blanco);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .header-card {
+            background: var(--bg-card); 
+            border: 2px solid var(--magia-dorado);
+            padding: 15px 25px; 
+            border-radius: 16px; 
+            box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.1), 0 6px 20px rgba(0,0,0,0.5); 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand-box { display: flex; align-items: center; gap: 15px; }
+
+        @keyframes spinSlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spinSlowRev { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+        @keyframes cyan-pulse { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 6px currentColor); } 50% { opacity: 1; filter: drop-shadow(0 0 14px currentColor); } }
+
+        .mystic-logo-wrapper {
+            position: relative;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mystic-halo-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed var(--magia-dorado);
+            border-radius: 50%;
+            animation: spinSlowRev 18s linear infinite;
+        }
+        .mystic-halo-inner {
+            position: absolute;
+            width: 76%;
+            height: 76%;
+            border: 1.5px dotted var(--magia-cian);
+            border-radius: 50%;
+            animation: spinSlow 10s linear infinite;
+        }
+        .brand-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #030810;
+            padding: 2px;
+            border: 2px solid var(--magia-dorado);
+            z-index: 2;
+            animation: cyan-pulse 3s ease-in-out infinite;
+        }
+        .brand-title h1 { 
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.68rem; 
+            margin: 0; 
+            color: var(--magia-cian); 
+            letter-spacing: 0.8px; 
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+        }
+
+        .bcv-ticker {
+            background: rgba(0, 0, 0, 0.75);
+            border: 1.5px solid var(--magia-dorado);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--magia-dorado);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+            transition: transform 0.2s;
+        }
+        .bcv-ticker:hover { transform: scale(1.02); }
+
+        .horizontal-nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            border: 2px solid var(--magia-dorado);
+            padding: 10px 18px;
+            border-radius: 14px;
+            box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.08);
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-group-left, .nav-group-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-nav-arcade {
+            background: linear-gradient(135deg, #131c31 0%, #0b1120 100%);
+            border: 2px solid var(--magia-dorado);
+            color: var(--magia-dorado);
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+        .btn-nav-arcade:hover, .btn-nav-arcade.active {
+            background: var(--magia-dorado);
+            color: #030810;
+            border-color: #fff;
+            box-shadow: 0 0 18px var(--magia-dorado);
+            transform: translateY(-2px);
+        }
+
+        .btn-nav-cyan {
+            border-color: var(--magia-cian) !important;
+            color: var(--magia-cian) !important;
+        }
+        .btn-nav-cyan:hover {
+            background: var(--magia-cian) !important;
+            color: #030810 !important;
+            box-shadow: 0 0 18px var(--magia-cian) !important;
+        }
+
+        .btn-logout-arcade {
+            background: linear-gradient(135deg, #ff3333 0%, #b30000 100%) !important;
+            border-color: #ff3333 !important;
+            color: #fff !important;
+            box-shadow: 0 4px 12px rgba(255, 51, 51, 0.4);
+        }
+
+        .system-log-box {
+            background: #030810;
+            border: 2px solid var(--acento-verde);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.82rem;
+            color: var(--acento-verde);
+            box-shadow: inset 0 0 15px rgba(0, 255, 102, 0.2);
+            line-height: 1.4;
+            max-height: 110px;
+            overflow-y: auto;
+        }
+
+        .workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .panel-box {
+            background: var(--bg-card);
+            border: 2px solid var(--magia-dorado);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.08), 0 6px 20px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            position: relative;
+        }
+
+        .panel-box h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            border-bottom: 1.5px dashed rgba(255, 204, 0, 0.3);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--magia-dorado);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .arcade-btn {
+            position: relative;
+            padding: 12px 18px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s ease;
+            outline: none;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            width: 100%;
+        }
+
+        .arcade-btn:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.6);
+        }
+
+        .btn-salud { background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%); color: #030810; }
+        .btn-contrato { background: linear-gradient(135deg, #00e5ff 0%, #0088cc 100%); color: #030810; }
+
+        .form-group { margin-bottom: 10px; }
+
+        .form-label {
+            font-size: 0.75rem;
+            color: var(--magia-cian);
+            margin-bottom: 6px;
+            display: block;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            background: var(--bg-card-hover);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--magia-dorado);
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+            background: var(--bg-card-hover);
+            color: #fff;
+        }
+
+        .checkbox-group { 
+            display: flex; 
+            gap: 12px; 
+            flex-wrap: wrap; 
+            background: rgba(0,0,0,0.3); 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid rgba(0,229,255,0.2); 
+        }
+        .checkbox-item { 
+            font-size: 0.78rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            cursor: pointer; 
+            color: var(--texto-blanco);
+        }
+
+        .arcade-footer {
+            background: var(--bg-card);
+            border: 1.5px solid var(--magia-cian);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.75rem;
+            color: var(--gris-texto);
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.15);
+            margin-top: auto;
+        }
+        .arcade-footer strong { color: #f0f6fc; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <header class="header-card">
+            <div class="brand-box">
+                <div class="mystic-logo-wrapper" title="La Castellana, Caracas">
+                    <div class="mystic-halo-outer"></div>
+                    <div class="mystic-halo-inner"></div>
+                    <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo Condolink" class="brand-logo" onerror="this.src='https://imgur.com/nIZmQFJ.png'">
+                </div>
+                <div class="brand-title">
+                    <h1>CONDOLINK GLOBAL V20.8 // INSTALADOR INVERSIONISTA MASTER</h1>
+                </div>
+            </div>
+            <div class="bcv-ticker" id="bcv-display" onclick="sincronizarTasaBCVConTimeout()" title="Clic para actualizar tasa oficial BCV">
+                <i class="fa-solid fa-bolt" id="sync-icon" style="color: var(--magia-dorado);"></i> Tasa Oficial BCV: <span id="tasa-valor-dinamico" style="color: #ffb703; font-weight: bold;">881,88 VES</span> <span style="font-size: 0.65rem; color: var(--acento-verde);">[LIVE]</span>
+            </div>
+        </header>
+
+        <div class="horizontal-nav-bar">
+            <div class="nav-group-left">
+                <button class="btn-nav-arcade active" onclick="cambiarSeccion('seccionInstalacion', this)"><i class="fas fa-user-plus"></i> Instalar Inversionista</button>
+                <button class="btn-nav-arcade btn-nav-cyan" onclick="cambiarSeccion('seccionListado', this)"><i class="fas fa-building-user"></i> Inversionistas Activos</button>
+            </div>
+            <div class="nav-group-right">
+                <button class="btn-nav-arcade btn-nav-cyan" onclick="navegarModulo('portal_master')"><i class="fas fa-shield-halved"></i> Portal Master</button>
+                <button class="btn-nav-arcade btn-nav-cyan" onclick="navegarModulo('panel_master')"><i class="fas fa-crown"></i> Panel Master</button>
+                <button class="btn-nav-arcade btn-logout-arcade" onclick="navegarModulo('login_ui')"><i class="fa-solid fa-power-off"></i> Salir</button>
+            </div>
+        </div>
+
+        <div class="system-log-box" id="systemLogBox">
+            [SYS ARCADE 14:00:00Z]: Subsistema Instalador Tenant Inversionista Master operativo (Caracas, Venezuela).
+        </div>
+
+        <main class="workspace">
+
+            <div id="seccionInstalacion" class="contenido-seccion panel-box" style="display: flex; flex: 1;">
+                <h3><i class="fas fa-user-gear" style="color: var(--magia-dorado);"></i> Asistente de Creación y Despliegue de Usuario Inversionista (Con Ficha RIF y Logo de Drive)</h3>
+                <p style="font-size: 0.82rem; color: var(--gris-texto); margin-bottom: 4px;">Asocie múltiples propiedades, servicios especializados, comitivas y documentos de Drive para el perfil inversor dentro del ecosistema.</p>
+                
+                <form id="formInstalarInversionista" onsubmit="ejecutarInstalacionInversionista(event)">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Nombre y Apellido / Razón Social del Inversionista *</label>
+                            <input type="text" class="form-control" id="invNombre" required placeholder="Ej. Einaldo Jose Vera">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cédula de Identidad o RIF *</label>
+                            <input type="text" class="form-control" id="invRif" required placeholder="Ej. V-12345678 o J-40123456">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Correo Electrónico (Credencial Portal) *</label>
+                            <input type="email" class="form-control" id="invCorreo" required placeholder="inversionista@condolinkglobal.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Teléfono de Contacto *</label>
+                            <input type="text" class="form-control" id="invTelefono" required placeholder="Ej. +58 414-1234567">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">URL Cédula / RIF en Google Drive</label>
+                            <input type="text" class="form-control" id="invRifDriveUrl" placeholder="Enlace automático al RIF en Drive">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">URL Logo Corporativo en Google Drive</label>
+                            <input type="text" class="form-control" id="invLogoDriveUrl" placeholder="Enlace automático al Logo en Drive">
+                        </div>
+                        
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label">Código de Inmuebles / Propiedades Asignadas (Separados por coma) *</label>
+                            <input type="text" class="form-control" id="invPropiedades" required placeholder="Ej. CANAGUA-PISO-5-EDIF-6, TORRE-CHARAM-OFIC-102, RES-AVENTURA-APT-4B">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Servicios Módulo Cobranza *</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" name="servicios" value="Cobranza Automatizada" checked> Cobranza Automatizada</label>
+                                <label class="checkbox-item"><input type="checkbox" name="servicios" value="Conciliación BCV" checked> Conciliación BCV</label>
+                                <label class="checkbox-item"><input type="checkbox" name="servicios" value="Reportes PDF Directiva"> Reportes PDF Directiva</label>
+                                <label class="checkbox-item"><input type="checkbox" name="servicios" value="Mantenimiento Residencial"> Mantenimiento</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Comitivas / Recibos a Cancelar (Venezuela) *</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" name="comitivas" value="Electricidad (Corpoelec)" checked> Electricidad (Corpoelec)</label>
+                                <label class="checkbox-item"><input type="checkbox" name="comitivas" value="Gas Directo / Bombona" checked> Gas Directo / Bombona</label>
+                                <label class="checkbox-item"><input type="checkbox" name="comitivas" value="Agua Potable (Hidrocapital)"> Agua Potable</label>
+                                <label class="checkbox-item"><input type="checkbox" name="comitivas" value="Aseo Urbano"> Aseo Urbano</label>
+                                <label class="checkbox-item"><input type="checkbox" name="comitivas" value="Internet / Teléfono (CANTV/Fibra)"> Teléfono / Internet</label>
+                                <label class="checkbox-item"><input type="checkbox" name="comitivas" value="Recibo Condominio Central" checked> Condominio</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label">Rol Asignado en el Sistema *</label>
+                            <select class="form-select" id="invRol" required>
+                                <option value="Inversionista" selected>Inversionista Multi-Propiedad (Autónomo)</option>
+                                <option value="Inversionista_VIP">Inversionista VIP (Master)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 15px;">
+                        <button type="reset" class="arcade-btn" style="width: auto; background: #374151; color: #fff;">Limpiar Formulario</button>
+                        <button type="submit" class="arcade-btn btn-salud" style="width: auto;"><i class="fas fa-check-circle"></i> Instalar y Vincular Inversionista</button>
+                    </div>
+                </form>
+                <div id="msgResultado" style="display: none; padding: 12px; border-radius: 8px; font-size: 0.82rem; margin-top: 10px;"></div>
+            </div>
+
+            <div id="seccionListado" class="contenido-seccion panel-box" style="display: none; flex: 1;">
+                <h3><i class="fas fa-id-badge" style="color: var(--magia-dorado);"></i> Directorio de Inversionistas Registrados</h3>
+                <p style="font-size: 0.82rem; color: var(--gris-texto); margin-bottom: 8px;">Listado general de cuentas con múltiples propiedades sincronizadas con el Master.</p>
+                
+                <div style="overflow-x: auto;">
+                    <table class="table table-dark table-hover align-middle" style="font-size: 0.82rem; border-color: rgba(0,229,255,0.2);">
+                        <thead>
+                            <tr style="color: var(--magia-cian);">
+                                <th>Inversionista</th>
+                                <th>RIF / Cédula</th>
+                                <th>Propiedades Asignadas</th>
+                                <th>Servicios / Comitivas</th>
+                                <th>Correo de Acceso</th>
+                                <th>Estatus</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaInversionistasBody">
+                            <tr>
+                                <td><strong>Einaldo Jose Vera</strong></td>
+                                <td>V-12345678</td>
+                                <td>APT-101, CASA-02, LOCAL-04</td>
+                                <td>Cobranza, Corpoelec, Gas</td>
+                                <td>einaldo@condolinkglobal.com</td>
+                                <td><span style="color: var(--acento-verde); font-weight: bold;">ACTIVO [MASTER]</span></td>
+                                <td><button class="arcade-btn btn-contrato" style="padding: 4px 8px; font-size: 0.65rem; width: auto;" onclick="navegarModulo('portal_inversionista')"><i class="fas fa-arrow-right"></i> Ver Portal</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="arcade-footer">
+            <div><strong>CONDOLINK GLOBAL V20.8</strong> &copy; 2026 - Torre Charam, Caracas. Todos los derechos reservados.</div>
+            <div>STATUS: <span style="color: var(--acento-verde);">ONLINE [SECURE]</span> // <span style="color: var(--magia-cian);"><i class="fa-solid fa-shield-halved"></i> Google Workspace</span></div>
+        </footer>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let tasaBCVVal = 881.88;
+
+        function normalizarTasaBCV(raw) {
+            if (raw === null || raw === undefined) return 881.88;
+            let str = String(raw).trim().replace(/[^0-9.,]/g, '');
+            if (!str) return 881.88;
+            if (str.includes(',') && !str.includes('.')) {
+                str = str.replace(',', '.');
+            } else if (str.includes('.') && str.includes(',')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            }
+            let num = parseFloat(str);
+            if (isNaN(num) || num <= 0) return 881.88;
+            while (num >= 5000) {
+                num = num / 10;
+            }
+            return Math.round(num * 100) / 100;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            cargarFichaInversionistaMaster();
+            aplicarValorTasaUI(tasaBCVVal);
+            setTimeout(sincronizarTasaBCVConTimeout, 500);
+            setInterval(sincronizarTasaBCVConTimeout, 45000);
+        });
+
+        function cargarFichaInversionistaMaster() {
+            try {
+                const ficha = JSON.parse(localStorage.getItem("CLG_Ficha_Instalador_Activa") || "null");
+                if (ficha && ficha.nombre) {
+                    document.getElementById("invNombre").value = ficha.nombre;
+                    document.getElementById("invRif").value = ficha.rif || "";
+                    document.getElementById("invCorreo").value = ficha.email || "";
+                    document.getElementById("invTelefono").value = ficha.telefono || "";
+                    document.getElementById("invRifDriveUrl").value = ficha.urlRifDrive || "";
+                    document.getElementById("invLogoDriveUrl").value = ficha.urlLogoDrive || "";
+                    logTerminal(`Ficha de solicitud cargada automáticamente para [${ficha.nombre}].`, "var(--magia-cian)");
+                }
+            } catch (e) {}
+        }
+
+        function logTerminal(mensaje, color = 'var(--acento-verde)') {
+            const logBox = document.getElementById('systemLogBox');
+            const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+            if (logBox) {
+                logBox.innerHTML += `<br><span style="color: ${color}">[SYS ARCADE ${timestamp}]: ${mensaje}</span>`;
+                logBox.scrollTop = logBox.scrollHeight;
+            }
+        }
+
+        function mostrarNotificacionArcade(mensaje, tipo = 'success') {
+            const toastDiv = document.createElement('div');
+            const colorBorde = tipo === 'error' ? 'var(--acento-rojo)' : 'var(--acento-verde)';
+            const colorTexto = tipo === 'error' ? 'var(--acento-rojo)' : 'var(--acento-verde)';
+            const icono = tipo === 'error' ? 'fa-triangle-exclamation' : 'fa-check-circle';
+
+            toastDiv.style.position = 'fixed';
+            toastDiv.style.bottom = '25px';
+            toastDiv.style.right = '25px';
+            toastDiv.style.background = 'var(--bg-card)';
+            toastDiv.style.border = `2px solid ${colorBorde}`;
+            toastDiv.style.color = colorTexto;
+            toastDiv.style.padding = '14px 22px';
+            toastDiv.style.borderRadius = '12px';
+            toastDiv.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+            toastDiv.style.fontSize = '0.85rem';
+            toastDiv.style.fontWeight = '700';
+            toastDiv.style.zIndex = '999999';
+            toastDiv.style.boxShadow = '0 10px 30px rgba(0,0,0,0.8)';
+            toastDiv.innerHTML = `<i class="fas ${icono}"></i> ${mensaje}`;
+            
+            document.body.appendChild(toastDiv);
+            setTimeout(() => {
+                toastDiv.style.opacity = '0';
+                toastDiv.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toastDiv.remove(), 500);
+            }, 3500);
+        }
+
+        function sincronizarTasaBCVConTimeout() {
+            const icon = document.getElementById('sync-icon');
+            if (icon) icon.classList.add('fa-spin');
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                const runner = google.script.run
+                    .withSuccessHandler(function(val) {
+                        let num = (val && typeof val === 'object') ? (val.tasaNumerica || val.tasa) : val;
+                        if (num) aplicarValorTasaUI(num);
+                        finalizarSyncIcon();
+                    })
+                    .withFailureHandler(function() {
+                        consultarApiExternaInversionista();
+                    });
+
+                if (typeof runner.obtenerTasaBCVOficial === 'function') {
+                    runner.obtenerTasaBCVOficial();
+                } else {
+                    consultarApiExternaInversionista();
+                }
+            } else {
+                consultarApiExternaInversionista();
+            }
+        }
+
+        function consultarApiExternaInversionista() {
+            fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+                .then(res => res.json())
+                .then(data => {
+                    let val = data.promedio || data.price;
+                    if (val) aplicarValorTasaUI(val);
+                    finalizarSyncIcon();
+                })
+                .catch(() => {
+                    finalizarSyncIcon();
+                });
+        }
+
+        function aplicarValorTasaUI(val) {
+            tasaBCVVal = normalizarTasaBCV(val);
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            if (spanTasa) {
+                spanTasa.textContent = tasaBCVVal.toFixed(2).replace('.', ',') + " VES";
+            }
+            logTerminal(`Tasa BCV verificada a 2 decimales: ${spanTasa ? spanTasa.textContent : tasaBCVVal}`, "var(--acento-verde)");
+        }
+
+        function finalizarSyncIcon() {
+            const icon = document.getElementById('sync-icon');
+            if (icon) icon.classList.remove('fa-spin');
+        }
+
+        function cambiarSeccion(idSeccion, elementoNav) {
+            document.querySelectorAll(".contenido-seccion").forEach(sec => sec.style.display = "none");
+            const target = document.getElementById(idSeccion);
+            if (target) target.style.display = "flex";
+
+            document.querySelectorAll(".horizontal-nav-bar .btn-nav-arcade").forEach(link => {
+                if(!link.classList.contains('btn-logout-arcade') && !link.classList.contains('btn-nav-cyan')) {
+                    link.classList.remove("active");
+                }
+            });
+            if (elementoNav) elementoNav.classList.add("active");
+            logTerminal(`Sección cambiada a: ${idSeccion}`, "var(--magia-cian)");
+        }
+
+        function ejecutarInstalacionInversionista(event) {
+            event.preventDefault();
+            const resBox = document.getElementById('msgResultado');
+            resBox.style.display = 'block';
+            resBox.style.background = '#0b1120';
+            resBox.style.border = '1px solid var(--magia-cian)';
+            resBox.style.color = 'var(--magia-cian)';
+            resBox.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando registro y sincronizando con Google Sheets...';
+
+            const servicios = Array.from(document.querySelectorAll('input[name="servicios"]:checked')).map(c => c.value);
+            const comitivas = Array.from(document.querySelectorAll('input[name="comitivas"]:checked')).map(c => c.value);
+
+            const payload = {
+                nombre: document.getElementById('invNombre').value.trim(),
+                rif: document.getElementById('invRif').value.trim(),
+                correo: document.getElementById('invCorreo').value.trim(),
+                telefono: document.getElementById('invTelefono').value.trim(),
+                rifDriveUrl: document.getElementById('invRifDriveUrl').value.trim(),
+                logoDriveUrl: document.getElementById('invLogoDriveUrl').value.trim(),
+                propiedades: document.getElementById('invPropiedades').value.trim(),
+                servicios: servicios,
+                comitivas: comitivas,
+                rol: document.getElementById('invRol').value,
+                estado: "ACTIVO"
+            };
+
+            const tbody = document.getElementById("tablaInversionistasBody");
+            if (tbody) {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><strong>${payload.nombre}</strong></td>
+                    <td>${payload.rif}</td>
+                    <td>${payload.propiedades}</td>
+                    <td>${servicios.concat(comitivas).slice(0, 3).join(", ")}</td>
+                    <td>${payload.correo}</td>
+                    <td><span style="color: var(--acento-verde); font-weight: bold;">ACTIVO [MASTER]</span></td>
+                    <td><button class="arcade-btn btn-contrato" style="padding: 4px 8px; font-size: 0.65rem; width: auto;" onclick="navegarModulo('portal_inversionista')"><i class="fas fa-arrow-right"></i> Ver Portal</button></td>
+                `;
+                tbody.prepend(tr);
+            }
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.registrarNuevoInversionistaMaster === 'function') {
+                google.script.run
+                    .withSuccessHandler(res => {
+                        resBox.style.background = 'rgba(0, 255, 102, 0.15)';
+                        resBox.style.border = '1px solid #00ff66';
+                        resBox.style.color = '#00ff66';
+                        resBox.innerHTML = '✅ ' + (res && res.msg ? res.msg : 'Inversionista instalado en CLG_panel_inversionista y CLG_Usuario.');
+                        mostrarNotificacionArcade(`¡Inversionista ${payload.nombre} instalado con éxito!`);
+                        document.getElementById('formInstalarInversionista').reset();
+                        logTerminal("Inversionista guardado en la base de datos central.", "var(--acento-verde)");
+                    })
+                    .withFailureHandler(err => {
+                        resBox.style.background = 'rgba(255, 51, 51, 0.15)';
+                        resBox.style.border = '1px solid #ff3333';
+                        resBox.style.color = '#ff3333';
+                        resBox.innerHTML = '❌ Error: ' + err.message;
+                        mostrarNotificacionArcade("Error: " + err.message, "error");
+                    })
+                    .registrarNuevoInversionistaMaster(payload);
+            } else {
+                setTimeout(() => {
+                    resBox.style.background = 'rgba(0, 255, 102, 0.15)';
+                    resBox.style.border = '1px solid #00ff66';
+                    resBox.style.color = '#00ff66';
+                    resBox.innerHTML = '✅ Inversionista ' + payload.nombre + ' registrado exitosamente.';
+                    mostrarNotificacionArcade(`¡Inversionista ${payload.nombre} instalado!`);
+                    document.getElementById('formInstalarInversionista').reset();
+                }, 600);
+            }
+        }
+
+        function navegarModulo(nombreModulo) {
+            logTerminal(`Navegando hacia: ${nombreModulo}...`, "var(--magia-cian)");
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+                google.script.run
+                    .withSuccessHandler(htmlContent => {
+                        if (nombreModulo === 'login_ui') {
+                            window.top.location.href = htmlContent || '?p=login_ui';
+                        } else {
+                            document.open();
+                            document.write(htmlContent);
+                            document.close();
+                        }
+                    })
+                    .withFailureHandler(() => {
+                        window.top.location.href = `${window.location.href.split('?')[0]}?p=${nombreModulo}&tenant=default&rol=master`;
+                    })
+                    .router_backend(nombreModulo);
+            } else {
+                window.top.location.href = `${window.location.href.split('?')[0]}?p=${nombreModulo}&tenant=default&rol=master`;
+            }
+        }
+    </script>
+</body>
+</html>

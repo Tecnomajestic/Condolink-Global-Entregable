@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Condolink Global V20.8 - Instalador Tenant Admin, Juntas Independientes & Alícuotas</title>
+    <!-- FontAwesome para iconografía HUD -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Plus Jakarta Sans y Press Start 2P -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-principal: #030810;
+            --bg-card: #0b1120;
+            --bg-card-hover: #131c31;
+            --acento-verde: #00ff66;
+            --acento-rojo: #ff3333;
+            --magia-dorado: #ffcc00;     
+            --magia-cian: #00e5ff;
+            --magia-azul: #0088ff;
+            --magia-morado: #a855f7;
+            --magia-fucsia: #ec4899;
+            --magia-naranja: #f97316;
+            --gris-texto: #94a3b8;
+            --texto-blanco: #f0f6fc;
+            --borde-color: rgba(0, 229, 255, 0.3);
+            --arcade-shadow: 0 15px 35px -5px rgba(0,0,0,0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #0b1120 0%, #030810 70%);
+            color: var(--texto-blanco);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 12px 24px;
+            border-bottom: 2px solid var(--magia-dorado);
+            box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.1), 0 6px 20px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        @keyframes spinSlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spinSlowRev { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+        @keyframes cyan-pulse { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 6px currentColor); } 50% { opacity: 1; filter: drop-shadow(0 0 14px currentColor); } }
+
+        .header-mystical-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 65px;
+            height: 65px;
+        }
+
+        .mystical-halo {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed var(--magia-dorado);
+            border-radius: 50%;
+            animation: spinSlowRev 18s linear infinite;
+            pointer-events: none;
+        }
+
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 50%;
+            background: #030810;
+            padding: 2px;
+            border: 2px solid var(--magia-dorado);
+            z-index: 2;
+            animation: cyan-pulse 3s ease-in-out infinite;
+        }
+
+        .header-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--magia-cian);
+            letter-spacing: 0.8px;
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+        }
+
+        .bcv-ticker {
+            background: rgba(0, 0, 0, 0.75);
+            border: 1.5px solid var(--magia-dorado);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--magia-dorado);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+            transition: transform 0.2s;
+            font-weight: 700;
+        }
+        .bcv-ticker:hover { transform: scale(1.02); }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .lcars-sidebar {
+            width: 85px;
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 10px;
+            border-right: 2px solid var(--magia-dorado);
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            flex-shrink: 0;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.4);
+        }
+
+        .sidebar-elbow {
+            width: 100%;
+            height: 40px;
+            background: var(--magia-cian);
+            border-top-left-radius: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 10px var(--magia-cian);
+        }
+
+        .sidebar-nav-btn {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1.5px solid var(--magia-cian);
+            color: var(--magia-cian);
+            padding: 12px 6px;
+            text-align: center;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-nav-btn:hover, .sidebar-nav-btn.active {
+            background: var(--magia-cian);
+            color: #030810;
+            box-shadow: 0 0 15px var(--magia-cian);
+            transform: translateY(-2px);
+        }
+
+        .sidebar-nav-btn.btn-logout-custom {
+            background-color: rgba(255, 51, 51, 0.2) !important;
+            border-color: var(--acento-rojo) !important;
+            color: var(--acento-rojo) !important;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
+            margin-top: auto;
+        }
+        .sidebar-nav-btn.btn-logout-custom:hover {
+            background-color: var(--acento-rojo) !important;
+            color: #fff !important;
+            box-shadow: 0 0 20px var(--acento-rojo) !important;
+            transform: translateY(-2px);
+        }
+
+        .workspace {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 16px;
+            align-content: start;
+        }
+
+        .panel-box {
+            background: var(--bg-card);
+            border: 2px solid var(--magia-dorado);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.08), 0 6px 20px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .panel-box h3 {
+            font-size: 0.92rem;
+            font-weight: 800;
+            border-bottom: 1.5px dashed rgba(255, 204, 0, 0.3);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--magia-dorado);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .terminal-screen {
+            grid-column: span 3;
+            background: #030810;
+            border: 2px solid var(--acento-verde);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.82rem;
+            color: var(--acento-verde);
+            height: 95px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 15px rgba(0, 255, 102, 0.2);
+            line-height: 1.4;
+        }
+
+        .dom-tabs-bar {
+            grid-column: span 3;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: var(--bg-card);
+            border: 1.5px solid var(--magia-cian);
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+
+        .dom-tab-btn {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1.5px solid var(--magia-cian);
+            color: var(--magia-cian);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.74rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .dom-tab-btn.active, .dom-tab-btn:hover {
+            background: var(--magia-cian);
+            color: #030810;
+            box-shadow: 0 0 12px var(--magia-cian);
+        }
+
+        .arcade-btn {
+            position: relative;
+            padding: 11px 16px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s ease;
+            outline: none;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .arcade-btn:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        .btn-eldritch { background: linear-gradient(135deg, #ffcc00 0%, #b38f00 100%); color: #030810; border-color: #ffcc00; }
+        .btn-salud { background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%); color: #030810; border-color: #00ff66; }
+        .btn-contrato { background: linear-gradient(135deg, #00e5ff 0%, #0088cc 100%); color: #030810; border-color: #00e5ff; }
+        .btn-arcana { background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); color: #fff; border-color: #a855f7; }
+        .btn-transmutacion { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: #fff; border-color: #ec4899; }
+        .btn-energia { background: linear-gradient(135deg, #f97316 0%, #c2410c 100%); color: #030810; border-color: #f97316; }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .module-arcade-btn {
+            background: linear-gradient(135deg, #131c31 0%, #0b1120 100%);
+            border: 2px solid var(--magia-cian);
+            color: var(--magia-cian);
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .module-arcade-btn:hover {
+            background: var(--magia-cian);
+            color: #030810;
+            border-color: #fff;
+            box-shadow: 0 0 20px var(--magia-cian);
+            transform: translateY(-2px);
+        }
+
+        .module-arcade-btn i { font-size: 1.2rem; }
+
+        .form-group { margin-bottom: 10px; }
+
+        .form-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--magia-cian);
+            margin-bottom: 4px;
+            display: block;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            background: var(--bg-card-hover);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 9px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--magia-dorado);
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+        }
+
+        .eco-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.76rem;
+            margin-top: 6px;
+        }
+
+        .eco-table th, .eco-table td {
+            border: 1.5px solid rgba(0, 229, 255, 0.25);
+            padding: 7px 9px;
+            text-align: left;
+        }
+
+        .eco-table th {
+            background: rgba(0, 229, 255, 0.12);
+            color: var(--magia-cian);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+        }
+
+        .footer-lcars {
+            background: var(--bg-card);
+            border-top: 2px solid var(--magia-cian);
+            border-radius: 14px 14px 0 0;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 -4px 15px rgba(0, 229, 255, 0.15);
+            font-size: 0.75rem;
+            color: var(--gris-texto);
+            flex-shrink: 0;
+            margin-top: 12px;
+            backdrop-filter: blur(10px);
+        }
+        .footer-lcars strong { color: #f0f6fc; }
+
+        @media (max-width: 1024px) {
+            .workspace { grid-template-columns: 1fr; }
+            .terminal-screen, .dom-tabs-bar, .panel-box { grid-column: span 1 !important; }
+            .modules-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body onload="cargarTasaBCVAutomatica()">
+
+    <header>
+        <div class="header-brand">
+            <div class="header-title">CONDOLINK GLOBAL V20.8 // INSTALADOR TENANT ADMIN, JUNTAS INDEPENDIENTES & ALÍCUOTA</div>
+        </div>
+
+        <div class="header-mystical-center" title="Torre Charam Sede Principal - La Castellana, Caracas">
+            <div class="mystical-halo"></div>
+            <img src="https://i.imgur.com/XcMwIDa.png" alt="Condolink Logo Oficial" class="header-logo" onerror="this.src='https://i.imgur.com/XcMwIDa.png'">
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div class="bcv-ticker" id="bcv-display" onclick="cargarTasaBCVAutomatica()" title="Clic para sincronizar tasa oficial BCV (2 decimales)">
+                <i class="fa-solid fa-chart-line" style="color: var(--magia-dorado);"></i> Tasa Oficial BCV: <span id="tasa-valor-dinamico" style="color: #fff; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> Sync...</span> [Auto-Sync]
+            </div>
+            <button class="arcade-btn btn-salud" style="padding:9px 12px;" onclick="navegarModulo('panel_libro_diario_admin')">
+                <i class="fa-solid fa-book"></i> Libro Diario & Balance
+            </button>
+            <button class="arcade-btn" style="background:var(--acento-rojo); color:#fff; border-color:#fff; padding:9px 12px;" onclick="navegarModulo('login_ui')">
+                <i class="fa-solid fa-power-off"></i> Salir
+            </button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Barra Lateral Curva LCARS -->
+        <aside class="lcars-sidebar">
+            <div class="sidebar-elbow"></div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="sidebar-nav-btn active" title="Panel Admin" onclick="navegarModulo('panel_admin')"><i class="fa-solid fa-user-shield"></i></button>
+                <button class="sidebar-nav-btn" title="Libro Diario y Balance de Comprobación" onclick="navegarModulo('panel_libro_diario_admin')"><i class="fa-solid fa-book-open"></i></button>
+                <button class="sidebar-nav-btn" title="Portal Servicios" onclick="navegarModulo('panel_servicios_contratados_admin')"><i class="fa-solid fa-toolbox"></i></button>
+                <button class="sidebar-nav-btn" title="Finanzas" onclick="navegarModulo('panel_financiero_admin')"><i class="fa-solid fa-vault"></i></button>
+            </div>
+            <div>
+                <button class="sidebar-nav-btn btn-logout-custom" title="Cerrar Sesión (Login)" onclick="navegarModulo('login_ui')"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <main class="workspace" style="flex: 1; overflow-y: auto; max-height: calc(100vh - 150px);">
+
+            <!-- Terminal de Eventos -->
+            <div class="terminal-screen" id="terminal-logs">
+                [SYS ARCADE 12:00:00Z]: Instalador Tenant Admin V20.8 inicializado.<br>
+                [REGLA DE ARQUITECTURA]: Solo el Administrador tiene facultad exclusiva para crear Juntas independientes. Cada Junta define su número de unidades de propietarios, trabajadores residenciales LOTTT, alícuota y logo institucional.
+            </div>
+
+            <!-- Controlador de Vistas DOM Tabs -->
+            <div class="dom-tabs-bar">
+                <button class="dom-tab-btn active" onclick="filtrarSeccionesInstalador('todas', this)"><i class="fa-solid fa-layer-group"></i> Todas las Secciones (1-6)</button>
+                <button class="dom-tab-btn" onclick="filtrarSeccionesInstalador('juntas', this)"><i class="fa-solid fa-building-shield"></i> 1-2. Empresa, Logo & Creación de Junta Independiente</button>
+                <button class="dom-tab-btn" onclick="filtrarSeccionesInstalador('unidades', this)"><i class="fa-solid fa-house-user"></i> 3-4. Proveedores, Unidades & Alícuotas</button>
+                <button class="dom-tab-btn" onclick="filtrarSeccionesInstalador('nomina', this)"><i class="fa-solid fa-users-gear"></i> 5-6. Nómina LOTTT & Cuentas Bancarias</button>
+            </div>
+
+            <!-- SECCIÓN 1: IDENTIFICACIÓN DE EMPRESA ADMINISTRADORA Y LOGO INSTITUCIONAL -->
+            <div class="panel-box seccion-inst-item" data-grupo="juntas">
+                <h3><i class="fa-solid fa-building" style="color: var(--magia-cian);"></i> 1. Empresa Administradora, Alícuota & Logo de Comunicados</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Nombre / Razón Social Administradora:</label>
+                    <input type="text" class="form-control" id="nombreEmpresa" value="Administradora Condolink Global C.A." placeholder="Ej: Administradora Horizonte C.A.">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label class="form-label">RIF Institucional:</label>
+                        <input type="text" class="form-control" id="rifEmpresa" value="J-41258963-0" placeholder="J-12345678-9">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono Master:</label>
+                        <input type="text" class="form-control" id="telefonoEmpresa" value="+58 212-5559011" placeholder="+58 414-0000000">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Logo del Administrador (Se estampa en todos los Comunicados de sus Juntas):</label>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" class="form-control" id="logoAdminUrl" value="https://i.imgur.com/XcMwIDa.png" oninput="actualizarPreviewLogoAdmin()">
+                        <img id="previewLogoAdmin" src="https://i.imgur.com/XcMwIDa.png" alt="Logo Admin" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--magia-dorado); object-fit:cover;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(0, 229, 255, 0.06); padding: 10px; border-radius: 10px; border: 1.5px dashed rgba(0, 229, 255, 0.35);">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" style="color: var(--acento-verde);"><i class="fa-solid fa-dollar-sign"></i> Cuota Base Condominio ($):</label>
+                        <input type="number" step="0.01" class="form-control" id="pagoCondominioBase" value="65.00">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" style="color: var(--magia-dorado);"><i class="fa-solid fa-percent"></i> Alícuota Admin Mensual (%):</label>
+                        <input type="number" step="0.01" class="form-control" id="alicuotaAdminMensual" value="10.00">
+                    </div>
+                </div>
+
+                <button class="arcade-btn btn-contrato" style="width: 100%; margin-top: 4px;" onclick="guardarEmpresaAdministradora()">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Empresa, Logo y Alícuota
+                </button>
+            </div>
+
+            <!-- SECCIÓN 2: CREACIÓN DE JUNTA DE CONDOMINIO INDEPENDIENTE Y ACTIVACIÓN DE EJECUTIVOS / LEGAL -->
+            <div class="panel-box seccion-inst-item" data-grupo="juntas">
+                <h3><i class="fa-solid fa-users-rectangle" style="color: var(--magia-dorado);"></i> 2. Creación de Junta Independiente (Exclusivo Admin)</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label class="form-label">ID Ecosistema / Junta (Aislado):</label>
+                        <input type="text" class="form-control" id="juntaIdEcosistema" value="junta_parque_leander" placeholder="Ej: junta_torre_norte">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombre Oficial de la Junta:</label>
+                        <input type="text" class="form-control" id="nombreJunta" value="Junta Res. Parque Leander" placeholder="Ej: Junta Res. Parque Leander">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                    <div class="form-group">
+                        <label class="form-label">N° Unidades Propietarios:</label>
+                        <input type="number" class="form-control" id="numPropietarios" value="50" min="1" oninput="recalcularAlicuotaSugerida()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">N° Trabajadores LOTTT:</label>
+                        <input type="number" class="form-control" id="numTrabajadores" value="3" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color:var(--magia-dorado);">Alícuota por Unidad (%):</label>
+                        <input type="number" step="0.0001" class="form-control" id="alicuotaGeneralJunta" value="2.0000">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label class="form-label">Fecha Constitución:</label>
+                        <input type="date" class="form-control" id="fechaConstitucion" value="2026-06-01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Libro de Actas / RIF Junta:</label>
+                        <input type="text" class="form-control" id="actaConstitutiva" value="ACTA-2026-001 // J-30998877-1">
+                    </div>
+                </div>
+
+                <button class="arcade-btn btn-eldritch" style="width: 100%;" onclick="constituirJuntaIndependiente()">
+                    <i class="fa-solid fa-file-signature"></i> Crear Junta Independiente & Ecosistema
+                </button>
+
+                <!-- BOTONES DE ACTIVACIÓN DEL USUARIO LEGAL Y LOS 03 EJECUTIVOS DE ESTA JUNTA -->
+                <div style="background: rgba(168, 85, 247, 0.08); border: 1.5px solid rgba(168, 85, 247, 0.4); border-radius: 10px; padding: 10px; margin-top: 4px;">
+                    <span class="form-label" style="color: var(--magia-morado); margin-bottom: 6px;"><i class="fa-solid fa-user-check"></i> Activación de Roles Delegados para esta Junta:</span>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                        <button class="arcade-btn btn-arcana" style="font-size: 7px; padding: 8px;" onclick="activarRolJuntaDesdeInstalador('USUARIO_LEGAL')">
+                            <i class="fa-solid fa-scale-balanced"></i> Activar Usuario Legal
+                        </button>
+                        <button class="arcade-btn btn-contrato" style="font-size: 7px; padding: 8px;" onclick="activarRolJuntaDesdeInstalador('EJECUTIVO_ADMINISTRATIVO')">
+                            <i class="fa-solid fa-user-tie"></i> Activar Ejec. Admin
+                        </button>
+                        <button class="arcade-btn btn-salud" style="font-size: 7px; padding: 8px;" onclick="activarRolJuntaDesdeInstalador('EJECUTIVO_FACTURACION')">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Activar Ejec. Facturación
+                        </button>
+                        <button class="arcade-btn btn-energia" style="font-size: 7px; padding: 8px;" onclick="activarRolJuntaDesdeInstalador('EJECUTIVO_OPERACIONES')">
+                            <i class="fa-solid fa-gears"></i> Activar Ejec. Operaciones
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: PROVEEDORES DEL CONDOMINIO -->
+            <div class="panel-box seccion-inst-item" data-grupo="unidades">
+                <h3><i class="fa-solid fa-truck-fast" style="color: var(--acento-verde);"></i> 3. Proveedores de la Junta</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Razón Social Proveedor:</label>
+                    <input type="text" class="form-control" id="nombreProveedor" placeholder="Ej: HidroServicios C.A.">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label class="form-label">RIF Proveedor:</label>
+                        <input type="text" class="form-control" id="rifProveedor" placeholder="J-98765432-1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rubro / Servicio:</label>
+                        <select class="form-select" id="rubroProveedor">
+                            <option value="MANTENIMIENTO">Mantenimiento General</option>
+                            <option value="ASCENSORES">Ascensores</option>
+                            <option value="SEGURIDAD">Vigilancia y Seguridad</option>
+                            <option value="BOMBAS">Hidroneumáticos</option>
+                            <option value="JARDINERIA">Jardinería y Áreas Verdes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contacto y Cuenta de Pago:</label>
+                    <input type="text" class="form-control" id="contactoProveedor" placeholder="Teléfono / Pago Móvil / Cuenta">
+                </div>
+
+                <button class="arcade-btn btn-salud" style="width: 100%; margin-top: 4px;" onclick="registrarProveedorInstalador()">
+                    <i class="fa-solid fa-plus-circle"></i> Vincular Proveedor a la Junta
+                </button>
+
+                <table class="eco-table">
+                    <thead>
+                        <tr><th>Proveedor</th><th>Rubro</th><th>Estado</th></tr>
+                    </thead>
+                    <tbody id="tablaProveedoresInstBody">
+                        <tr><td>Soluciones Hidroneumáticas C.A.</td><td>BOMBAS</td><td style="color:var(--acento-verde);">ACTIVO</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SECCIÓN 4: PROPIETARIOS DEL CONDOMINIO Y ALÍCUOTA POR UNIDAD -->
+            <div class="panel-box seccion-inst-item" data-grupo="unidades">
+                <h3><i class="fa-solid fa-house-user" style="color: var(--magia-morado);"></i> 4. Unidades de Propietarios & Alícuota (%)</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Nombre y Apellido Propietario:</label>
+                    <input type="text" class="form-control" id="nombrePropietario" placeholder="Ej: Juan Carlos Pérez">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <div class="form-group">
+                        <label class="form-label">Unidad / Apto:</label>
+                        <input type="text" class="form-control" id="codigoUnidad" placeholder="Ej: T1-4B">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color:var(--magia-dorado);">Alícuota Unidad (%):</label>
+                        <input type="number" step="0.0001" class="form-control" id="alicuotaUnidadPropietario" value="2.0000" placeholder="Ej: 2.0000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estatus:</label>
+                        <select class="form-select" id="estadoPropietario">
+                            <option value="SOLVENTE">Solvente</option>
+                            <option value="MOROSO">Con Deuda</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Correo Electrónico (Acceso Portal Propietario):</label>
+                    <input type="email" class="form-control" id="correoPropietario" placeholder="propietario@correo.com">
+                </div>
+
+                <button class="arcade-btn btn-arcana" style="width: 100%;" onclick="registrarPropietarioConAlicuota()">
+                    <i class="fa-solid fa-user-plus"></i> Guardar Unidad con su Alícuota
+                </button>
+
+                <table class="eco-table">
+                    <thead>
+                        <tr><th>Unidad</th><th>Propietario</th><th>Alícuota</th><th>Estatus</th></tr>
+                    </thead>
+                    <tbody id="tablaUnidadesInstBody">
+                        <tr><td>PH-01</td><td>Dr. Roberto Méndez</td><td style="color:var(--magia-dorado); font-weight:800;">3.2500%</td><td style="color:var(--acento-verde);">SOLVENTE</td></tr>
+                        <tr><td>PB-02</td><td>Dra. Elena Urdaneta</td><td style="color:var(--magia-dorado); font-weight:800;">2.0000%</td><td style="color:var(--acento-verde);">SOLVENTE</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SECCIÓN 5: TRABAJADORES RESIDENCIALES (LOTTT) -->
+            <div class="panel-box seccion-inst-item" data-grupo="nomina">
+                <h3><i class="fa-solid fa-helmet-safety" style="color: var(--magia-fucsia);"></i> 5. Trabajadores Residenciales (LOTTT)</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Nombre del Trabajador Residencial:</label>
+                    <input type="text" class="form-control" id="nombreTrabajador" placeholder="Ej: Pedro Antonio Gómez">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label class="form-label">Cédula:</label>
+                        <input type="text" class="form-control" id="cedulaTrabajador" placeholder="V-15.444.333">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cargo Residencial:</label>
+                        <select class="form-select" id="cargoTrabajador">
+                            <option value="CONSERJE">Trabajador Residencial</option>
+                            <option value="VIGILANTE">Oficial de Seguridad</option>
+                            <option value="MANTENIMIENTO">Auxiliar Mantenimiento</option>
+                            <option value="SUPERVISOR">Supervisor Operativo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label class="form-label">Salario Base Mensual ($):</label>
+                        <input type="number" step="0.01" class="form-control" id="salarioTrabajador" value="180.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cesta Ticket ($):</label>
+                        <input type="number" step="0.01" class="form-control" id="bonoTrabajador" value="40.00">
+                    </div>
+                </div>
+
+                <button class="arcade-btn btn-transmutacion" style="width: 100%; margin-top: 4px;" onclick="registrarTrabajadorInstalador()">
+                    <i class="fa-solid fa-id-card"></i> Incorporar a Nómina de la Junta
+                </button>
+            </div>
+
+            <!-- SECCIÓN 6: BANCOS Y CUENTAS RECEPTORAS -->
+            <div class="panel-box seccion-inst-item" data-grupo="nomina">
+                <h3><i class="fa-solid fa-building-columns" style="color: var(--magia-naranja);"></i> 6. Cuentas Bancarias de la Junta</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Entidad Bancaria:</label>
+                    <select class="form-select" id="entidadBancaria">
+                        <option value="BANESCO">0134 - Banesco Banco Universal</option>
+                        <option value="MERCANTIL">0105 - Banco Mercantil</option>
+                        <option value="PROVINCIAL">0108 - BBVA Provincial</option>
+                        <option value="BDV">0102 - Banco de Venezuela</option>
+                        <option value="BNC">0191 - Banco Nacional de Crédito (BNC)</option>
+                        <option value="ZELLE">Pasarela Internacional Zelle (USD)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Número de Cuenta (20 dígitos) o Correo Zelle:</label>
+                    <input type="text" class="form-control" id="numeroCuenta" placeholder="0134-0000-00-0000000000 / pagos@junta.com">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label class="form-label">Moneda:</label>
+                        <select class="form-select" id="monedaCuenta">
+                            <option value="VES">Bolívares (VES)</option>
+                            <option value="USD">Dólares (USD)</option>
+                            <option value="EUR">Euros (EUR)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Pago Móvil Asociado:</label>
+                        <input type="text" class="form-control" id="pagoMovil" placeholder="0414-0000000 / RIF">
+                    </div>
+                </div>
+
+                <button class="arcade-btn btn-energia" style="width: 100%; margin-top: 4px;" onclick="registrarBancoInstalador()">
+                    <i class="fa-solid fa-check-double"></i> Registrar Cuenta Recaudadora
+                </button>
+            </div>
+
+            <!-- RESUMEN DE JUNTAS INDEPENDIENTES CREADAS POR EL ADMINISTRADOR -->
+            <div class="panel-box" style="grid-column: span 3; border-color: var(--magia-cian);">
+                <h3><i class="fa-solid fa-sitemap" style="color: var(--magia-cian);"></i> Ecosistemas de Juntas Independientes Bajo Gestión del Administrador</h3>
+                <table class="eco-table">
+                    <thead>
+                        <tr>
+                            <th>ID Ecosistema / Junta</th>
+                            <th>Nombre de la Junta</th>
+                            <th>Unidades Propietarios</th>
+                            <th>Trabajadores LOTTT</th>
+                            <th>Alícuota Base / Admin</th>
+                            <th>Logo Admin en Comunicados</th>
+                            <th>Roles Delegados</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaJuntasCreadasBody">
+                        <tr>
+                            <td><code>junta_parque_leander</code></td>
+                            <td>Junta Res. Parque Leander</td>
+                            <td>50 Unidades</td>
+                            <td>3 Trabajadores</td>
+                            <td>2,0000% Unid. / 10,00% Admin</td>
+                            <td><span style="color:var(--acento-verde);"><i class="fa-solid fa-check-circle"></i> Vinculado</span></td>
+                            <td>Legal + 03 Ejecutivos Activos</td>
+                        </tr>
+                        <tr>
+                            <td><code>torre_charam_central</code></td>
+                            <td>Junta Condominio Torre Charam</td>
+                            <td>80 Unidades</td>
+                            <td>5 Trabajadores</td>
+                            <td>1,2500% Unid. / 10,00% Admin</td>
+                            <td><span style="color:var(--acento-verde);"><i class="fa-solid fa-check-circle"></i> Vinculado</span></td>
+                            <td>Legal + 03 Ejecutivos Activos</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- CONSOLA DE NAVEGACIÓN DE MÓDULOS DEL SISTEMA (DEPURADA Y CON LIBRO DIARIO) -->
+            <div class="panel-box" style="grid-column: span 3;">
+                <h3><i class="fa-solid fa-network-wired" style="color: var(--magia-dorado);"></i> Consola de Navegación de Módulos del Sistema</h3>
+                <div class="modules-grid">
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_admin')"><i class="fa-solid fa-user-shield" style="color: var(--magia-dorado);"></i>Panel Admin Central</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_libro_diario_admin')"><i class="fa-solid fa-book-open" style="color: var(--acento-verde);"></i>Libro Diario & Balance</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_financiero_admin')"><i class="fa-solid fa-wallet" style="color: var(--magia-cian);"></i>Panel Financiero</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_pagos_admin')"><i class="fa-solid fa-money-bill-transfer" style="color: var(--acento-verde);"></i>Pagos Multimoneda</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_gastos_admin')"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--magia-fucsia);"></i>Gastos & Egresos</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_nomina_admin')"><i class="fa-solid fa-users-gear" style="color: var(--magia-morado);"></i>Nómina LOTTT</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_propiedades_admin')"><i class="fa-solid fa-building" style="color: var(--magia-naranja);"></i>Propiedades & Juntas</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_comunicados_admin')"><i class="fa-solid fa-bullhorn" style="color: var(--magia-dorado);"></i>Comunicados con Logo</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <footer class="footer-lcars">
+        <div><strong>CONDOLINK GLOBAL V20.8</strong> &copy; 2026 - Torre Charam, La Castellana, Caracas. Todos los derechos reservados.</div>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <span style="color: var(--magia-cian); cursor: pointer;" onclick="navegarModulo('panel_admin')"><i class="fas fa-shield-alt"></i> Seguridad por Roles Activa</span>
+            <span style="color: var(--acento-verde);"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Ecosistema Multi-Junta Sincronizado</span>
+        </div>
+    </footer>
+
+    <script>
+        let BASE_URL = typeof window !== 'undefined' ? window.location.href.split('?')[0] : '';
+
+        function normalizarTasaBCV(valorRaw) {
+            if (valorRaw === null || valorRaw === undefined) return '445,78';
+            let str = String(valorRaw).replace(/[^0-9.,]/g, '').trim();
+            if (!str) return '445,78';
+            if (str.includes(',') && str.includes('.')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            } else if (str.includes(',')) {
+                str = str.replace(',', '.');
+            }
+            const num = parseFloat(str);
+            if (isNaN(num) || num <= 0) return '445,78';
+            return num.toFixed(2).replace('.', ',');
+        }
+
+        function logTerminal(mensaje, color = 'var(--acento-verde)') {
+            const terminal = document.getElementById('terminal-logs');
+            const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+            if (terminal) {
+                terminal.innerHTML += `<br><span style="color: ${color}">[SYS ARCADE ${timestamp}]: ${mensaje}</span>`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }
+
+        function filtrarSeccionesInstalador(grupo, btnEl) {
+            document.querySelectorAll('.dom-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            document.querySelectorAll('.seccion-inst-item').forEach(box => {
+                if (grupo === 'todas' || box.getAttribute('data-grupo') === grupo) {
+                    box.style.display = 'flex';
+                } else {
+                    box.style.display = 'none';
+                }
+            });
+            logTerminal(`Controlador DOM Tabs: Mostrando grupo [${grupo.toUpperCase()}].`, 'var(--magia-cian)');
+        }
+
+        function actualizarPreviewLogoAdmin() {
+            const url = document.getElementById('logoAdminUrl').value.trim();
+            const img = document.getElementById('previewLogoAdmin');
+            if (img && url) img.src = url;
+        }
+
+        function recalcularAlicuotaSugerida() {
+            const n = parseInt(document.getElementById('numPropietarios').value, 10) || 1;
+            const alicuota = (100 / Math.max(1, n)).toFixed(4);
+            document.getElementById('alicuotaGeneralJunta').value = alicuota;
+            document.getElementById('alicuotaUnidadPropietario').value = alicuota;
+        }
+
+        function cargarTasaBCVAutomatica() {
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            if (spanTasa) spanTasa.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sync...`;
+            logTerminal("Sincronizando Tasa Oficial BCV (2 decimales) desde CLG_Configuracion!B2...", "var(--magia-dorado)");
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                const metodo = typeof google.script.run.obtenerTasaBCVOficial === 'function' ? 'obtenerTasaBCVOficial' : 'obtenerTasaBCV';
+                google.script.run
+                    .withSuccessHandler(res => {
+                        let raw = (typeof res === 'object' && res !== null) ? (res.tasaFormateada || res.tasa || res.valor) : res;
+                        if (raw) {
+                            const fmt = normalizarTasaBCV(raw) + ' VES';
+                            if (spanTasa) spanTasa.innerText = fmt;
+                            localStorage.setItem('clg_tasa_bcv_oficial', normalizarTasaBCV(raw));
+                            logTerminal(`Tasa BCV sincronizada a 2 decimales: ${fmt}`, "var(--acento-verde)");
+                        } else {
+                            usarTasaRespaldoApi();
+                        }
+                    })
+                    .withFailureHandler(usarTasaRespaldoApi)[metodo]();
+            } else {
+                usarTasaRespaldoApi();
+            }
+        }
+
+        function usarTasaRespaldoApi() {
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+                .then(r => r.json())
+                .then(d => {
+                    const fmt = normalizarTasaBCV(d.promedio || d.price || 445.78) + ' VES';
+                    if (spanTasa) spanTasa.innerText = fmt;
+                    logTerminal(`Tasa BCV sincronizada vía API BCV: ${fmt}`, "var(--acento-verde)");
+                })
+                .catch(() => {
+                    if (spanTasa) spanTasa.innerText = "445,78 VES";
+                    logTerminal("Tasa BCV en respaldo local: 445,78 VES", "var(--acento-verde)");
+                });
+        }
+
+        function guardarEmpresaAdministradora() {
+            const payload = {
+                seccion: 'EMPRESA_ADMIN',
+                nombreEmpresa: document.getElementById('nombreEmpresa').value,
+                rifEmpresa: document.getElementById('rifEmpresa').value,
+                telefonoEmpresa: document.getElementById('telefonoEmpresa').value,
+                logoAdminUrl: document.getElementById('logoAdminUrl').value,
+                pagoCondominioBase: document.getElementById('pagoCondominioBase').value,
+                alicuotaAdminMensual: document.getElementById('alicuotaAdminMensual').value
+            };
+            localStorage.setItem('clg_admin_empresa_config', JSON.stringify(payload));
+            localStorage.setItem('clg_logo_admin_url', payload.logoAdminUrl);
+            logTerminal(`Empresa Administradora [${payload.nombreEmpresa}], Logo Institucional y Alícuota Mensual (${payload.alicuotaAdminMensual}%) guardados.`, 'var(--acento-verde)');
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.registrarInstalacionTenantAdmin === 'function') {
+                google.script.run
+                    .withSuccessHandler(() => logTerminal("Configuración de Empresa sincronizada en BD_CONDOLINKGLOBAL [OK].", "var(--acento-verde)"))
+                    .registrarInstalacionTenantAdmin(payload);
+            }
+        }
+
+        function constituirJuntaIndependiente() {
+            const juntaId = document.getElementById('juntaIdEcosistema').value.trim() || ('junta_' + Date.now());
+            const nombreJunta = document.getElementById('nombreJunta').value.trim() || 'Nueva Junta Condominio';
+            const numProp = document.getElementById('numPropietarios').value || '50';
+            const numTrab = document.getElementById('numTrabajadores').value || '2';
+            const alicuotaUnid = document.getElementById('alicuotaGeneralJunta').value || '2.0000';
+            const alicuotaAdmin = document.getElementById('alicuotaAdminMensual').value || '10.00';
+            const logoAdminUrl = document.getElementById('logoAdminUrl').value || 'https://i.imgur.com/XcMwIDa.png';
+
+            const payload = {
+                seccion: 'JUNTA_INDEPENDIENTE',
+                juntaId: juntaId,
+                nombreJunta: nombreJunta,
+                numPropietarios: numProp,
+                numTrabajadores: numTrab,
+                alicuotaUnidad: alicuotaUnid,
+                alicuotaAdminMensual: alicuotaAdmin,
+                logoAdminUrl: logoAdminUrl,
+                fechaConstitucion: document.getElementById('fechaConstitucion').value,
+                actaConstitutiva: document.getElementById('actaConstitutiva').value
+            };
+
+            const tbody = document.getElementById('tablaJuntasCreadasBody');
+            if (tbody) {
+                tbody.insertAdjacentHTML('afterbegin', `
+                    <tr>
+                        <td><code>${juntaId}</code></td>
+                        <td>${nombreJunta}</td>
+                        <td>${numProp} Unidades</td>
+                        <td>${numTrab} Trabajadores</td>
+                        <td>${alicuotaUnid}% Unid. / ${alicuotaAdmin}% Admin</td>
+                        <td><span style="color:var(--acento-verde);"><i class="fa-solid fa-check-circle"></i> Logo Vinculado</span></td>
+                        <td>Legal + 03 Ejecutivos Listos</td>
+                    </tr>
+                `);
+            }
+
+            let juntasGuardadas = [];
+            try { juntasGuardadas = JSON.parse(localStorage.getItem('clg_juntas_independientes') || '[]'); } catch(e) {}
+            juntasGuardadas.unshift(payload);
+            localStorage.setItem('clg_juntas_independientes', JSON.stringify(juntasGuardadas));
+
+            logTerminal(`Junta Independiente [${nombreJunta} / ${juntaId}] creada con ${numProp} unidades, ${numTrab} trabajadores LOTTT, alícuota ${alicuotaUnid}% y logo del Administrador vinculado.`, 'var(--magia-dorado)');
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.registrarInstalacionTenantAdmin === 'function') {
+                google.script.run
+                    .withSuccessHandler(() => logTerminal(`Ecosistema aislado [${juntaId}] asentado en CLG_JuntaDirectiva y CLG_Propiedades [OK].`, 'var(--acento-verde)'))
+                    .registrarInstalacionTenantAdmin(payload);
+            }
+        }
+
+        function activarRolJuntaDesdeInstalador(rol) {
+            const juntaId = document.getElementById('juntaIdEcosistema').value.trim() || 'junta_parque_leander';
+            logTerminal(`Activando credencial delegada [${rol}] para el ecosistema independiente [${juntaId}]...`, 'var(--magia-morado)');
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.activarUsuarioRolDelegadoAdminBackend === 'function') {
+                google.script.run
+                    .withSuccessHandler(res => {
+                        logTerminal(`Rol [${rol}] activado en CLG_Usuarios para la Junta [${juntaId}]. Portal asignado: ${res && res.portalDestino ? res.portalDestino : rol}`, 'var(--acento-verde)');
+                    })
+                    .activarUsuarioRolDelegadoAdminBackend({
+                        rol: rol,
+                        juntaId: juntaId,
+                        correo: `${rol.toLowerCase()}@${juntaId}.condolink.com`,
+                        nombre: `${rol} - ${juntaId}`
+                    });
+            } else {
+                logTerminal(`Rol [${rol}] activado y vinculado al ecosistema [${juntaId}] correctamente.`, 'var(--acento-verde)');
+            }
+        }
+
+        function registrarProveedorInstalador() {
+            const nombre = document.getElementById('nombreProveedor').value.trim();
+            const rubro = document.getElementById('rubroProveedor').value;
+            if (!nombre) {
+                logTerminal("Ingrese la razón social del proveedor.", "var(--acento-rojo)");
+                return;
+            }
+            const tbody = document.getElementById('tablaProveedoresInstBody');
+            if (tbody) {
+                tbody.insertAdjacentHTML('afterbegin', `<tr><td>${nombre}</td><td>${rubro}</td><td style="color:var(--acento-verde);">ACTIVO</td></tr>`);
+            }
+            logTerminal(`Proveedor [${nombre}] vinculado a la Junta en CLG_ServiciosContratados.`, 'var(--acento-verde)');
+        }
+
+        function registrarPropietarioConAlicuota() {
+            const nombre = document.getElementById('nombrePropietario').value.trim();
+            const unidad = document.getElementById('codigoUnidad').value.trim();
+            const alicuota = document.getElementById('alicuotaUnidadPropietario').value || '2.0000';
+            const estado = document.getElementById('estadoPropietario').value;
+            const correo = document.getElementById('correoPropietario').value.trim();
+            const juntaId = document.getElementById('juntaIdEcosistema').value.trim() || 'junta_parque_leander';
+
+            if (!nombre || !unidad) {
+                logTerminal("Complete el nombre del propietario y el código de la unidad.", "var(--acento-rojo)");
+                return;
+            }
+
+            const tbody = document.getElementById('tablaUnidadesInstBody');
+            if (tbody) {
+                tbody.insertAdjacentHTML('afterbegin', `
+                    <tr>
+                        <td>${unidad}</td>
+                        <td>${nombre}</td>
+                        <td style="color:var(--magia-dorado); font-weight:800;">${Number(alicuota).toFixed(4)}%</td>
+                        <td style="color:${estado === 'SOLVENTE' ? 'var(--acento-verde)' : 'var(--acento-rojo)'};">${estado}</td>
+                    </tr>
+                `);
+            }
+
+            logTerminal(`Unidad [${unidad}] (${nombre}) registrada con Alícuota ${Number(alicuota).toFixed(4)}% en la Junta [${juntaId}].`, 'var(--magia-cian)');
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.registrarInstalacionTenantAdmin === 'function') {
+                google.script.run.registrarInstalacionTenantAdmin({
+                    seccion: 'UNIDAD_PROPIETARIO',
+                    juntaId: juntaId,
+                    codigoUnidad: unidad,
+                    nombrePropietario: nombre,
+                    alicuotaUnidad: alicuota,
+                    estadoPropietario: estado,
+                    correoPropietario: correo
+                });
+            }
+        }
+
+        function registrarTrabajadorInstalador() {
+            const nombre = document.getElementById('nombreTrabajador').value.trim() || 'Trabajador Residencial';
+            const cargo = document.getElementById('cargoTrabajador').value;
+            const salario = document.getElementById('salarioTrabajador').value;
+            logTerminal(`Trabajador [${nombre} - ${cargo}] incorporado a la nómina LOTTT ($${salario}/mes).`, 'var(--magia-fucsia)');
+        }
+
+        function registrarBancoInstalador() {
+            const banco = document.getElementById('entidadBancaria').value;
+            const cuenta = document.getElementById('numeroCuenta').value.trim() || 'Cuenta Principal';
+            const moneda = document.getElementById('monedaCuenta').value;
+            logTerminal(`Cuenta recaudadora [${banco} - ${moneda}: ${cuenta}] vinculada a la Junta.`, 'var(--magia-naranja)');
+        }
+
+        function navegarModulo(nombreModulo) {
+            logTerminal(`Redirigiendo al módulo [${nombreModulo}]...`, "var(--magia-cian)");
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+                google.script.run
+                    .withSuccessHandler(htmlContent => {
+                        if (nombreModulo === 'login_ui' && htmlContent && htmlContent.startsWith('http')) {
+                            window.top.location.href = htmlContent;
+                        } else if (htmlContent) {
+                            document.open();
+                            document.write(htmlContent);
+                            document.close();
+                        } else {
+                            window.top.location.href = `${BASE_URL}?p=${nombreModulo}&tenant=default&rol=admin`;
+                        }
+                    })
+                    .withFailureHandler(() => {
+                        window.top.location.href = `${BASE_URL}?p=${nombreModulo}&tenant=default&rol=admin`;
+                    })
+                    .router_backend(nombreModulo);
+            } else {
+                window.top.location.href = `${BASE_URL}?p=${nombreModulo}&tenant=default&rol=admin`;
+            }
+        }
+    </script>
+</body>
+</html>

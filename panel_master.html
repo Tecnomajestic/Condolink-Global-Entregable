@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">CONDOLINK GLOBAL V20.8 // PANEL MASTER UNIVERSAL</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --azul-primario: #020617;
+      --azul-secundario: #00e5ff;
+      --bg-main: #020617;
+      --card-bg: rgba(11, 12, 16, 0.96);
+      --border-color: rgba(0, 229, 255, 0.4);
+      --success: #00ff66;
+      --warning: #ffd700;
+      --danger: #ff3366;
+      --text-main: #ffffff;
+      --text-muted: #8a99ad;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at center, #0f172a 0%, #020617 80%);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 25px 50px -12px rgba(0, 229, 255, 0.25);
+    }
+
+    /* Halo Futurista Estelar */
+    .portal-icon-container {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .portal-halo {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 2px dashed rgba(0, 229, 255, 0.7);
+      border-radius: 50%;
+      animation: spin 10s linear infinite;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .brand-logo-mystical {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--azul-secundario);
+      background-color: var(--azul-primario);
+      z-index: 2;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+      cursor: pointer;
+    }
+
+    /* Botones Tácticos */
+    .btn-restricted {
+      background: linear-gradient(135deg, #00e5ff 0%, #0088ff 100%);
+      color: #000;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      box-shadow: 0 4px 15px rgba(0, 229, 255, 0.35);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-restricted:hover {
+      background: linear-gradient(135deg, #4fefff 0%, #3399ff 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 229, 255, 0.5);
+    }
+
+    .btn-auditoria {
+      background: rgba(0, 229, 255, 0.1);
+      color: #00e5ff;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-auditoria:hover, .btn-auditoria.active {
+      background: rgba(0, 229, 255, 0.25);
+      border-color: #00e5ff;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+    }
+
+    .btn-danger-salida {
+      background: rgba(255, 51, 102, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(255, 51, 102, 0.4);
+      font-weight: 700;
+      text-transform: uppercase;
+      transition: all 0.25s ease;
+    }
+    .btn-danger-salida:hover {
+      background: rgba(255, 51, 102, 0.3);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+    }
+
+    /* BCV Display */
+    .bcv-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .badge-live {
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--azul-secundario);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .bcv-value-display {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #ffb703;
+      text-shadow: 0 0 15px rgba(255, 183, 3, 0.3);
+    }
+
+    /* Ficha de Solicitud de Registro (Bandeja Login -> Panel Master -> Instalador) */
+    .ficha-solicitud-box {
+      background: rgba(3, 7, 18, 0.85);
+      border: 1px dashed rgba(0, 229, 255, 0.35);
+      border-radius: 0.75rem;
+      padding: 12px;
+      font-size: 0.75rem;
+    }
+
+    /* Master Multi-User Chat Layout */
+    .master-chat-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      background: #030712;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      height: 280px;
+    }
+    .master-chats-sidebar {
+      background: rgba(11, 19, 41, 0.95);
+      border-right: 1px solid rgba(0, 229, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-search-box {
+      padding: 8px;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+    }
+    .chat-users-list {
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+    .master-chat-item {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: background 0.2s;
+    }
+    .master-chat-item:hover, .master-chat-item.active {
+      background: rgba(0, 229, 255, 0.2);
+      color: var(--azul-secundario);
+    }
+    .master-chat-main {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px;
+    }
+    .master-chat-msgs {
+      flex-grow: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.75rem;
+      padding-right: 4px;
+    }
+    .master-msg-bubble {
+      max-width: 80%;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    .master-msg-bubble.incoming {
+      background: #111827;
+      color: #fff;
+      align-self: flex-start;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+    }
+    .master-msg-bubble.outgoing {
+      background: var(--azul-secundario);
+      color: #020617;
+      font-weight: 700;
+      align-self: flex-end;
+    }
+
+    .input-estelar {
+      background: rgba(3, 7, 18, 0.9);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      outline: none;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .input-estelar:focus {
+      border-color: var(--azul-secundario);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+
+    /* Footer Ajustado Sin Espacio Muerto Inferior */
+    .footer-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0 0 0;
+      margin-top: 16px;
+      margin-bottom: 0;
+      border-top: 1px solid rgba(0, 229, 255, 0.2);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .footer-right {
+      color: var(--azul-secundario);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body class="p-4 md:p-6 pb-2 md:pb-2">
+  <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+    
+    <div>
+      <!-- Header Estelar Master -->
+      <header class="card-panel p-6 mb-6 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-4">
+          <div class="portal-icon-container" title="Torre Charam Sede Principal">
+            <div class="portal-halo"></div>
+            <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo Condolink Global" class="brand-logo-mystical" onclick="ejecutarRouterDinamico('portal_master')" onerror="this.src='https://i.imgur.com/XcMwIDa.png'">
+          </div>
+          <div>
+            <h1 class="text-2xl font-extrabold text-cyan-400 flex items-center gap-3" id="lblNombrePanel">
+              CONDOLINK GLOBAL V20.8 // PANEL MASTER
+            </h1>
+            <p class="text-slate-400 text-sm mt-1" id="lblSubtituloPanel">Sede Principal Torre Charam, Caracas · Consola de Administración Universal y Franquicias.</p>
+          </div>
+        </div>
+        
+        <!-- Controles Superiores -->
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <button onclick="ejecutarRouterDinamico('panel_monitoreo_master')" class="btn-restricted px-4 py-3 rounded-xl flex items-center justify-center gap-2 text-xs">
+            <i class="fas fa-desktop"></i> MONITOREO
+          </button>
+          <button onclick="salirLogin()" class="btn-danger-salida px-4 py-3 rounded-xl flex items-center justify-center gap-2 text-xs">
+            <i class="fas fa-power-off"></i> SALIDA
+          </button>
+        </div>
+      </header>
+
+      <!-- Barra de Pestañas DOM Tabs State Controller -->
+      <div class="card-panel p-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="barraPestanasDom">
+          <button onclick="conmutarPestanaDom('pestana-operaciones', this)" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2 active">
+            <i class="fas fa-users-gear"></i> Solicitudes de Registro y Gestión de Tenants
+          </button>
+          <button onclick="conmutarPestanaDom('pestana-matriz', this)" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+            <i class="fas fa-network-wired"></i> Matriz de Navegación Ecosistema
+          </button>
+          <button onclick="conmutarPestanaDom('pestana-chat', this)" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+            <i class="fas fa-comments"></i> Mensajería y Custodia Master
+          </button>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 1: SOLICITUDES DE REGISTRO (DESDE LOGIN_UI), APROBACIÓN DE TENANTS + TASA BCV -->
+      <div id="pestana-operaciones" class="tab-bloque-universal space-y-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Tarjeta Tasa BCV Asíncrona con Resiliencia -->
+          <div class="card-panel p-5 cursor-pointer flex flex-col justify-between" onclick="sincronizarTasaBCV()" title="Haz clic para actualizar la tasa BCV">
+            <div>
+              <div class="bcv-card-header">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400">TASA OFICIAL BCV</span>
+                <div class="badge-live">
+                  <i id="syncIcon" class="fas fa-sync-alt fa-spin text-cyan-400"></i> LIVE API
+                </div>
+              </div>
+              <div class="bcv-value-display mt-2" id="tasa-valor-master">Sincronizando...</div>
+            </div>
+            <p class="text-xs text-slate-400 mt-4">Actualización automática autónoma (Caracas).</p>
+          </div>
+
+          <!-- Panel 1: Bandeja de Solicitudes de Registro (login_ui) y Aprobación hacia Instalador Tenant -->
+          <div class="card-panel p-5 md:col-span-2 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+                <h2 class="text-sm font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
+                  <i class="fas fa-users-gear"></i> Solicitudes de Registro y Aprobación de Administradores / Tenants
+                </h2>
+                <button onclick="cargarSolicitudesPendientesMaster()" class="btn-auditoria px-3 py-1 rounded text-xs flex items-center gap-1">
+                  <i class="fas fa-sync-alt"></i> Sincronizar Solicitudes
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+                <div>
+                  <label class="text-xs font-bold text-slate-400 uppercase">Administradora / Solicitud Recibida</label>
+                  <select id="select-tenant-admin" class="input-estelar mt-1" onchange="mostrarDetalleSolicitudSeleccionada()">
+                    <option value="Administradores Condolink Global">Administradores Condolink Global</option>
+                    <option value="Inversiones Torre Charam">Inversiones Torre Charam</option>
+                    <option value="Gestión Inmobiliaria Express">Gestión Inmobiliaria Express</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-400 uppercase">Margen Operativo / Vigencia</label>
+                  <select id="tenant-vigencia" class="input-estelar mt-1">
+                    <option value="1 Mes">1 Mes</option>
+                    <option value="3 Meses">3 Meses</option>
+                    <option value="1 Año">1 Año</option>
+                    <option value="2 Años">2 Años</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Ficha de Datos Recibidos de login_ui (RIF en Drive + Logo en Drive + Instalador Destino) -->
+              <div id="fichaSolicitudActiva" class="ficha-solicitud-box mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                  <div><span class="text-slate-400">RIF / Cédula:</span> <strong id="lblSolicitudRif" class="text-cyan-300">J-50000000-1</strong></div>
+                  <div><span class="text-slate-400">Rol / Tipo:</span> <strong id="lblSolicitudRol" class="text-amber-300">Administrador (Contratar)</strong></div>
+                  <div><span class="text-slate-400">Correo:</span> <strong id="lblSolicitudEmail" class="text-slate-200">administracion@condolinkglobal.com</strong></div>
+                </div>
+                <div class="flex flex-wrap items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-800 text-xs">
+                  <div class="flex items-center gap-3">
+                    <a id="linkRifDrive" href="#" target="_blank" class="text-cyan-400 hover:underline flex items-center gap-1">
+                      <i class="fas fa-id-card"></i> Ver RIF/Cédula en Drive
+                    </a>
+                    <a id="linkLogoDrive" href="#" target="_blank" class="text-emerald-400 hover:underline flex items-center gap-1">
+                      <i class="fas fa-image"></i> Ver Logo en Drive
+                    </a>
+                  </div>
+                  <span id="lblInstaladorDestino" class="text-slate-400">Destino: <strong class="text-cyan-300">instalador_tenant_admin_master</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="aprobarTenantMaster(false)" class="btn-restricted w-full py-3 rounded-xl text-xs flex items-center justify-center gap-2">
+                <i class="fas fa-check-circle"></i> Aprobar Solicitud (CLG_Configuracion)
+              </button>
+              <button onclick="aprobarTenantMaster(true)" class="btn-auditoria w-full py-3 rounded-xl text-xs flex items-center justify-center gap-2">
+                <i class="fas fa-cogs"></i> Aprobar y Configurar en Instalador Tenant
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PESTAÑA 2: MATRIZ DE NAVEGACIÓN DEL ECOSISTEMA -->
+      <div id="pestana-matriz" class="tab-bloque-universal mb-6" style="display: none;">
+        <div class="card-panel p-5">
+          <h2 class="text-sm font-bold text-cyan-300 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <i class="fas fa-sitemap"></i> Matriz de Navegación Completa del Ecosistema Master
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            <button onclick="ejecutarRouterDinamico('portal_master')" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+              <i class="fas fa-crown"></i> Portal Master
+            </button>
+            <button onclick="ejecutarRouterDinamico('panel_inmobiliario_master')" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+              <i class="fas fa-building"></i> Inmobiliario Master
+            </button>
+            <button onclick="ejecutarRouterDinamico('panel_servicios_contratados_master')" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+              <i class="fas fa-toolbox"></i> Servicios Master
+            </button>
+            <button onclick="ejecutarRouterDinamico('panel_auditoria_master')" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+              <i class="fas fa-shield-alt"></i> Auditoría Master
+            </button>
+            <button onclick="ejecutarRouterDinamico('instalador_tenant_admin_master')" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+              <i class="fas fa-shield-halved"></i> Instalador Admin
+            </button>
+            <button onclick="ejecutarRouterDinamico('instalador_tenant_inversionista_master')" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+              <i class="fas fa-globe"></i> Instalador Inversor
+            </button>
+            <button onclick="ejecutarRouterDinamico('auditar_global_master')" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+              <i class="fas fa-microchip"></i> Diagnóstico 64 Archivos
+            </button>
+            <button onclick="ejecutarRouterDinamico('panel_monitoreo_master')" class="btn-auditoria p-3 rounded-lg flex items-center justify-center gap-2">
+              <i class="fas fa-desktop"></i> Monitoreo Master
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 3: MENSAJERÍA MULTI-USUARIO GLOBAL -->
+      <div id="pestana-chat" class="tab-bloque-universal mb-6" style="display: none;">
+        <div class="card-panel p-5">
+          <h2 class="text-sm font-bold text-cyan-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <i class="fas fa-comments"></i> Mensajería Global Multicanal (Todos los Usuarios Registrados)
+          </h2>
+          <div class="master-chat-layout">
+            <!-- Sidebar con Buscador de Usuarios Registrados -->
+            <div class="master-chats-sidebar">
+              <div class="chat-search-box">
+                <input type="text" id="inputBuscarUsuarioChat" class="input-estelar text-xs py-1" placeholder="🔍 Buscar usuario..." oninput="filtrarListaUsuariosChat()">
+              </div>
+              <div class="chat-users-list" id="contenedorListaUsuariosChat">
+                <!-- Se poblará dinámicamente -->
+              </div>
+            </div>
+
+            <!-- Panel Principal de Chat -->
+            <div class="master-chat-main">
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; border-bottom: 1px solid rgba(0,229,255,0.2); padding-bottom: 4px;">
+                <strong id="chatMasterActiveName" style="color: #fff;">Seleccione un usuario...</strong>
+                <span style="color: var(--success);"><i class="fas fa-shield-alt"></i> Encriptado CLG</span>
+              </div>
+              <div class="master-chat-msgs" id="masterChatMsgsBox"></div>
+              <div style="display: flex; gap: 6px; border-top: 1px solid rgba(0,229,255,0.2); padding-top: 6px;">
+                <input type="text" id="txtChatInputMaster" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-400" placeholder="Escribir mensaje..." onkeypress="if(event.key === 'Enter') enviarMensajeChatMaster()">
+                <button onclick="enviarMensajeChatMaster()" class="btn-restricted px-3 py-1 rounded text-xs">Enviar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consola de Registro y Logs -->
+      <div class="card-panel p-6 mb-4">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
+            <i class="fas fa-terminal text-cyan-400"></i> Consola y Registro Operativo Master
+          </h2>
+          <button onclick="document.getElementById('terminal-logs').innerHTML = '[MASTER SYSTEM]: Búfer refrescado correctamente.'; " class="text-xs text-cyan-400 hover:underline">
+            <i class="fas fa-rotate"></i> Limpiar Consola
+          </button>
+        </div>
+        <pre id="terminal-logs" class="bg-[#030712] text-cyan-300 p-4 rounded-xl text-xs overflow-x-auto h-32 border border-slate-800 font-mono leading-relaxed">[MASTER SYSTEM]: Panel Master V20.8 vinculado a Torre Charam en Caracas. Matriz universal y base de datos centralizada operativas.<br>&gt; Control global de licencias, recepción de solicitudes (RIF/Logo en Drive), instalador tenant y mensajería multi-usuario activo.</pre>
+      </div>
+    </div>
+
+    <!-- FOOTER INSTITUCIONAL (SIN ESPACIO MUERTO INFERIOR) -->
+    <footer class="footer-bar">
+      <span>CONDOLINK GLOBAL V20.8 — Ecosistema de Administración Inmobiliaria</span>
+      <span class="footer-right">SEDE PRINCIPAL TORRE CHARAM, CARACAS</span>
+    </footer>
+
+  </div>
+
+  <script>
+    /* =========================================================================
+       CONFIGURACIÓN DINÁMICA Y DIRECTORIO MULTI-USUARIO GLOBAL
+       ========================================================================= */
+    const PANEL_CONFIG = {
+      nombrePanel: "CONDOLINK GLOBAL V20.8 // PANEL MASTER",
+      subtitulo: "Sede Principal Torre Charam, Caracas · Consola de Administración Universal y Franquicias.",
+      rolActual: "MASTER",
+      tablaDBRelacionada: "CLG_Usuario"
+    };
+
+    let tasaBCV = 881.07;
+
+    // Catálogo de solicitudes de registro (Sincronizado con login_ui + CLG_Solicitudes)
+    let solicitudesRegistroMaster = [
+      {
+        id: "SOL-BASE-1",
+        nombre: "Administradores Condolink Global",
+        rif: "J-50000000-1",
+        rol: "Administrador",
+        tipoSolicitud: "Contratar Servicio",
+        email: "administrador@condolinkglobal.com",
+        telefono: "0212-5550001",
+        direccion: "Torre Charam, La Castellana, Caracas",
+        urlRifDrive: "",
+        urlLogoDrive: "",
+        instaladorDestino: "instalador_tenant_admin_master"
+      },
+      {
+        id: "SOL-BASE-2",
+        nombre: "Inversiones Torre Charam",
+        rif: "J-40112233-8",
+        rol: "Inversionista",
+        tipoSolicitud: "Contratar Servicio",
+        email: "inversiones@torrecharam.com",
+        telefono: "0212-5550002",
+        direccion: "Av. Principal La Castellana, Caracas",
+        urlRifDrive: "",
+        urlLogoDrive: "",
+        instaladorDestino: "instalador_tenant_inversionista_master"
+      },
+      {
+        id: "SOL-BASE-3",
+        nombre: "Gestión Inmobiliaria Express",
+        rif: "J-31998877-0",
+        rol: "Administrador",
+        tipoSolicitud: "Probar Servicio",
+        email: "contacto@gestionexpress.com",
+        telefono: "0414-1234567",
+        direccion: "Chacao, Caracas",
+        urlRifDrive: "",
+        urlLogoDrive: "",
+        instaladorDestino: "instalador_tenant_admin_master"
+      }
+    ];
+    
+    let directorioUsuariosChat = [
+      { id: 'usr_red_franquicias', nombre: 'Red de Franquicias Global', rol: 'Franquicias', badge: 'Red', estado: 'online', mensajes: [{ de: 'incoming', texto: 'Reporte de operaciones centralizadas Torre Charam al día.', hora: '10:00 AM' }] },
+      { id: 'usr_soporte_master', nombre: 'Soporte Técnico Global', rol: 'Soporte', badge: 'Master', estado: 'online', mensajes: [{ de: 'incoming', texto: 'Sincronización de bases de datos completada sin incidencias.', hora: '09:15 AM' }] },
+      { id: 'usr_admin_charam', nombre: 'Administración Torre Charam', rol: 'Admin', badge: 'Condo', estado: 'online', mensajes: [{ de: 'incoming', texto: 'Solicitud de autorización de margen mensual emitida.', hora: '08:30 AM' }] },
+      { id: 'usr_junta_castellana', nombre: 'Junta de Condominio La Castellana', rol: 'Junta', badge: 'Junta', estado: 'offline', mensajes: [{ de: 'incoming', texto: 'Cierre administrativo y recibos aprobados.', hora: 'Ayer' }] },
+      { id: 'usr_inversionista_01', nombre: 'Inversionista Grupo Capital', rol: 'Inversor', badge: 'VIP', estado: 'online', mensajes: [{ de: 'incoming', texto: 'Consulta de liquidaciones de alícuotas del trimestre.', hora: 'Ayer' }] },
+      { id: 'usr_inquilino_101', nombre: 'Residente Apto 101 Torre Charam', rol: 'Inquilino', badge: 'Residente', estado: 'online', mensajes: [{ de: 'incoming', texto: 'Comprobante de pago tasa BCV enviado a revisión.', hora: 'Ayer' }] }
+    ];
+
+    let chatMasterActualId = 'usr_red_franquicias';
+
+    window.onload = function() {
+      inicializarPanelMaster();
+      sincronizarTasaBCV();
+      cargarSolicitudesPendientesMaster();
+      obtenerUsuariosRegistradosBD();
+      setInterval(sincronizarTasaBCV, 45000);
+    };
+
+    function inicializarPanelMaster() {
+      document.getElementById('lblNombrePanel').innerText = PANEL_CONFIG.nombrePanel;
+      document.getElementById('lblSubtituloPanel').innerText = PANEL_CONFIG.subtitulo;
+      renderizarSidebarUsuariosChat();
+      mostrarDetalleSolicitudSeleccionada();
+      logTerminalMaster(`Panel Master inicializado correctamente con rol [${PANEL_CONFIG.rolActual}].`, '#00ff66');
+    }
+
+    function logTerminalMaster(mensaje, color = '#34d399') {
+      const terminal = document.getElementById('terminal-logs');
+      const timestamp = new Date().toLocaleTimeString();
+      if (terminal) {
+        terminal.innerHTML += `<br><span style="color: ${color}">[MASTER LOG ${timestamp}]: ${mensaje}</span>`;
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+    }
+
+    /* =========================================================================
+       RECEPCIÓN DE SOLICITUDES DESDE LOGIN_UI (CON RIF Y LOGO EN DRIVE)
+       ========================================================================= */
+    function cargarSolicitudesPendientesMaster() {
+      // 1. Verificar solicitudes en localStorage por resiliencia inmediata
+      try {
+        const locales = JSON.parse(localStorage.getItem("CLG_Solicitudes_Pendientes") || "[]");
+        if (Array.isArray(locales) && locales.length > 0) {
+          locales.forEach(sol => {
+            if (!solicitudesRegistroMaster.some(s => s.nombre === sol.nombre && s.rif === sol.rif)) {
+              solicitudesRegistroMaster.unshift({
+                id: sol.id || ("SOL-" + Date.now()),
+                nombre: sol.nombre,
+                rif: sol.rif || "Sin RIF",
+                rol: sol.rol || "Administrador",
+                tipoSolicitud: sol.tipoSolicitud || "Contratar Servicio",
+                email: sol.email || "",
+                telefono: sol.telefono || "",
+                direccion: sol.direccion || "",
+                urlRifDrive: sol.urlRifDrive || "",
+                urlLogoDrive: sol.urlLogoDrive || "",
+                instaladorDestino: sol.instaladorDestino || (String(sol.rol).toLowerCase().includes("inversionista") ? "instalador_tenant_inversionista_master" : "instalador_tenant_admin_master")
+              });
+            }
+          });
+          poblarSelectorSolicitudes();
+        }
+      } catch (e) {}
+
+      // 2. Consultar solicitudes reales en Google Sheets (CLG_Solicitudes / CLG_RegistrosPendientes)
+      if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.obtenerSolicitudesPendientesMaster === 'function') {
+        google.script.run
+          .withSuccessHandler(function(listaServidor) {
+            if (Array.isArray(listaServidor) && listaServidor.length > 0) {
+              listaServidor.forEach(sol => {
+                if (!solicitudesRegistroMaster.some(s => s.nombre === sol.nombre && s.email === sol.email)) {
+                  solicitudesRegistroMaster.unshift(sol);
+                }
+              });
+              poblarSelectorSolicitudes();
+              logTerminalMaster(`Bandeja de solicitudes sincronizada (${listaServidor.length} registros en CLG_Solicitudes).`, '#00ff66');
+            }
+          })
+          .obtenerSolicitudesPendientesMaster();
+      } else {
+        poblarSelectorSolicitudes();
+      }
+    }
+
+    function poblarSelectorSolicitudes() {
+      const select = document.getElementById('select-tenant-admin');
+      if (!select) return;
+      const valorPrevio = select.value;
+      select.innerHTML = '';
+
+      solicitudesRegistroMaster.forEach(sol => {
+        const opt = document.createElement('option');
+        opt.value = sol.nombre;
+        opt.textContent = `${sol.nombre} — [${sol.rol} | ${sol.rif}]`;
+        select.appendChild(opt);
+      });
+
+      if (valorPrevio && Array.from(select.options).some(o => o.value === valorPrevio)) {
+        select.value = valorPrevio;
+      }
+      mostrarDetalleSolicitudSeleccionada();
+    }
+
+    function mostrarDetalleSolicitudSeleccionada() {
+      const select = document.getElementById('select-tenant-admin');
+      if (!select) return;
+      const nombreSel = select.value;
+      const sol = solicitudesRegistroMaster.find(s => s.nombre === nombreSel) || solicitudesRegistroMaster[0];
+      if (!sol) return;
+
+      document.getElementById('lblSolicitudRif').innerText = sol.rif || "Por verificar";
+      document.getElementById('lblSolicitudRol').innerText = `${sol.rol || "Administrador"} (${sol.tipoSolicitud || "Activo"})`;
+      document.getElementById('lblSolicitudEmail').innerText = sol.email || "condolinkglobal@gmail.com";
+
+      const instalador = sol.instaladorDestino || (String(sol.rol).toLowerCase().includes("inversionista") ? "instalador_tenant_inversionista_master" : "instalador_tenant_admin_master");
+      document.getElementById('lblInstaladorDestino').innerHTML = `Destino: <strong class="text-cyan-300">${instalador}</strong>`;
+
+      const linkRif = document.getElementById('linkRifDrive');
+      const linkLogo = document.getElementById('linkLogoDrive');
+      if (linkRif) {
+        if (sol.urlRifDrive) {
+          linkRif.href = sol.urlRifDrive;
+          linkRif.innerHTML = `<i class="fas fa-id-card"></i> Ver RIF/Cédula en Drive`;
+        } else {
+          linkRif.href = "https://drive.google.com/drive/folders/1_GOZOLnHBMm_meTUQSpmsIqZeY1E4Jzl";
+          linkRif.innerHTML = `<i class="fas fa-folder-open"></i> Carpeta RIF en Drive`;
+        }
+      }
+      if (linkLogo) {
+        if (sol.urlLogoDrive) {
+          linkLogo.href = sol.urlLogoDrive;
+          linkLogo.innerHTML = `<i class="fas fa-image"></i> Ver Logo en Drive`;
+        } else {
+          linkLogo.href = "https://drive.google.com/drive/folders/1_GOZOLnHBMm_meTUQSpmsIqZeY1E4Jzl";
+          linkLogo.innerHTML = `<i class="fas fa-folder-open"></i> Carpeta Logos en Drive`;
+        }
+      }
+    }
+
+    /* =========================================================================
+       SISTEMA DE CHAT MULTI-USUARIO GLOBAL (CON PERSISTENCIA PERMANENTE)
+       ========================================================================= */
+    function obtenerUsuariosRegistradosBD() {
+      try {
+        const chatsLocales = JSON.parse(localStorage.getItem("CLG_Mensajes_Master_Permanentes") || "null");
+        if (Array.isArray(chatsLocales) && chatsLocales.length > 0) {
+          directorioUsuariosChat = chatsLocales;
+          renderizarSidebarUsuariosChat();
+        }
+      } catch (e) {}
+
+      if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.obtenerListaUsuariosGlobal === 'function') {
+        google.script.run
+          .withSuccessHandler(function(listaServidor) {
+            if (Array.isArray(listaServidor) && listaServidor.length > 0) {
+              listaServidor.forEach(uSrv => {
+                const existente = directorioUsuariosChat.find(x => x.id === uSrv.id || x.nombre === uSrv.nombre);
+                if (!existente) {
+                  directorioUsuariosChat.push(uSrv);
+                } else if (Array.isArray(uSrv.mensajes) && uSrv.mensajes.length > existente.mensajes.length) {
+                  existente.mensajes = uSrv.mensajes;
+                }
+              });
+              try { localStorage.setItem("CLG_Mensajes_Master_Permanentes", JSON.stringify(directorioUsuariosChat)); } catch(e) {}
+              renderizarSidebarUsuariosChat();
+              logTerminalMaster("Lista multi-usuario sincronizada con la Base de Datos Central CLG_Usuario.", "#00ff66");
+            }
+          })
+          .obtenerListaUsuariosGlobal();
+      }
+    }
+
+    function renderizarSidebarUsuariosChat(filtro = '') {
+      const contenedor = document.getElementById('contenedorListaUsuariosChat');
+      if (!contenedor) return;
+      contenedor.innerHTML = '';
+
+      const filtrados = directorioUsuariosChat.filter(u => 
+        u.nombre.toLowerCase().includes(filtro.toLowerCase()) || 
+        u.rol.toLowerCase().includes(filtro.toLowerCase())
+      );
+
+      filtrados.forEach(usr => {
+        const esActivo = usr.id === chatMasterActualId ? 'active' : '';
+        const colorBadge = usr.estado === 'online' ? '#00ff66' : '#ffd700';
+        contenedor.innerHTML += `
+          <div class="master-chat-item ${esActivo}" onclick="seleccionarChatMaster('${usr.id}')">
+            <div class="flex justify-between items-center">
+              <strong class="truncate">${usr.nombre}</strong>
+              <span style="font-size:0.58rem; color:${colorBadge};">[${usr.badge}]</span>
+            </div>
+            <div class="text-slate-400 text-xs text-ellipsis overflow-hidden whitespace-nowrap">${usr.rol}</div>
+          </div>
+        `;
+      });
+
+      cargarChatMasterActivo();
+    }
+
+    function filtrarListaUsuariosChat() {
+      const val = document.getElementById('inputBuscarUsuarioChat').value;
+      renderizarSidebarUsuariosChat(val);
+    }
+
+    function seleccionarChatMaster(idUsuario) {
+      chatMasterActualId = idUsuario;
+      renderizarSidebarUsuariosChat(document.getElementById('inputBuscarUsuarioChat').value);
+    }
+
+    function cargarChatMasterActivo() {
+      const usr = directorioUsuariosChat.find(u => u.id === chatMasterActualId) || directorioUsuariosChat[0];
+      if(!usr) return;
+
+      document.getElementById('chatMasterActiveName').innerText = `${usr.nombre} [${usr.rol}]`;
+      const contenedorMsgs = document.getElementById('masterChatMsgsBox');
+      if(!contenedorMsgs) return;
+
+      contenedorMsgs.innerHTML = '';
+      usr.mensajes.forEach(msg => {
+        contenedorMsgs.innerHTML += `<div class="master-msg-bubble ${msg.de}"><div>${msg.texto}</div></div>`;
+      });
+      contenedorMsgs.scrollTop = contenedorMsgs.scrollHeight;
+    }
+
+    function enviarMensajeChatMaster() {
+      const input = document.getElementById('txtChatInputMaster');
+      const textoMensaje = input.value.trim();
+      if(!textoMensaje) return;
+
+      const usr = directorioUsuariosChat.find(u => u.id === chatMasterActualId);
+      if(usr) {
+        const horaActual = new Date().toLocaleTimeString();
+        usr.mensajes.push({ de: 'outgoing', texto: textoMensaje, hora: horaActual });
+        try { localStorage.setItem("CLG_Mensajes_Master_Permanentes", JSON.stringify(directorioUsuariosChat)); } catch(e) {}
+        input.value = '';
+        cargarChatMasterActivo();
+        logTerminalMaster(`Mensaje permanente transmitido a [${usr.nombre}].`, '#00e5ff');
+
+        if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.enviarMensajeBackend === 'function') {
+          google.script.run.enviarMensajeBackend({ destinatarioId: usr.id, destinatarioNombre: usr.nombre, texto: textoMensaje, fecha: horaActual });
+        }
+      }
+    }
+
+    /* =========================================================================
+       PATRÓN DE DESACOPLAMIENTO DE VISTAS POR PESTAÑAS DOM (DOM Tabs Controller)
+       ========================================================================= */
+    function conmutarPestanaDom(idPestana, elementoBtn) {
+      document.querySelectorAll('.tab-bloque-universal').forEach(bloque => {
+        bloque.style.display = 'none';
+      });
+      const objetivo = document.getElementById(idPestana);
+      if (objetivo) {
+        objetivo.style.display = 'block';
+      }
+
+      document.querySelectorAll('#barraPestanasDom .btn-auditoria').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      if (elementoBtn) elementoBtn.classList.add('active');
+
+      logTerminalMaster(`Vista conmutada fluidamente en el DOM a: ${idPestana}`, '#00e5ff');
+    }
+
+    /* =========================================================================
+       SINCRONIZACIÓN ASÍNCRONA TASA BCV (Cliente-Servidor + Resiliencia Cascada)
+       ========================================================================= */
+    async function sincronizarTasaBCV() {
+      const syncIcon = document.getElementById('syncIcon');
+      if(syncIcon) syncIcon.className = "fas fa-sync-alt fa-spin text-cyan-400";
+
+      let exito = false;
+      const fallbackTimer = setTimeout(() => {
+        if (!exito) {
+          exito = true;
+          consultarApiRespaldoBCV();
+        }
+      }, 3000);
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        const runner = google.script.run
+          .withSuccessHandler(function(val) {
+            if (!exito) {
+              exito = true;
+              clearTimeout(fallbackTimer);
+              let num = (val && typeof val === 'object') ? (val.tasaNumerica || val.tasa) : val;
+              if (num && Number(String(num).replace(',', '.')) > 0) {
+                aplicarTasaBCV(Number(String(num).replace(',', '.')));
+              } else {
+                consultarApiRespaldoBCV();
+              }
+            }
+          })
+          .withFailureHandler(function() {
+            if (!exito) {
+              exito = true;
+              clearTimeout(fallbackTimer);
+              consultarApiRespaldoBCV();
+            }
+          });
+
+        if (typeof runner.obtenerTasaBCVOficial === 'function') {
+          runner.obtenerTasaBCVOficial();
+        } else if (typeof runner.obtenerTasaBCV === 'function') {
+          runner.obtenerTasaBCV();
+        } else {
+          exito = true;
+          clearTimeout(fallbackTimer);
+          consultarApiRespaldoBCV();
+        }
+      } else {
+        if (!exito) {
+          exito = true;
+          clearTimeout(fallbackTimer);
+          consultarApiRespaldoBCV();
+        }
+      }
+    }
+
+    function consultarApiRespaldoBCV() {
+      fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+        .then(res => res.json())
+        .then(data => {
+          let val = data.promedio || data.price;
+          if (val && Number(val) > 0) {
+            aplicarTasaBCV(Number(val));
+          } else {
+            aplicarTasaBCV(881.07);
+          }
+        })
+        .catch(() => aplicarTasaBCV(881.07));
+    }
+
+    function normalizarTasaBCVMaster(raw) {
+      if (raw === null || raw === undefined) return 881.07;
+      let str = String(raw).trim().replace(/[^0-9.,]/g, '');
+      if (!str) return 881.07;
+      if (str.includes(',') && !str.includes('.')) {
+        str = str.replace(',', '.');
+      } else if (str.includes('.') && str.includes(',')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+      }
+      let num = parseFloat(str);
+      if (isNaN(num) || num <= 0) return 881.07;
+      while (num >= 5000) {
+        num = num / 10;
+      }
+      return Math.round(num * 100) / 100;
+    }
+
+    function aplicarTasaBCV(val) {
+      tasaBCV = normalizarTasaBCVMaster(val);
+      const valElem = document.getElementById('tasa-valor-master');
+      const syncIcon = document.getElementById('syncIcon');
+      if (valElem) {
+        valElem.innerText = tasaBCV.toFixed(2).replace('.', ',') + " VES";
+      }
+      if(syncIcon) syncIcon.className = "fas fa-sync-alt text-cyan-400";
+      logTerminalMaster(`Tasa BCV global sincronizada: ${valElem ? valElem.innerText : tasaBCV.toFixed(2)}`, "#00ff66");
+    }
+
+    /* =========================================================================
+       APROBACIÓN DE SOLICITUD Y PUENTE HACIA INSTALADOR TENANT (ADMIN / INVERSOR)
+       ========================================================================= */
+    function aprobarTenantMaster(abrirInstalador = false) {
+      const selectAdmin = document.getElementById('select-tenant-admin').value;
+      const vigencia = document.getElementById('tenant-vigencia').value;
+      const sol = solicitudesRegistroMaster.find(s => s.nombre === selectAdmin) || {
+        nombre: selectAdmin,
+        rif: "J-00000000-0",
+        rol: "Administrador",
+        email: "condolinkglobal@gmail.com",
+        urlRifDrive: "",
+        urlLogoDrive: "",
+        instaladorDestino: "instalador_tenant_admin_master"
+      };
+
+      const instaladorDestino = sol.instaladorDestino || (String(sol.rol).toLowerCase().includes("inversionista") ? "instalador_tenant_inversionista_master" : "instalador_tenant_admin_master");
+
+      // Guardar la ficha activa en localStorage para que el instalador_tenant tenga disponibles el RIF y Logo de Drive
+      try {
+        localStorage.setItem("CLG_Ficha_Instalador_Activa", JSON.stringify({
+          ...sol,
+          vigencia: vigencia,
+          aprobadoPor: "MASTER",
+          fechaAprobacion: new Date().toISOString()
+        }));
+      } catch (e) {}
+
+      logTerminalMaster(`Aprobando solicitud [${selectAdmin}] (${sol.rol}) con vigencia: ${vigencia}. Destino: ${instaladorDestino}.`, '#ffd700');
+      
+      if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.aprobarTenantBackend === 'function') {
+        google.script.run
+          .withSuccessHandler(() => {
+            logTerminalMaster(`Solicitud de ${selectAdmin} aprobada y registrada en CLG_Configuracion y ${instaladorDestino}.`, '#00ff66');
+            if (abrirInstalador) {
+              ejecutarRouterDinamico(instaladorDestino);
+            } else {
+              alert(`Solicitud de ${selectAdmin} aprobada con éxito por ${vigencia}.\nFicha lista en ${instaladorDestino}.`);
+            }
+          })
+          .withFailureHandler(err => alert("Error al procesar: " + err.message))
+          .aprobarTenantBackend({
+            tenant: selectAdmin,
+            vigencia: vigencia,
+            rif: sol.rif,
+            rol: sol.rol,
+            email: sol.email,
+            urlRifDrive: sol.urlRifDrive || "",
+            urlLogoDrive: sol.urlLogoDrive || "",
+            instaladorDestino: instaladorDestino
+          });
+      } else {
+        setTimeout(() => {
+          logTerminalMaster(`Operación completada OK. Ficha enviada a ${instaladorDestino}.`, '#00ff66');
+          if (abrirInstalador) {
+            ejecutarRouterDinamico(instaladorDestino);
+          } else {
+            alert(`Administrador ${selectAdmin} aprobado con éxito por ${vigencia}.`);
+          }
+        }, 300);
+      }
+    }
+
+    function salirLogin() {
+      if(confirm("¿Cerrar sesión Master del Ecosistema?")) {
+        ejecutarRouterDinamico('login_ui');
+      }
+    }
+
+    /* =========================================================================
+       ROUTER UNIVERSAL DINÁMICO
+       ========================================================================= */
+    function ejecutarRouterDinamico(destinoVista) {
+      logTerminalMaster(`Redirigiendo hacia el módulo: ${destinoVista}...`, '#00e5ff');
+      if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+        google.script.run
+          .withSuccessHandler(function(htmlGenerado) {
+            if (destinoVista === 'login_ui') {
+              window.top.location.href = htmlGenerado || '#';
+            } else {
+              document.open();
+              document.write(htmlGenerado);
+              document.close();
+            }
+          })
+          .withFailureHandler(function(err) {
+            logTerminalMaster("Error en redirección backend: " + err.message, "#ff3366");
+            window.location.href = destinoVista + ".html";
+          })
+          .router_backend(destinoVista);
+      } else {
+        if(destinoVista === 'login_ui') {
+          window.location.href = "login_ui.html";
+        } else {
+          window.location.href = destinoVista + ".html";
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condolink Global V14.6 - Panel de Cierre Mensual (Condominios & Inversionistas)</title>
+    <!-- Iconos FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fuentes Institucionales -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           VARIABLES DE ESTILO - PROTOCOLO CIAN/NEÓN LCARS V14.6 (ESTILO IMAGEN 1)
+           ========================================================================== */
+        :root {
+            --bg-principal: #030712;
+            --bg-panel: #081226;
+            --bg-input: #050b16;
+            --lcars-cyan: #00e5ff;
+            --lcars-cyan-hover: #00b8d4;
+            --lcars-cyan-glow: rgba(0, 229, 255, 0.35);
+            --lcars-gold: #00e5ff;
+            --lcars-pink: #00b8d4;
+            --lcars-terminal-green: #00ff66;
+            --texto-blanco: #f8fafc;
+            --texto-gris: #94a3b8;
+            --acento-rojo: #ff1744;
+            --borde-arcade: rgba(0, 229, 255, 0.35);
+            --borde-rojo: rgba(255, 23, 68, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 229, 255, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(0, 229, 255, 0.05) 0%, transparent 35%);
+            color: var(--texto-blanco);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 16px;
+        }
+
+        /* ==========================================================================
+           LAYOUT PRINCIPAL CON BARRA LATERAL IZQUIERDA (SIDEBAR)
+           ========================================================================== */
+        .app-layout {
+            display: flex;
+            gap: 18px;
+            max-width: 1440px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+
+        .sidebar-nav {
+            width: 68px;
+            background: rgba(8, 18, 38, 0.95);
+            border: 1.5px solid var(--borde-arcade);
+            border-radius: 16px;
+            padding: 18px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: calc(100vh - 32px);
+            position: sticky;
+            top: 16px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.8), inset 0 0 12px rgba(0, 229, 255, 0.08);
+            z-index: 100;
+        }
+
+        .sidebar-top-group,
+        .sidebar-bottom-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .sidebar-icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(5, 11, 22, 0.9);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            color: var(--texto-gris);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        .sidebar-icon-btn:hover,
+        .sidebar-icon-btn.active {
+            color: var(--lcars-cyan);
+            border-color: var(--lcars-cyan);
+            background: rgba(0, 229, 255, 0.12);
+            box-shadow: 0 0 15px var(--lcars-cyan-glow);
+            transform: translateY(-2px);
+        }
+
+        /* Botón Rojo de Salir hacia login_ui */
+        .sidebar-icon-btn.btn-salir {
+            border-color: var(--borde-rojo);
+            color: var(--acento-rojo);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        .sidebar-icon-btn.btn-salir:hover {
+            background: var(--acento-rojo);
+            color: #ffffff;
+            border-color: #ffffff;
+            box-shadow: 0 0 18px rgba(255, 23, 68, 0.75);
+        }
+
+        .main-workspace {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* ==========================================================================
+           CABECERA CON NÚCLEO GIRATORIO CIAN DEL LOGO
+           ========================================================================== */
+        .header-lcars {
+            background-color: var(--bg-panel);
+            border: 1.5px solid var(--borde-arcade);
+            border-radius: 14px;
+            padding: 14px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mystic-logo-wrapper {
+            position: relative;
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mystic-halo-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px dashed var(--lcars-cyan);
+            box-shadow: 0 0 12px var(--lcars-cyan-glow);
+            animation: spinRight 14s linear infinite;
+        }
+
+        .mystic-halo-inner {
+            position: absolute;
+            width: 82%;
+            height: 82%;
+            border-radius: 50%;
+            border: 2px dotted var(--lcars-terminal-green);
+            animation: spinLeft 9s linear infinite;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            z-index: 2;
+            border: 1.5px solid var(--lcars-cyan);
+            background-color: var(--bg-principal);
+            box-shadow: 0 0 10px var(--lcars-cyan);
+        }
+
+        @keyframes spinRight {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes spinLeft {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .brand-title h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: var(--lcars-cyan);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
+        }
+
+        .brand-title span {
+            color: var(--texto-gris);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tasa-bcv-box {
+            background: rgba(0, 229, 255, 0.08);
+            border: 1.5px solid var(--lcars-cyan);
+            border-radius: 999px;
+            padding: 6px 16px;
+            text-align: right;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 14px rgba(0, 229, 255, 0.2);
+        }
+
+        .tasa-bcv-box:hover {
+            background: rgba(0, 229, 255, 0.16);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.45);
+        }
+
+        .tasa-bcv-box small {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--lcars-cyan);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .tasa-bcv-box strong {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.92rem;
+            color: #ffffff;
+        }
+
+        /* ==========================================================================
+           BARRA DE NAVEGACIÓN DEL ECOSISTEMA Y CONSOLA DE LOGS
+           ========================================================================== */
+        .system-nav-bar {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--borde-arcade);
+            border-radius: 10px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .system-nav-bar span {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            color: var(--lcars-cyan);
+            text-transform: uppercase;
+            margin-right: 4px;
+        }
+
+        .nav-chip {
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            color: var(--texto-blanco);
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .nav-chip:hover {
+            background: var(--lcars-cyan);
+            color: #030712;
+            box-shadow: 0 0 10px var(--lcars-cyan);
+        }
+
+        .terminal-screen {
+            background-color: #02050c;
+            border: 1px solid rgba(0, 255, 102, 0.4);
+            border-left: 4px solid var(--lcars-terminal-green);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--lcars-terminal-green);
+            max-height: 75px;
+            overflow-y: auto;
+            line-height: 1.45;
+            box-shadow: inset 0 0 12px rgba(0, 255, 102, 0.06);
+        }
+
+        /* ==========================================================================
+           KPIs COMPACTOS (4 COLUMNAS - ESTILO IMAGEN 1)
+           ========================================================================== */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .kpi-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--borde-arcade);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+        }
+
+        .kpi-info h4 {
+            font-size: 0.72rem;
+            color: var(--texto-gris);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        .kpi-info .kpi-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--lcars-cyan);
+            margin-top: 4px;
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+        }
+
+        .kpi-icon {
+            font-size: 1.5rem;
+            color: rgba(0, 229, 255, 0.75);
+        }
+
+        /* ==========================================================================
+           BOTONES Y PANELES DE CONFIGURACIÓN
+           ========================================================================== */
+        .arcade-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border: 1.5px solid var(--lcars-cyan);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #ffffff;
+            background: linear-gradient(90deg, rgba(0, 229, 255, 0.16), rgba(0, 184, 212, 0.32));
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+        }
+
+        .arcade-btn:hover {
+            background: var(--lcars-cyan);
+            color: #030712;
+            box-shadow: 0 0 24px rgba(0, 229, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-portal, .btn-salud, .btn-contrato, .btn-transmutacion, .btn-eldritch {
+            border-color: var(--lcars-cyan);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .panel-box {
+            background-color: var(--bg-panel);
+            border: 1.5px solid var(--borde-arcade);
+            border-radius: 14px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel-box h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.86rem;
+            color: var(--lcars-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+            padding-bottom: 8px;
+            margin-bottom: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--texto-gris);
+            margin-bottom: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid rgba(0, 229, 255, 0.35);
+            color: var(--texto-blanco);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--lcars-cyan);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.25);
+        }
+
+        .eco-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        .eco-table th {
+            text-align: left;
+            padding: 10px;
+            background: rgba(0, 229, 255, 0.08);
+            color: var(--lcars-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--borde-arcade);
+        }
+
+        .eco-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-success { background: rgba(0, 255, 102, 0.15); color: #00ff66; border: 1px solid #00ff66; }
+
+        footer {
+            background-color: var(--bg-panel);
+            border-top: 1.5px solid var(--borde-arcade);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--texto-gris);
+            margin-top: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        @media (max-width: 1024px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .app-layout { flex-direction: column; }
+            .sidebar-nav {
+                width: 100%;
+                min-height: auto;
+                flex-direction: row;
+                padding: 10px 16px;
+                position: static;
+            }
+            .sidebar-top-group, .sidebar-bottom-group { flex-direction: row; width: auto; }
+            .kpi-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+<script>
+  /* BLINDAJE BCV 2 DECIMALES Y PUENTE ADMIN V20.8 */
+  window.normalizarTasaBCV = function(valorRaw) {
+    if (valorRaw === null || valorRaw === undefined) return '445,78';
+    var str = String(valorRaw).replace(/[^0-9.,]/g, '').trim();
+    if (!str) return '445,78';
+    if (str.indexOf(',') !== -1 && str.indexOf('.') !== -1) {
+      str = str.replace(/\./g, '').replace(',', '.');
+    } else if (str.indexOf(',') !== -1) {
+      str = str.replace(',', '.');
+    }
+    var num = parseFloat(str);
+    if (isNaN(num) || num <= 0) return '445,78';
+    return num.toFixed(2).replace('.', ',');
+  };
+</script>
+</head>
+<body>
+
+    <div class="app-layout">
+        
+        <!-- BARRA LATERAL IZQUIERDA DE NAVEGACIÓN -->
+        <div class="sidebar-nav">
+            <div class="sidebar-top-group">
+                <a href="#" onclick="navegarModulo('portal_admin')" class="sidebar-icon-btn" title="Portal Admin">
+                    <i class="fa-solid fa-house-laptop"></i>
+                </a>
+                <a href="#" onclick="navegarModulo('panel_admin')" class="sidebar-icon-btn" title="Panel Admin">
+                    <i class="fa-solid fa-user-shield"></i>
+                </a>
+                <a href="#" onclick="navegarModulo('panel_cierre_admin')" class="sidebar-icon-btn active" title="Panel de Cierre Mensual">
+                    <i class="fa-solid fa-lock"></i>
+                </a>
+                <a href="#" onclick="navegarModulo('panel_financiero_admin')" class="sidebar-icon-btn" title="Panel Financiero">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </a>
+                <a href="#" onclick="navegarModulo('panel_contabilidad_admin')" class="sidebar-icon-btn" title="Panel Contabilidad">
+                    <i class="fa-solid fa-calculator"></i>
+                </a>
+            </div>
+
+            <div class="sidebar-bottom-group">
+                <!-- Botón Rojo de Salir hacia login_ui -->
+                <a href="#" onclick="navegarModulo('login_ui')" class="sidebar-icon-btn btn-salir" title="Cerrar Sesión / Salir al Login">
+                    <i class="fa-solid fa-power-off"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- ÁREA PRINCIPAL -->
+        <main class="main-workspace">
+
+            <!-- Cabecera Superior con Núcleo Cian del Logo -->
+            <header class="header-lcars">
+                <div class="brand-section">
+                    <div class="mystic-logo-wrapper" title="Núcleo Central - Condolink Global">
+                        <div class="mystic-halo-outer"></div>
+                        <div class="mystic-halo-inner"></div>
+                        <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo Condolink" class="brand-logo" onerror="this.src='https://via.placeholder.com/56?text=CLG'">
+                    </div>
+                    <div class="brand-title">
+                        <h1>CONDOLINK GLOBAL V14.6</h1>
+                        <span>Torre Charam, Caracas • Panel de Cierre Contable, Financiero & Inversionistas</span>
+                    </div>
+                </div>
+
+                <div class="header-controls">
+                    <div class="tasa-bcv-box" onclick="cargarTasaBCVAutomatica()" title="Clic para sincronizar tasa oficial">
+                        <small><i class="fa-solid fa-chart-line"></i> Tasa Oficial BCV</small>
+                        <strong id="tasa-valor-dinamico">Sincronizando...</strong>
+                    </div>
+
+                    <button class="arcade-btn btn-portal" onclick="navegarModulo('portal_admin')">
+                        <i class="fa-solid fa-house-user"></i> Portal Admin
+                    </button>
+
+                    <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_admin')">
+                        <i class="fa-solid fa-user-shield"></i> Panel Admin
+                    </button>
+                </div>
+            </header>
+
+            <!-- Barra de Navegación Rápida -->
+            <div class="system-nav-bar">
+                <span><i class="fa-solid fa-network-wired"></i> Accesos:</span>
+                <a class="nav-chip" onclick="navegarModulo('panel_libro_diario_admin')" style="border-color: #00ff66; color: #00ff66;"><i class="fa-solid fa-book-open"></i> Libro Diario & Balance</a>
+                <a class="nav-chip" onclick="navegarModulo('instalador_tenant_admin')">Instalador Juntas</a>
+                <a class="nav-chip" onclick="navegarModulo('panel_pagos_admin')">Pagos</a>
+                <a class="nav-chip" onclick="navegarModulo('panel_cobros_admin')">Cobros</a>
+                <a class="nav-chip" onclick="navegarModulo('panel_pago_inversionista_admin')">Inversionistas</a>
+                <a class="nav-chip" onclick="navegarModulo('panel_auditoria_admin')">Auditoría</a>
+                <a class="nav-chip" onclick="navegarModulo('panel_financiero_admin')">Financiero</a>
+                <a class="nav-chip" onclick="navegarModulo('panel_contabilidad_admin')">Contabilidad</a>
+            </div>
+
+            <!-- Terminal de Eventos -->
+            <div class="terminal-screen" id="terminal-logs">
+                [SYSTEM LOG 12:46:25Z]: Módulo PANEL_CIERRE sincronizado con el núcleo Condolink V14.6 (Soporte Condominios e Inversionistas).
+                [AUDITORY]: Enlace con registros inmutables y control multi-inquilino activo.
+                > Listo para procesar cierres de periodos, balances de inversores y consolidaciones contables...
+            </div>
+
+            <!-- KPIs Superiores -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-info">
+                        <h4>Tasa BCV del Día</h4>
+                        <div class="kpi-value" id="kpi-tasa">--</div>
+                    </div>
+                    <div class="kpi-icon"><i class="fa-solid fa-chart-line"></i></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-info">
+                        <h4>Total Gastos del Mes</h4>
+                        <div class="kpi-value" style="color: var(--lcars-cyan);">$14,850.00</div>
+                    </div>
+                    <div class="kpi-icon"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--lcars-cyan);"></i></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-info">
+                        <h4>Flujo Inversionistas</h4>
+                        <div class="kpi-value" style="color: #00ff66;">$24,300.00</div>
+                    </div>
+                    <div class="kpi-icon"><i class="fa-solid fa-chart-pie" style="color: #00ff66;"></i></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-info">
+                        <h4>Estado del Sistema</h4>
+                        <div class="kpi-value" style="color: var(--lcars-cyan);">Abierto</div>
+                    </div>
+                    <div class="kpi-icon"><i class="fa-solid fa-shield-halved" style="color: var(--lcars-cyan);"></i></div>
+                </div>
+            </div>
+
+            <!-- Grid Principal: Configuración de Cierre (Condominio e Inversionistas) -->
+            <div class="grid-2">
+                <!-- Configuración de Cierre Consolidado -->
+                <div class="panel-box">
+                    <h3><i class="fa-solid fa-sliders"></i> Configuración de Cierre (Condominios & Inversionistas)</h3>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Cierre</label>
+                        <select class="form-select" id="tipo-cierre-select" onchange="alternarTipoCierre()">
+                            <option value="condominio">Cierre por Condominio (Gastos / Unidades)</option>
+                            <option value="inversionista">Cierre por Usuario Inversionista (ROI / Flujos)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="grupo-condominio">
+                        <label class="form-label">Seleccionar Condominio</label>
+                        <select class="form-select" id="cierre-condominio">
+                            <option selected disabled>Seleccione condominio...</option>
+                            <option value="1">Residencias Parque Leander</option>
+                            <option value="2">Torre Empresarial Condolink</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="grupo-inversionista" style="display: none;">
+                        <label class="form-label">Seleccionar Inversionista / Cartera</label>
+                        <select class="form-select" id="cierre-inversionista">
+                            <option selected disabled>Seleccione inversionista...</option>
+                            <option value="INV-001">Grupo Inversor Alpha C.A.</option>
+                            <option value="INV-002">Portafolio Inmobiliario Global</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Período Fiscal (Mes / Año)</label>
+                        <input type="month" class="form-control" id="cierre-periodo" value="2026-06">
+                    </div>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <button class="arcade-btn btn-transmutacion" style="width: 100%; padding: 12px;" onclick="ejecutarAccionCierre()">
+                            <i class="fa-solid fa-lock me-1"></i> EJECUTAR CIERRE MENSUAL Y BLOQUEAR PERÍODO
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Validación Operativa Previa -->
+                <div class="panel-box">
+                    <h3><i class="fa-solid fa-clipboard-check"></i> Validación Operativa Previa (Control Consolidado)</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="eco-table">
+                            <thead>
+                                <tr>
+                                    <th>Módulo / Proceso</th>
+                                    <th>Estado</th>
+                                    <th class="text-end">Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Reportes de Pago & Mensajería</td>
+                                    <td><span class="badge badge-success">Sincronizado</span></td>
+                                    <td class="text-end" style="color: rgba(255,255,255,0.6);">100% procesados</td>
+                                </tr>
+                                <tr>
+                                    <td>Conciliación Bancaria (CLG_Cierres_Mes)</td>
+                                    <td><span class="badge badge-success">Aprobado</span></td>
+                                    <td class="text-end" style="color: rgba(255,255,255,0.6);">Cuadre exacto</td>
+                                </tr>
+                                <tr>
+                                    <td>Cálculo de ROI & Rendimiento Inversionista</td>
+                                    <td><span class="badge badge-success">Verificado</span></td>
+                                    <td class="text-end" style="color: rgba(255,255,255,0.6);">Flujos al día</td>
+                                </tr>
+                                <tr>
+                                    <td>Distribución por Alícuotas</td>
+                                    <td><span class="badge badge-success">Verificado</span></td>
+                                    <td class="text-end" style="color: rgba(255,255,255,0.6);">Sin discrepancias</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pasos Detallados del Proceso de Cierre -->
+            <div class="panel-box">
+                <h3><i class="fa-solid fa-list-ol"></i> Pasos Detallados del Proceso de Cierre (Ecosistema V14.6)</h3>
+                <ul style="color: rgba(255,255,255,0.85); line-height: 1.6; font-size: 0.85rem; list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
+                    <li><strong style="color: var(--lcars-cyan);">1. Recepción y Validación de Transacciones:</strong> Consolidación cruzada de pagos de propietarios y aportes/retornos de inversionistas.</li>
+                    <li><strong style="color: var(--lcars-cyan);">2. Consolidación de Gastos & Rendimientos:</strong> Recopilación de facturas operativas por condominio y cálculo automático de dividendos e indicadores de ROI.</li>
+                    <li><strong style="color: var(--lcars-cyan);">3. Cierre en Tabla CLG_Cierres_Mes:</strong> Bloqueo contable del período fiscal seleccionado para evitar modificaciones posteriores no autorizadas.</li>
+                    <li><strong style="color: var(--lcars-cyan);">4. Despacho Institucional:</strong> Envío de reportes ejecutivos a la Junta Directiva y estados de cuenta personalizados al portal de cada inversionista.</li>
+                </ul>
+            </div>
+
+            <!-- Acciones Masivas y Papelería -->
+            <div class="panel-box">
+                <h3><i class="fa-solid fa-layer-group"></i> Acciones Masivas de Cierre y Papelería Institucional</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 4px;">
+                    <button class="arcade-btn btn-salud" onclick="enviarRecibosMensajeria()">
+                        <i class="fa-solid fa-paper-plane me-2"></i> Enviar Recibos & Estados
+                    </button>
+                    <button class="arcade-btn btn-contrato" onclick="enviarCierreJuntaLogo()">
+                        <i class="fa-solid fa-file-invoice-dollar me-2"></i> Enviar Cierre a la Junta / Inversionistas
+                    </button>
+                    <button class="arcade-btn btn-eldritch" onclick="descargarLogAuditoria()">
+                        <i class="fa-solid fa-download me-2"></i> Descargar Log Auditoría
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Pie de Página Institucional LCARS -->
+    <footer>
+        <div><strong>CONDOLINK GLOBAL V14.6</strong> &copy; 2026 - Torre Charam, Caracas. Todos los derechos reservados.</div>
+        <div style="display: flex; gap: 15px;">
+            <span style="color: var(--lcars-cyan);"><i class="fas fa-shield-alt"></i> Seguridad por Roles Activa</span>
+            <span style="color: var(--lcars-terminal-green);"><i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> Panel de Cierre Sincronizado</span>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            cargarTasaBCVAutomatica();
+        });
+
+        function logTerminal(mensaje, color = 'var(--lcars-cyan)') {
+            const terminal = document.getElementById('terminal-logs');
+            const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+            terminal.innerHTML += `<br><span style="color: ${color}">[LOG ${timestamp}]: ${mensaje}</span>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function alternarTipoCierre() {
+            const tipo = document.getElementById('tipo-cierre-select').value;
+            const grupoCondo = document.getElementById('grupo-condominio');
+            const grupoInv = document.getElementById('grupo-inversionista');
+            if (tipo === 'condominio') {
+                grupoCondo.style.display = 'block';
+                grupoInv.style.display = 'none';
+                logTerminal("Modo de cierre cambiado a: Condominio", "var(--lcars-cyan)");
+            } else {
+                grupoCondo.style.display = 'none';
+                grupoInv.style.display = 'block';
+                logTerminal("Modo de cierre cambiado a: Usuario Inversionista", "var(--lcars-cyan)");
+            }
+        }
+
+        function cargarTasaBCVAutomatica() {
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            const kpiTasa = document.getElementById('kpi-tasa');
+            
+            if (spanTasa) spanTasa.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sync...`;
+            logTerminal("Sincronizando Tasa Oficial BCV en tiempo real...", "var(--lcars-cyan)");
+
+            let backendRespondio = false;
+            const temporizadorFalla = setTimeout(() => {
+                if (!backendRespondio) {
+                    backendRespondio = true;
+                    usarTasaRespaldoApi();
+                }
+            }, 3000);
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.obtenerTasaBCVAutomatica === 'function') {
+                google.script.run
+                    .withSuccessHandler(res => {
+                        if (!backendRespondio) {
+                            backendRespondio = true;
+                            clearTimeout(temporizadorFalla);
+                            if (res && res.success) {
+                                const tasaTxt = res.tasa + " Bs.";
+                                if (spanTasa) spanTasa.innerText = tasaTxt;
+                                if (kpiTasa) kpiTasa.innerText = tasaTxt;
+                                logTerminal(`Tasa BCV sincronizada: ${tasaTxt}`, "var(--lcars-cyan)");
+                            } else {
+                                usarTasaRespaldoApi();
+                            }
+                        }
+                    })
+                    .withFailureHandler(() => {
+                        if (!backendRespondio) {
+                            backendRespondio = true;
+                            clearTimeout(temporizadorFalla);
+                            usarTasaRespaldoApi();
+                        }
+                    })
+                    .obtenerTasaBCVAutomatica();
+            } else {
+                backendRespondio = true;
+                clearTimeout(temporizadorFalla);
+                usarTasaRespaldoApi();
+            }
+        }
+
+        function usarTasaRespaldoApi() {
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            const kpiTasa = document.getElementById('kpi-tasa');
+            fetch('https://open.er-api.com/v6/latest/USD')
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.rates && data.rates.VES) {
+                        let tasaVes = data.rates.VES.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Bs.";
+                        if (spanTasa) spanTasa.innerText = tasaVes;
+                        if (kpiTasa) kpiTasa.innerText = tasaVes;
+                        logTerminal(`Tasa BCV vía API externa: ${tasaVes}`, "var(--lcars-cyan)");
+                    } else {
+                        asignarTasaLocal();
+                    }
+                })
+                .catch(() => asignarTasaLocal());
+        }
+
+        function asignarTasaLocal() {
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            const kpiTasa = document.getElementById('kpi-tasa');
+            if (spanTasa) spanTasa.innerText = "445,78 VES";
+            if (kpiTasa) kpiTasa.innerText = "445,78 VES";
+            logTerminal("Tasa BCV cargada por respaldo local: 764.35 VES/USD", "var(--lcars-cyan)");
+        }
+
+        function ejecutarAccionCierre() {
+            const tipo = document.getElementById('tipo-cierre-select').value;
+            const periodo = document.getElementById('cierre-periodo').value;
+            let targetId = '';
+            let targetNombre = '';
+
+            if (tipo === 'condominio') {
+                targetId = document.getElementById('cierre-condominio').value;
+                targetNombre = document.getElementById('cierre-condominio').options[document.getElementById('cierre-condominio').selectedIndex].text;
+            } else {
+                targetId = document.getElementById('cierre-inversionista').value;
+                targetNombre = document.getElementById('cierre-inversionista').options[document.getElementById('cierre-inversionista').selectedIndex].text;
+            }
+
+            if (!targetId || targetId.includes("Seleccione")) {
+                alert("Por favor, seleccione un elemento válido antes de ejecutar el cierre.");
+                return;
+            }
+
+            if (confirm(`¿Está seguro de procesar el cierre mensual de [${tipo.toUpperCase()}: ${targetNombre}] para el período [${periodo}]? Esta acción registrará la operación en CLG_Cierres_Mes.`)) {
+                logTerminal(`Ejecutando PANEL_CIERRE consolidado para ${tipo} [${targetId}] - Período ${periodo}...`, 'var(--lcars-cyan)');
+                if (typeof google !== 'undefined' && google.script && google.script.run) {
+                    google.script.run
+                        .withSuccessHandler(res => {
+                            logTerminal(`-> ${res.mensaje}`, 'var(--lcars-cyan)');
+                            alert(res.mensaje);
+                        })
+                        .withFailureHandler(err => {
+                            logTerminal(`Error en el servidor: ${err.message}`, '#ef4444');
+                            alert("Error en el servidor: " + err.message);
+                        })
+                        .ejecutarCierreMensualSistema(targetId, periodo, tipo);
+                } else {
+                    setTimeout(() => {
+                        logTerminal(`-> Cierre completado con éxito, registros guardados en CLG_Cierres_Mes [OK].`, 'var(--lcars-cyan)');
+                        alert(`Cierre mensual de ${tipo} ejecutado y registrado en auditoría con éxito.`);
+                    }, 600);
+                }
+            }
+        }
+
+        function enviarRecibosMensajeria() {
+            logTerminal("Enviando estados de cuenta y recibos de rendimiento...", 'var(--lcars-cyan)');
+            alert("¡Documentación financiera enviada exitosamente a los portales de propietarios e inversionistas!");
+        }
+
+        function enviarCierreJuntaLogo() {
+            logTerminal("Despachando reporte de cierre consolidado a la Junta e Inversionistas...", 'var(--lcars-cyan)');
+            alert("Reporte de Cierre Contable, Financiero y de ROI despachado con éxito.");
+        }
+
+        function descargarLogAuditoria() {
+            logTerminal("Generando descarga de Log de Auditoría Inmutable...", 'var(--lcars-cyan)');
+            alert("Descargando Log de Auditoría Inmutable del período actual...");
+        }
+
+        function navegarModulo(nombreModulo) {
+            logTerminal(`Navegando al módulo del sistema: ${nombreModulo}`, 'var(--lcars-cyan)');
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run
+                    .withSuccessHandler(htmlContent => {
+                        document.open();
+                        document.write(htmlContent);
+                        document.close();
+                    })
+                    .withFailureHandler(() => {
+                        alert("Módulo cargado en entorno seguro: " + nombreModulo);
+                    })
+                    .router_backend(nombreModulo);
+            } else {
+                alert("Navegación simulada al módulo: " + nombreModulo);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Condolink Global V20.8 - Portal Administrador Arcade</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg-principal: #030810;
+    --bg-card: #0b1120;
+    --bg-card-hover: #131c31;
+    --acento-verde: #00ff66;
+    --acento-rojo: #ff3333;
+    --magia-dorado: #ffcc00;     
+    --magia-cian: #00e5ff;
+    --magia-morado: #a855f7;
+    --magia-rosa: #ec4899;
+    --magia-naranja: #f97316;
+    --gris-texto: #94a3b8;
+    --texto-blanco: #f0f6fc;
+    --borde-color: rgba(0, 229, 255, 0.3);
+    --arcade-shadow: 0 15px 35px -5px rgba(0,0,0,0.6);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background: radial-gradient(circle at top right, #0b1120 0%, #030810 70%);
+    color: var(--texto-blanco);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 15px;
+}
+
+.top-navbar {
+    background: var(--bg-card);
+    border: 2px solid var(--magia-dorado);
+    padding: 12px 22px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.1), 0 6px 20px rgba(0,0,0,0.5);
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+@keyframes spinSlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spinSlowRev { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+@keyframes cyan-pulse { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 6px currentColor); } 50% { opacity: 1; filter: drop-shadow(0 0 14px currentColor); } }
+
+.mystic-logo-wrapper {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mystic-halo-outer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px dashed var(--magia-dorado);
+    border-radius: 50%;
+    animation: spinSlowRev 18s linear infinite;
+}
+.mystic-halo-inner {
+    position: absolute;
+    width: 76%;
+    height: 76%;
+    border: 1.5px dotted var(--magia-cian);
+    border-radius: 50%;
+    animation: spinSlow 10s linear infinite;
+}
+
+.brand-logo-mystical {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--magia-dorado);
+    object-fit: cover;
+    background: #030810;
+    padding: 2px;
+    z-index: 2;
+    animation: cyan-pulse 3s ease-in-out infinite;
+}
+
+.bcv-ticker {
+    background: rgba(0, 0, 0, 0.75);
+    border: 1.5px solid var(--magia-dorado);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: var(--magia-dorado);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+    transition: transform 0.2s;
+    font-weight: 700;
+}
+.bcv-ticker:hover { transform: scale(1.02); }
+
+.main-container {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+}
+
+.hero-banner {
+    background: var(--bg-card);
+    border: 2px solid var(--magia-cian);
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.08), 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.dom-tabs-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1.5px solid rgba(0, 229, 255, 0.3);
+    border-radius: 14px;
+    padding: 10px 16px;
+}
+
+.dom-tab-btn {
+    background: rgba(0, 229, 255, 0.08);
+    border: 1.5px solid var(--magia-cian);
+    color: var(--magia-cian);
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.dom-tab-btn.active, .dom-tab-btn:hover {
+    background: var(--magia-cian);
+    color: #030810;
+    box-shadow: 0 0 15px var(--magia-cian);
+}
+
+.system-log-box {
+    background: #030810;
+    border: 2px solid var(--acento-verde);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.82rem;
+    color: var(--acento-verde);
+    box-shadow: inset 0 0 15px rgba(0, 255, 102, 0.2);
+    line-height: 1.4;
+    max-height: 110px;
+    overflow-y: auto;
+}
+
+.module-card {
+    background: var(--bg-card);
+    border: 2px solid var(--magia-dorado);
+    border-radius: 16px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.08), 0 6px 20px rgba(0,0,0,0.4);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.module-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--magia-cian);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+}
+
+.module-icon {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+}
+
+.module-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.72rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: var(--magia-cian);
+}
+
+.module-desc {
+    font-size: 0.82rem;
+    color: var(--gris-texto);
+    margin-bottom: 16px;
+    line-height: 1.4;
+}
+
+.arcade-btn {
+    position: relative;
+    padding: 11px 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s ease;
+    outline: none;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    width: 100%;
+}
+
+.arcade-btn:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px currentColor;
+}
+
+.btn-eldritch { background: linear-gradient(135deg, #ffcc00 0%, #b38f00 100%); color: #030810; border-color: #ffcc00; }
+.btn-arcana { background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); color: #fff; border-color: #a855f7; }
+.btn-contrato { background: linear-gradient(135deg, #00e5ff 0%, #0088cc 100%); color: #030810; border-color: #00e5ff; }
+.btn-salud { background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%); color: #030810; border-color: #00ff66; }
+.btn-danger { background: linear-gradient(135deg, #ff3333 0%, #b30000 100%) !important; color: #fff !important; border-color: #ff3333 !important; }
+
+.quick-matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+}
+
+.footer {
+    background: var(--bg-card);
+    border: 1.5px solid var(--magia-cian);
+    border-radius: 12px;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--gris-texto);
+    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.15);
+    margin-top: auto;
+}
+.footer strong { color: #f0f6fc; }
+</style>
+</head>
+
+<body>
+
+<header class="top-navbar">
+    <div class="brand-container">
+        <div class="mystic-logo-wrapper" title="Torre Charam Sede Principal - La Castellana, Caracas">
+            <div class="mystic-halo-outer"></div>
+            <div class="mystic-halo-inner"></div>
+            <img src="https://i.imgur.com/XcMwIDa.png" class="brand-logo-mystical" alt="Logo Condolink" onerror="this.src='https://imgur.com/nIZmQFJ.png'">
+        </div>
+
+        <div>
+            <h5 class="text-white m-0 fw-bold" style="font-size:0.9rem; font-family:'Press Start 2P', monospace; color: var(--magia-cian);">
+                CONDOLINK GLOBAL V20.8
+            </h5>
+            <small style="color: var(--gris-texto); font-size: 0.72rem;">
+                Portal Administrador // Gestión Integral Multi-Junta // La Castellana, Caracas
+            </small>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+        <div class="bcv-ticker" id="bcv-display" onclick="actualizarTasaBcv()" title="Clic para actualizar tasa oficial BCV (2 decimales)">
+            <i class="fas fa-bolt" id="iconSyncTasa" style="color: var(--magia-dorado);"></i> 
+            Tasa Oficial BCV: <span id="lblTasaBcv" style="color: #fff; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> Sync...</span> [Auto-Sync]
+        </div>
+
+        <button type="button" class="arcade-btn btn-contrato" style="width: auto; padding: 8px 14px; font-size: 7px;" onclick="navegarModulo('panel_libro_diario_admin')">
+            <i class="fas fa-book"></i> LIBRO DIARIO & BALANCE
+        </button>
+
+        <button type="button" class="arcade-btn btn-danger" style="width: auto; padding: 8px 14px; font-size: 7px;" onclick="cerrarSesionAdmin()">
+            <i class="fas fa-sign-out-alt"></i> SALIR
+        </button>
+    </div>
+</header>
+
+<div class="main-container">
+
+    <!-- CONSOLA DE LOGS / EVENTOS DEL SISTEMA -->
+    <div class="system-log-box" id="systemLogBox">
+        [SYS ARCADE 13:30:00Z]: Portal Administrador V20.8 inicializado con canal de eventos seguro y pasarela multi-inquilino activa.
+    </div>
+
+    <!-- CONTROLADOR DE PESTAÑAS DOM (DOM TABS STATE CONTROLLER) -->
+    <div class="dom-tabs-bar">
+        <button class="dom-tab-btn active" onclick="conmutarVistaPortalAdmin('todos', this)">
+            <i class="fas fa-th-large"></i> Vista Completa del Ecosistema
+        </button>
+        <button class="dom-tab-btn" onclick="conmutarVistaPortalAdmin('principales', this)">
+            <i class="fas fa-star"></i> Portales Principales Admin
+        </button>
+        <button class="dom-tab-btn" onclick="conmutarVistaPortalAdmin('contable', this)">
+            <i class="fas fa-scale-balanced"></i> Contabilidad, Libro Diario & Juntas
+        </button>
+    </div>
+
+    <div class="hero-banner d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h2 class="h5 fw-bold text-white mb-1" style="text-transform: uppercase; letter-spacing: 0.5px;">
+                <i class="fas fa-network-wired me-2" style="color: var(--magia-cian);"></i>
+                Centro de Operaciones y Monitoreo Administrativo Multi-Junta
+            </h2>
+            <p style="color: var(--gris-texto); font-size: 0.82rem; margin: 0;">
+                Seleccione el módulo autorizado para crear Juntas independientes, activar Ejecutivos y Usuario Legal, emitir comunicados con su logo institucional o auditar el Libro Diario en Torre Charam, Caracas.
+            </p>
+        </div>
+
+        <span style="background: rgba(0, 229, 255, 0.1); border: 1.5px solid var(--magia-cian); color: var(--magia-cian); font-size: 0.72rem; font-weight: 800; padding: 6px 12px; border-radius: 8px;">
+            <i class="fas fa-shield-halved"></i> ADMINISTRADOR AUTORIZADO (NIVEL 03)
+        </span>
+    </div>
+
+    <!-- TARJETAS PRINCIPALES -->
+    <div class="row g-4" id="seccionPortalesPrincipales">
+        <div class="col-md-4">
+            <div class="module-card">
+                <div>
+                    <div class="module-icon"><i class="fas fa-cogs" style="color: var(--magia-dorado);"></i></div>
+                    <div class="module-title">Panel Admin Central</div>
+                    <div class="module-desc">Centro de comando administrativo, creación de Juntas independientes, activación de los 03 Ejecutivos y Usuario Legal, comunicados con logo y mensajería multicanal.</div>
+                </div>
+                <button class="arcade-btn btn-eldritch" onclick="navegarModulo('panel_admin')">
+                    <i class="fas fa-bolt"></i> Acceder Panel Admin
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="module-card">
+                <div>
+                    <div class="module-icon"><i class="fas fa-home" style="color: var(--magia-morado);"></i></div>
+                    <div class="module-title">Panel Inmobiliario Admin</div>
+                    <div class="module-desc">Control absoluto del universo de copropietarios, unidades correlativas, publicaciones inmobiliarias y enlace con el Receptor Final Master.</div>
+                </div>
+                <button class="arcade-btn btn-arcana" onclick="navegarModulo('panel_inmobiliario_admin')">
+                    <i class="fas fa-building"></i> Acceder Inmobiliario
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="module-card">
+                <div>
+                    <div class="module-icon"><i class="fas fa-handshake" style="color: var(--magia-cian);"></i></div>
+                    <div class="module-title">Servicios Contratados</div>
+                    <div class="module-desc">Control integral de proveedores externos, evaluación 5 estrellas, mantenimiento preventivo y solicitudes hacia el Receptor Master.</div>
+                </div>
+                <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_servicios_contratados_admin')">
+                    <i class="fas fa-toolbox"></i> Acceder Servicios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MATRIZ RÁPIDA DE NAVEGACIÓN CONTABLE, INSTALADOR DE JUNTAS Y LIBRO DIARIO -->
+    <div class="hero-banner" id="seccionMatrizContable">
+        <h3 style="font-size: 0.85rem; font-family: 'Press Start 2P', monospace; color: var(--magia-dorado); margin-bottom: 14px;">
+            <i class="fas fa-compass me-2"></i> ACCESO DIRECTO A INSTALADOR DE JUNTAS, LIBRO DIARIO Y SUBMÓDULOS ADMIN
+        </h3>
+        <div class="quick-matrix-grid">
+            <button class="arcade-btn btn-eldritch" onclick="navegarModulo('instalador_tenant_admin')">
+                <i class="fas fa-sliders"></i> Instalador Juntas & Alícuota
+            </button>
+            <button class="arcade-btn btn-salud" onclick="navegarModulo('panel_libro_diario_admin')">
+                <i class="fas fa-book-open"></i> Libro Diario & Balance
+            </button>
+            <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_contabilidad_admin')">
+                <i class="fas fa-calculator"></i> Contabilidad General
+            </button>
+            <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_financiero_admin')">
+                <i class="fas fa-chart-pie"></i> Panel Financiero
+            </button>
+            <button class="arcade-btn btn-arcana" onclick="navegarModulo('panel_comunicados_admin')">
+                <i class="fas fa-bullhorn"></i> Comunicados con Logo
+            </button>
+            <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_pagos_admin')">
+                <i class="fas fa-money-bill-transfer"></i> Pagos Multimoneda
+            </button>
+            <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_gastos_admin')">
+                <i class="fas fa-file-invoice-dollar"></i> Gastos & Egresos
+            </button>
+            <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_nomina_admin')">
+                <i class="fas fa-users-gear"></i> Nómina LOTTT
+            </button>
+            <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_cierre_admin')">
+                <i class="fas fa-lock"></i> Cierre Mensual
+            </button>
+            <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_conciliacion_admin')">
+                <i class="fas fa-scale-balanced"></i> Conciliación Bancaria
+            </button>
+            <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_auditoria_admin')">
+                <i class="fas fa-user-secret"></i> Auditoría Forense
+            </button>
+            <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_edocuentas_admin')">
+                <i class="fas fa-receipt"></i> Estados de Cuenta
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div><strong>CONDOLINK GLOBAL V20.8</strong> &copy; 2026 - Torre Charam, La Castellana, Caracas. Todos los derechos reservados.</div>
+    <div>STATUS: <span style="color: var(--acento-verde);">ONLINE [SECURE]</span> // <span style="color: var(--magia-cian);"><i class="fa-solid fa-shield-halved"></i> Google Workspace</span></div>
+</footer>
+
+<!-- OVERLAY DE CARGA -->
+<div id="loadingOverlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+           background:rgba(3,8,16,0.92); z-index:9999; justify-content:center;
+           align-items:center; flex-direction:column; color:#fff; backdrop-filter: blur(5px);">
+    <div class="spinner-border text-info mb-3" style="width:3rem;height:3rem;" role="status"></div>
+    <h5 id="loadingText" class="fw-bold mb-2" style="font-family:'Press Start 2P', monospace; font-size: 0.8rem; color: var(--magia-cian);">Cargando módulo...</h5>
+    <button type="button" class="arcade-btn btn-danger mt-3" style="width: auto; font-size: 7px; padding: 8px 14px;" onclick="ocultarOverlay();">
+        Cancelar / Desbloquear
+    </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+let safetyTimer = null;
+const BASE_URL = typeof window.BASE_URL !== 'undefined' ? window.BASE_URL : window.location.href.split('?')[0];
+
+function normalizarTasaBCV(valorRaw) {
+    if (valorRaw === null || valorRaw === undefined) return '445,78';
+    let str = String(valorRaw).replace(/[^0-9.,]/g, '').trim();
+    if (!str) return '445,78';
+    if (str.includes(',') && str.includes('.')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+    } else if (str.includes(',')) {
+        str = str.replace(',', '.');
+    }
+    const num = parseFloat(str);
+    if (isNaN(num) || num <= 0) return '445,78';
+    return num.toFixed(2).replace('.', ',');
+}
+
+function logTerminal(mensaje, color = 'var(--acento-verde)') {
+    const logBox = document.getElementById('systemLogBox');
+    const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+    if (logBox) {
+        logBox.innerHTML += `<br><span style="color: ${color}">[SYS ARCADE ${timestamp}]: ${mensaje}</span>`;
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+}
+
+function conmutarVistaPortalAdmin(modo, btnEl) {
+    document.querySelectorAll('.dom-tab-btn').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    const secPrin = document.getElementById('seccionPortalesPrincipales');
+    const secMat = document.getElementById('seccionMatrizContable');
+    if (modo === 'principales') {
+        if (secPrin) secPrin.style.display = 'flex';
+        if (secMat) secMat.style.display = 'none';
+    } else if (modo === 'contable') {
+        if (secPrin) secPrin.style.display = 'none';
+        if (secMat) secMat.style.display = 'block';
+    } else {
+        if (secPrin) secPrin.style.display = 'flex';
+        if (secMat) secMat.style.display = 'block';
+    }
+    logTerminal(`Controlador DOM Tabs: Vista conmutada a [${modo.toUpperCase()}] sin bloqueo de interfaz.`, 'var(--magia-cian)');
+}
+
+function mostrarOverlay(texto) {
+    const lbl = document.getElementById("loadingText");
+    if (lbl) lbl.innerText = texto || "Procesando...";
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) overlay.style.display = "flex";
+
+    if (safetyTimer) clearTimeout(safetyTimer);
+    safetyTimer = setTimeout(() => {
+        ocultarOverlay();
+        logTerminal("Aviso: Tiempo de espera agotado en llamada asíncrona.", "var(--acento-rojo)");
+    }, 8000);
+}
+
+function ocultarOverlay() {
+    if (safetyTimer) clearTimeout(safetyTimer);
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) overlay.style.display = "none";
+}
+
+function navegarModulo(pagina) {
+    mostrarOverlay("Cargando " + pagina.replace(/_/g, " ") + " ...");
+    logTerminal(`Redirigiendo al módulo [${pagina}]...`, "var(--magia-cian)");
+
+    if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+        google.script.run
+            .withSuccessHandler(function(htmlGenerado) {
+                ocultarOverlay();
+                if (typeof htmlGenerado === "string" && htmlGenerado.trim().length > 0) {
+                    if (pagina === 'login_ui' && htmlGenerado.startsWith('http')) {
+                        window.top.location.href = htmlGenerado;
+                    } else {
+                        document.open();
+                        document.write(htmlGenerado);
+                        document.close();
+                    }
+                } else {
+                    window.top.location.href = `${BASE_URL}?p=${pagina}&tenant=default&rol=admin`;
+                }
+            })
+            .withFailureHandler(function() {
+                ocultarOverlay();
+                window.top.location.href = `${BASE_URL}?p=${pagina}&tenant=default&rol=admin`;
+            })
+            .router_backend(pagina);
+    } else {
+        ocultarOverlay();
+        window.top.location.href = `${BASE_URL}?p=${pagina}&tenant=default&rol=admin`;
+    }
+}
+
+function actualizarTasaBcv() {
+    const icon = document.getElementById("iconSyncTasa");
+    const lblTasa = document.getElementById("lblTasaBcv");
+    if (icon) icon.classList.add("fa-spin");
+    if (lblTasa) lblTasa.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sync...`;
+    logTerminal("Sincronizando Tasa Oficial BCV (2 decimales) desde CLG_Configuracion!B2...", "var(--magia-dorado)");
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+        const fn = typeof google.script.run.obtenerTasaBCVOficial === 'function' ? 'obtenerTasaBCVOficial' : 'obtenerTasaBCV';
+        google.script.run
+            .withSuccessHandler(function(res) {
+                let raw = (typeof res === 'object' && res !== null) ? (res.tasaFormateada || res.tasa || res.valor) : res;
+                if (raw) {
+                    aplicarValorTasa(raw);
+                } else {
+                    usarTasaRespaldoPortalAdmin();
+                }
+            })
+            .withFailureHandler(usarTasaRespaldoPortalAdmin)[fn]();
+    } else {
+        usarTasaRespaldoPortalAdmin();
+    }
+}
+
+function usarTasaRespaldoPortalAdmin() {
+    fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+        .then(res => res.json())
+        .then(data => {
+            let tasaVal = data.promedio || data.price || 445.78;
+            aplicarValorTasa(tasaVal);
+        })
+        .catch(() => {
+            fetch('https://open.er-api.com/v6/latest/USD')
+                .then(res => res.json())
+                .then(data => {
+                    let tasaVal = (data && data.rates && data.rates.VES) ? data.rates.VES : 445.78;
+                    aplicarValorTasa(tasaVal);
+                })
+                .catch(() => aplicarValorTasa('445,78'));
+        });
+}
+
+function aplicarValorTasa(valor) {
+    const formatted = normalizarTasaBCV(valor) + " VES";
+    const lblTasa = document.getElementById("lblTasaBcv");
+    if (lblTasa) lblTasa.textContent = formatted;
+    localStorage.setItem('clg_tasa_bcv_oficial', normalizarTasaBCV(valor));
+    const icon = document.getElementById("iconSyncTasa");
+    if (icon) icon.classList.remove("fa-spin");
+    logTerminal(`Tasa BCV sincronizada a 2 decimales: ${formatted}`, "var(--acento-verde)");
+}
+
+function cerrarSesionAdmin() {
+    mostrarOverlay("Cerrando sesión segura hacia login_ui...");
+    logTerminal("Cerrando sesión de administrador...", "var(--acento-rojo)");
+    if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.sesion_cerrar === 'function') {
+        google.script.run
+            .withSuccessHandler(() => navegarModulo("login_ui"))
+            .withFailureHandler(() => navegarModulo("login_ui"))
+            .sesion_cerrar();
+    } else {
+        navegarModulo("login_ui");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    actualizarTasaBcv();
+    setInterval(actualizarTasaBcv, 60000);
+});
+</script>
+
+</body>
+</html>

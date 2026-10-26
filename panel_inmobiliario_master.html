@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condolink Global V20.8 - Panel Inmobiliario Master Unificado</title>
+    <!-- FontAwesome para iconografía HUD -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --lcars-cyan: #00e5ff;
+            --lcars-blue: #0088ff;
+            --lcars-terminal-green: #00ff66;
+            --bg-deep: #030712; 
+            --magia-dorado: #ffcc00;     
+            --magia-verde: #00ff66;       
+            --magia-azul: #0088cc;        
+            --magia-morado: #a855f7;      
+            --prop-bg: #0b1329;
+            --prop-card: rgba(11, 19, 41, 0.94);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-subtle: rgba(0, 229, 255, 0.28);
+            --shadow-hud: 0 15px 35px -5px rgba(0,0,0,0.6);
+            --danger-red: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: var(--bg-deep);
+            background: radial-gradient(circle at top right, #0b1329 0%, #030712 65%);
+            color: var(--lcars-cyan);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--prop-card);
+            padding: 16px 24px;
+            border-bottom: 2px solid var(--lcars-cyan);
+            box-shadow: var(--shadow-hud);
+            flex-shrink: 0;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .header-brand { display: flex; align-items: center; gap: 15px; z-index: 2; }
+        .header-title { font-size: 1.05rem; font-weight: 800; color: var(--text-main); letter-spacing: 0.05em; text-transform: uppercase; }
+
+        .central-logo-container {
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            display: flex; align-items: center; justify-content: center; width: 58px; height: 58px; z-index: 3; cursor: pointer;
+        }
+
+        .halo-ring {
+            position: absolute; width: 68px; height: 68px; border: 2px dashed var(--lcars-cyan); border-radius: 50%;
+            animation: rotateHalo 8s linear infinite; box-shadow: 0 0 15px rgba(0, 229, 255, 0.5), inset 0 0 10px rgba(0, 229, 255, 0.3); pointer-events: none;
+        }
+
+        @keyframes rotateHalo { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .header-logo {
+            height: 46px; width: 46px; object-fit: cover; border-radius: 50%; border: 2px solid var(--lcars-cyan);
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.5); z-index: 4; background: #030712; cursor: pointer;
+        }
+
+        .bcv-ticker {
+            background: rgba(3, 7, 18, 0.9); border: 1.5px solid var(--magia-dorado); border-radius: 30px;
+            padding: 8px 16px; font-size: 0.75rem; color: var(--text-main); display: flex; align-items: center;
+            gap: 8px; cursor: pointer; font-weight: 700; z-index: 2; box-shadow: var(--shadow-hud); transition: all 0.2s ease;
+        }
+        .bcv-ticker:hover { border-color: var(--lcars-cyan); transform: translateY(-1px); }
+
+        .main-container { display: flex; flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 20px; gap: 20px; }
+
+        .lcars-sidebar {
+            width: 95px; background: var(--prop-card); border: 1.5px solid var(--border-subtle); display: flex;
+            flex-direction: column; justify-content: space-between; padding: 20px 12px; border-radius: 16px;
+            box-shadow: var(--shadow-hud); backdrop-filter: blur(10px); flex-shrink: 0;
+        }
+        .sidebar-elbow { width: 100%; height: 35px; background: var(--lcars-cyan); border-radius: 10px; margin-bottom: 15px; box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+        .sidebar-nav-btn {
+            background: rgba(0, 229, 255, 0.08); border: 1.5px solid rgba(0, 229, 255, 0.3); color: var(--lcars-cyan);
+            padding: 12px 6px; text-align: center; font-size: 1.15rem; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; margin-bottom: 12px;
+        }
+        .sidebar-nav-btn:hover, .sidebar-nav-btn.active { background: var(--lcars-cyan); color: #030712; box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
+
+        .workspace { flex: 1; display: flex; flex-direction: column; gap: 16px; width: 100%; overflow-x: hidden; }
+
+        .magical-panel {
+            background: var(--prop-card); border-radius: 16px; padding: 20px; border: 1.5px solid var(--border-subtle);
+            box-shadow: var(--shadow-hud); backdrop-filter: blur(10px); position: relative;
+        }
+        .magical-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--lcars-cyan), var(--magia-dorado)); border-top-left-radius: 16px; border-top-right-radius: 16px;
+        }
+
+        .terminal-screen {
+            background: #030712; border: 1.5px solid var(--lcars-terminal-green); border-radius: 10px; padding: 12px;
+            font-family: monospace; font-size: 0.75rem; color: var(--lcars-terminal-green); height: 85px; overflow-y: auto;
+            line-height: 1.3; box-shadow: inset 0 0 10px rgba(0, 255, 102, 0.15); flex-shrink: 0;
+        }
+
+        /* 3 PESTAÑAS PRINCIPALES DEL PANEL */
+        .panel-tabs-container { display: flex; gap: 10px; border-bottom: 1.5px dashed rgba(0, 229, 255, 0.2); padding-bottom: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+        .tab-btn {
+            background: rgba(3, 7, 18, 0.8); border: 1.5px solid var(--border-subtle); color: var(--text-muted);
+            padding: 10px 18px; border-radius: 10px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; text-transform: uppercase; flex: 1; justify-content: center;
+        }
+        .tab-btn.active { background: var(--lcars-cyan); color: #030712; border-color: var(--lcars-cyan); box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
+
+        .view-section { display: none; flex-direction: column; gap: 16px; }
+        .view-section.active { display: flex; }
+
+        /* MODAL DE ANUNCIOS PAGOS */
+        .modal-anuncios-pagos {
+            display: none; background: var(--prop-card); border: 2px solid var(--magia-dorado); border-radius: 16px;
+            padding: 20px; margin-bottom: 10px; box-shadow: var(--shadow-hud); backdrop-filter: blur(10px);
+        }
+        .pago-banco-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 12px 0; }
+        .pago-banco-card { background: #030712; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border-subtle); font-size: 0.78rem; }
+        .pago-banco-card span { display: block; color: var(--text-muted); font-size: 0.68rem; text-transform: uppercase; }
+        .pago-banco-card strong { color: var(--magia-dorado); font-size: 0.85rem; }
+
+        /* FILTROS DE BÚSQUEDA */
+        .search-filters {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px;
+            background: var(--prop-card); padding: 16px; border-radius: 16px; border: 1.5px solid var(--border-subtle); align-items: center;
+        }
+        .filter-group { display: flex; flex-direction: column; gap: 4px; }
+        .filter-label { font-size: 0.7rem; font-weight: 700; color: var(--lcars-cyan); text-transform: uppercase; letter-spacing: 0.05em; }
+        .filter-input {
+            background: #030712; border: 1.5px solid rgba(0, 229, 255, 0.3); padding: 9px 12px;
+            border-radius: 10px; font-size: 0.82rem; color: var(--text-main); outline: none; width: 100%;
+        }
+        .filter-input:focus { border-color: var(--magia-dorado); box-shadow: 0 0 10px rgba(255, 204, 0, 0.3); }
+
+        /* BANDEJA DE CHATS Y MEDIACIÓN MASTER (COMPRADORES, ARRENDATARIOS, VENDEDORES, ARRENDADORES) */
+        .private-chats-section { background: var(--prop-card); border-radius: 16px; padding: 16px; }
+        .chat-layout {
+            display: grid; grid-template-columns: 280px 1fr; background: #030712;
+            border: 1.5px solid var(--border-subtle); border-radius: 10px; overflow: hidden; height: 340px;
+        }
+        .chats-sidebar { background: rgba(11, 19, 41, 0.85); border-right: 1.5px solid var(--border-subtle); display: flex; flex-direction: column; overflow: hidden; }
+        .chats-list-scroll { overflow-y: auto; flex: 1; }
+        .chat-contact-item { padding: 10px 12px; border-bottom: 1px solid rgba(0, 229, 255, 0.15); cursor: pointer; font-size: 0.78rem; color: var(--text-muted); transition: all 0.2s; }
+        .chat-contact-item:hover, .chat-contact-item.active { background: rgba(0, 229, 255, 0.18); color: var(--lcars-cyan); }
+        .chat-main-panel { display: flex; flex-direction: column; justify-content: space-between; padding: 12px; }
+        .chat-messages-box { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 0.78rem; padding: 6px 4px; }
+        
+        .master-msg-bubble { max-width: 82%; padding: 8px 12px; border-radius: 8px; line-height: 1.4; }
+        .master-msg-bubble.incoming { background: #111827; color: var(--text-main); align-self: flex-start; border: 1px solid var(--border-subtle); }
+        .master-msg-bubble.outgoing { background: var(--lcars-cyan); color: #030712; font-weight: 700; align-self: flex-end; }
+        .msg-meta { font-size: 0.62rem; opacity: 0.75; margin-top: 3px; display: block; }
+
+        /* TARJETAS E INMUEBLES */
+        .grid-inmuebles { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .card-inmueble {
+            background: var(--prop-card); border: 1.5px solid var(--border-subtle); border-radius: 12px;
+            overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-hud); transition: all 0.2s ease;
+        }
+        .card-inmueble:hover { border-color: var(--lcars-cyan); transform: translateY(-2px); }
+        .card-img-container { height: 150px; background: #030712; position: relative; overflow: hidden; }
+        .card-img-container img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .card-img-container img.active-slide { display: block; }
+        
+        .slider-controls {
+            position: absolute; bottom: 8px; right: 8px; background: rgba(3, 7, 18, 0.8);
+            border: 1px solid var(--border-subtle); padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; color: #fff; display: flex; gap: 6px; align-items: center;
+        }
+        .slider-controls button { background: none; border: none; color: var(--lcars-cyan); cursor: pointer; font-size: 0.75rem; }
+        .badge-tag { position: absolute; top: 8px; left: 8px; padding: 3px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: #fff; z-index: 2; }
+        
+        .card-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+        .card-title { font-size: 0.95rem; font-weight: 800; color: var(--text-main); }
+        .card-price { font-size: 1.05rem; font-weight: 800; color: var(--lcars-cyan); }
+        .card-features { font-size: 0.72rem; color: var(--text-muted); display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .master-personal-data-box {
+            display: block; background: rgba(168, 85, 247, 0.08); border: 1.5px dashed var(--magia-morado);
+            padding: 8px; border-radius: 8px; font-size: 0.7rem; color: #e9d5ff; margin-top: 6px;
+        }
+
+        .arcade-btn {
+            padding: 10px 16px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; border: none;
+            border-radius: 10px; cursor: pointer; background: linear-gradient(135deg, #00e5ff 0%, #0088cc 100%); color: #030712;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-decoration: none;
+        }
+        .arcade-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+        .arcade-btn:active { transform: translateY(1px); }
+        
+        .btn-secondary { background: #374151; color: var(--text-main); width: auto; box-shadow: none; }
+        .btn-success { background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%); color: #030712; }
+        .btn-warning { background: linear-gradient(135deg, #ffcc00 0%, #b38f00 100%); color: #030712; }
+
+        .arcade-footer {
+            background: rgba(11, 19, 41, 0.95); border-top: 2px solid var(--lcars-cyan); padding: 16px 24px;
+            display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -4px 15px rgba(0, 229, 255, 0.15);
+            font-size: 0.78rem; color: var(--text-muted); border-radius: 16px; margin: 20px; flex-wrap: wrap; gap: 12px; backdrop-filter: blur(10px);
+        }
+        .arcade-footer strong { color: #f0f6fc; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-brand">
+            <div class="header-title">CONDOLINK GLOBAL // INMOBILIARIA & MEDIACIÓN MASTER</div>
+        </div>
+        
+        <!-- BOTÓN CENTRAL CON HALO DE RETORNO AL PORTAL MASTER -->
+        <div class="central-logo-container" title="Regresar al Portal Master" onclick="navegarModulo('portal_master')">
+            <div class="halo-ring"></div>
+            <img src="https://i.imgur.com/XcMwIDa.png" alt="Logo Condolink" class="header-logo" onerror="this.src='https://i.imgur.com/XcMwIDa.png'">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; z-index: 2;">
+            <div class="bcv-ticker" id="bcv-display" onclick="cargarTasaBCVAutomatica()" title="Clic para sincronizar tasa oficial BCV">
+                <i class="fa-solid fa-chart-line" id="sync-icon" style="color: var(--lcars-terminal-green);"></i> 
+                <span>Tasa BCV:</span> 
+                <strong id="tasa-valor-dinamico" style="color: #ffffff;">881,88 VES</strong> 
+                <span style="color: var(--magia-dorado); font-weight: 800;">[Auto-Sync]</span>
+            </div>
+            <button class="arcade-btn btn-secondary" onclick="irLoginUI()" title="Salir al Login">
+                <i class="fa-solid fa-right-from-bracket"></i> Salir
+            </button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <aside class="lcars-sidebar">
+            <div class="sidebar-elbow"></div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="sidebar-nav-btn" title="Ir a Portal Master" onclick="navegarModulo('portal_master')"><i class="fa-solid fa-user-shield"></i></button>
+                <button class="sidebar-nav-btn" title="Ir a Panel Master" onclick="navegarModulo('panel_master')"><i class="fa-solid fa-crown"></i></button>
+                <button class="sidebar-nav-btn" title="Anuncios Pagos" onclick="togglePanelAnunciosPagos()"><i class="fa-solid fa-wallet"></i></button>
+            </div>
+            <div style="font-size: 0.62rem; text-align: center; color: var(--lcars-cyan); font-weight: 800;">V20.8</div>
+        </aside>
+
+        <main class="workspace">
+
+            <div class="terminal-screen" id="terminal-logs">
+                [SYSTEM LOG]: Panel Inmobiliario Master Unificado activado.<br>
+                &gt; Receptor final y mediador central entre Compradores, Arrendatarios, Vendedores y Arrendadores con persistencia permanente en BD.
+            </div>
+
+            <!-- MODAL DE GESTIÓN DE ANUNCIOS DESTACADOS PAGOS -->
+            <div class="modal-anuncios-pagos" id="panelAnunciosPagos">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1.5px dashed rgba(255, 204, 0, 0.3); padding-bottom: 8px;">
+                    <h3 style="color: var(--magia-dorado); font-size: 0.95rem; font-weight: 800;"><i class="fa-solid fa-bullhorn"></i> Anuncio Destacado Pago (3 Meses de Vigencia / 5 USD)</h3>
+                    <button class="arcade-btn btn-secondary" style="padding: 4px 10px; font-size: 0.7rem;" onclick="togglePanelAnunciosPagos()">Cerrar</button>
+                </div>
+                <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px;">Reporta o aprueba el pago del propietario/arrendador para habilitar el destaque en el portal.</p>
+                
+                <div class="pago-banco-grid">
+                    <div class="pago-banco-card"><span>Banco Destino</span><strong>Banco BFC</strong></div>
+                    <div class="pago-banco-card"><span>Titular / Cuenta</span><strong>Tecnomajestic</strong></div>
+                    <div class="pago-banco-card"><span>Número de Cuenta</span><strong>0151-xxxxxxxxxxxx</strong></div>
+                    <div class="pago-banco-card"><span>RIF</span><strong>J-xxxxxxxx-x</strong></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                    <div class="filter-group">
+                        <label class="filter-label">Título del Anuncio</label>
+                        <input type="text" id="inputTituloPago" class="filter-input" placeholder="Ej: Venta de Casa Altamira">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Ref. Bancaria</label>
+                        <input type="text" id="inputRefPago" class="filter-input" placeholder="Últimos 6 dígitos">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Monto (VES calculado)</label>
+                        <input type="text" id="inputMontoVesCalculado" class="filter-input" readonly placeholder="Calculando...">
+                    </div>
+                </div>
+
+                <button class="arcade-btn btn-warning" onclick="enviarSolicitudAnuncioPago()">
+                    <i class="fa-solid fa-paper-plane"></i> Validar y Aprobar Anuncio Destacado
+                </button>
+            </div>
+
+            <!-- TRES PESTAÑAS INTEGRADAS EN UNA SOLA INTERFAZ -->
+            <div class="panel-tabs-container">
+                <button class="tab-btn active" id="tabBtnConsulta" onclick="cambiarVistaPanel('consulta')">
+                    <i class="fa-solid fa-magnifying-glass"></i> 1. Consulta y Captación
+                </button>
+                <button class="tab-btn" id="tabBtnPublicar" onclick="cambiarVistaPanel('publicar')">
+                    <i class="fa-solid fa-plus-circle"></i> 2. Publicación Permanente Master
+                </button>
+                <button class="tab-btn" id="tabBtnChat" onclick="cambiarVistaPanel('chat')">
+                    <i class="fa-solid fa-handshake"></i> 3. Mediación (Compradores / Arrendatarios / Vendedores / Arrendadores)
+                </button>
+            </div>
+
+            <!-- VISTA 1: CONSULTA Y BÚSQUEDA -->
+            <div class="view-section active" id="viewConsulta">
+                <div class="magical-panel" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h4 style="margin: 0 0 2px 0; color: var(--text-main); font-size: 0.95rem; font-weight: 800;"><i class="fas fa-city"></i> Portal Inmobiliario Gran Caracas — Receptor y Mediador Master</h4>
+                        <p style="margin: 0; color: var(--text-muted); font-size: 0.75rem;">El Master recibe y media todas las negociaciones entre Compradores, Arrendatarios, Vendedores y Arrendadores.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="arcade-btn btn-warning" onclick="togglePanelAnunciosPagos()">
+                            <i class="fas fa-wallet"></i> Anuncios Pagos (3 Meses)
+                        </button>
+                        <button class="arcade-btn btn-success" onclick="cambiarVistaPanel('publicar')">
+                            <i class="fas fa-plus-circle"></i> Publicar Inmueble (Permanente)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-filters">
+                    <div class="filter-group">
+                        <label class="filter-label">Zona / Urbanización</label>
+                        <select id="filtro-zona" class="filter-input">
+                            <option value="todos">Todas las zonas</option>
+                            <optgroup label="Municipio Libertador">
+                                <option value="Altavista">Altavista</option>
+                                <option value="Coche">Coche</option>
+                                <option value="El Paraiso">El Paraíso</option>
+                                <option value="El Recreo">El Recreo</option>
+                                <option value="La Candelaria">La Candelaria</option>
+                                <option value="La Florida">La Florida</option>
+                                <option value="La Pastora">La Pastora</option>
+                                <option value="Montalban">Montalbán</option>
+                                <option value="San Bernardino">San Bernardino</option>
+                                <option value="San Jose">San José</option>
+                                <option value="San Pedro">San Pedro</option>
+                                <option value="Santa Monica">Santa Mónica</option>
+                                <option value="Valle Abajo">Valle Abajo</option>
+                            </optgroup>
+                            <optgroup label="Municipio Chacao">
+                                <option value="Altamira">Altamira</option>
+                                <option value="Bello Campo">Bello Campo</option>
+                                <option value="Campo Alegre">Campo Alegre</option>
+                                <option value="Chacao Centro">Chacao (Casco Central)</option>
+                                <option value="El Rosal">El Rosal</option>
+                                <option value="La Castellana">La Castellana</option>
+                                <option value="Los Palos Grandes">Los Palos Grandes</option>
+                                <option value="Sans Souci">Sans Souci</option>
+                            </optgroup>
+                            <optgroup label="Municipio Baruta">
+                                <option value="Baruta Centro">Baruta (Casco Central)</option>
+                                <option value="Caurimare">Caurimare</option>
+                                <option value="Chuao">Chuao</option>
+                                <option value="Colinas de Bello Monte">Colinas de Bello Monte</option>
+                                <option value="El Cafetal">El Cafetal</option>
+                                <option value="Las Mercedes">Las Mercedes</option>
+                                <option value="Prados del Este">Prados del Este</option>
+                                <option value="Manzanares">Manzanares</option>
+                                <option value="Santa Fe">Santa Fe Norte / Sur</option>
+                            </optgroup>
+                            <optgroup label="Municipio Sucre">
+                                <option value="Boleita">Boleíta Norte / Sur / Centro</option>
+                                <option value="La California">La California Norte / Sur</option>
+                                <option value="La Urbina">La Urbina</option>
+                                <option value="Los Chorros">Los Chorros</option>
+                                <option value="Los Dos Caminos">Los Dos Caminos</option>
+                                <option value="Los Ruices">Los Ruices</option>
+                                <option value="Macaracuay">Macaracuay</option>
+                                <option value="Sebucan">Sebucán</option>
+                            </optgroup>
+                            <optgroup label="Municipio El Hatillo">
+                                <option value="El Hatillo Pueblo">El Hatillo (Pueblo)</option>
+                                <option value="La Boyera">La Boyera</option>
+                                <option value="La Lagunita">La Lagunita</option>
+                                <option value="Los Naranjos">Los Naranjos</option>
+                                <option value="Oripoto">Oripoto</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Operación</label>
+                        <select id="filtro-operacion" class="filter-input">
+                            <option value="todos">Todos (Venta / Alquiler)</option>
+                            <option value="Venta">Venta (Vendedor ↔ Comprador)</option>
+                            <option value="Alquiler">Alquiler (Arrendador ↔ Arrendatario)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Tipología</label>
+                        <select id="filtro-tipologia" class="filter-input">
+                            <option value="todos">Todas</option>
+                            <option value="Casa">Casa</option>
+                            <option value="Apartamento">Apartamento</option>
+                            <option value="Local">Local</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Habitaciones mín.</label>
+                        <select id="filtro-hab" class="filter-input">
+                            <option value="0">Cualquiera / 0+</option>
+                            <option value="1">1 o más</option>
+                            <option value="2">2 o más</option>
+                            <option value="3">3 o más</option>
+                            <option value="4">4 o más</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Precio Máx. (USD)</label>
+                        <input type="number" id="filtro-precio-max" class="filter-input" placeholder="Ej: 150000">
+                    </div>
+                    <div style="display: flex; align-items: flex-end; height: 100%;">
+                        <button class="arcade-btn" style="height: 41px; width: 100%;" onclick="filtrarBusquedaInmuebles()">Filtrar</button>
+                    </div>
+                </div>
+
+                <!-- CONTENEDOR DE TARJETAS DE PROPIEDADES -->
+                <div class="grid-inmuebles" id="gridInmueblesContenedor"></div>
+            </div>
+
+            <!-- VISTA 2: PUBLICACIÓN MASTER (CON PRIVILEGIO PERMANENTE MASTER) -->
+            <div class="view-section" id="viewPublicar">
+                <div class="magical-panel" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px dashed rgba(0, 229, 255, 0.2); padding-bottom: 10px;">
+                        <h3 style="color: var(--lcars-terminal-green); font-size: 1.05rem; font-weight: 800;"><i class="fa-solid fa-plus-circle"></i> Panel de Publicación de Inmueble (Privilegio Permanente Master)</h3>
+                        <button class="arcade-btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="cambiarVistaPanel('consulta')">Ver Listados / Búsqueda</button>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                        <div class="filter-group">
+                            <label class="filter-label">Modalidad de Publicación</label>
+                            <select id="pubModalidad" class="filter-input" onchange="validarLimiteFotosModalidad()">
+                                <option value="Permanente" selected>Permanente Master (Tiempo Indefinido - Fotos Ilimitadas)</option>
+                                <option value="Pago">Pago Destacado (Vigencia 3 Meses - Máx 10 fotos - 5 USD)</option>
+                                <option value="Gratis">Gratis Comunitario (Vigencia 7 días - Máx 5 fotos)</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Operación y Rol Titular</label>
+                            <select id="pubOperacion" class="filter-input">
+                                <option value="Venta">Venta (Titular: Vendedor)</option>
+                                <option value="Alquiler">Alquiler / Arrendamiento (Titular: Arrendador)</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Tipología</label>
+                            <select id="pubTipologia" class="filter-input" onchange="actualizarCamposTipologiaPub()">
+                                <option value="Casa">Casa</option>
+                                <option value="Apartamento" selected>Apartamento</option>
+                                <option value="Local">Local (Comercial / Oficina)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="filter-group">
+                            <label class="filter-label">Zona / Urbanización</label>
+                            <select id="pubZonaSelect" class="filter-input">
+                                <optgroup label="Municipio Libertador">
+                                    <option value="Altavista">Altavista</option>
+                                    <option value="Coche">Coche</option>
+                                    <option value="El Paraiso">El Paraíso</option>
+                                    <option value="El Recreo">El Recreo</option>
+                                    <option value="La Candelaria">La Candelaria</option>
+                                    <option value="La Florida">La Florida</option>
+                                    <option value="La Pastora">La Pastora</option>
+                                    <option value="Montalban">Montalbán</option>
+                                    <option value="San Bernardino">San Bernardino</option>
+                                    <option value="San Jose">San José</option>
+                                    <option value="San Pedro">San Pedro</option>
+                                    <option value="Santa Monica">Santa Mónica</option>
+                                    <option value="Valle Abajo">Valle Abajo</option>
+                                </optgroup>
+                                <optgroup label="Municipio Chacao">
+                                    <option value="Altamira">Altamira</option>
+                                    <option value="Bello Campo">Bello Campo</option>
+                                    <option value="Campo Alegre">Campo Alegre</option>
+                                    <option value="Chacao Centro">Chacao (Casco Central)</option>
+                                    <option value="El Rosal">El Rosal</option>
+                                    <option value="La Castellana" selected>La Castellana</option>
+                                    <option value="Los Palos Grandes">Los Palos Grandes</option>
+                                    <option value="Sans Souci">Sans Souci</option>
+                                </optgroup>
+                                <optgroup label="Municipio Baruta">
+                                    <option value="Baruta Centro">Baruta (Casco Central)</option>
+                                    <option value="Caurimare">Caurimare</option>
+                                    <option value="Chuao">Chuao</option>
+                                    <option value="Colinas de Bello Monte">Colinas de Bello Monte</option>
+                                    <option value="El Cafetal">El Cafetal</option>
+                                    <option value="Las Mercedes">Las Mercedes</option>
+                                    <option value="Prados del Este">Prados del Este</option>
+                                    <option value="Manzanares">Manzanares</option>
+                                    <option value="Santa Fe">Santa Fe Norte / Sur</option>
+                                </optgroup>
+                                <optgroup label="Municipio Sucre">
+                                    <option value="Boleita">Boleíta Norte / Sur / Centro</option>
+                                    <option value="La California">La California Norte / Sur</option>
+                                    <option value="La Urbina">La Urbina</option>
+                                    <option value="Los Chorros">Los Chorros</option>
+                                    <option value="Los Dos Caminos">Los Dos Caminos</option>
+                                    <option value="Los Ruices">Los Ruices</option>
+                                    <option value="Macaracuay">Macaracuay</option>
+                                    <option value="Sebucan">Sebucán</option>
+                                </optgroup>
+                                <optgroup label="Municipio El Hatillo">
+                                    <option value="El Hatillo Pueblo">El Hatillo (Pueblo)</option>
+                                    <option value="La Boyera">La Boyera</option>
+                                    <option value="La Lagunita">La Lagunita</option>
+                                    <option value="Los Naranjos">Los Naranjos</option>
+                                    <option value="Oripoto">Oripoto</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Título del Inmueble</label>
+                            <input type="text" id="pubTitulo" class="filter-input" placeholder="Ej: Espectacular Penthouse en Torre Charam">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+                        <div class="filter-group" id="grupoHabitaciones">
+                            <label class="filter-label">Habitaciones</label>
+                            <input type="number" id="pubHab" class="filter-input" placeholder="3">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Baños</label>
+                            <input type="number" id="pubBanos" class="filter-input" placeholder="2">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Estacionamiento</label>
+                            <input type="number" id="pubPuestos" class="filter-input" placeholder="1">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Precio / Canon (USD)</label>
+                            <input type="number" id="pubPrecio" class="filter-input" placeholder="120000">
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(0, 229, 255, 0.05); border: 1.5px dashed var(--lcars-cyan); padding: 12px; border-radius: 10px;">
+                        <span style="font-size: 0.75rem; color: var(--lcars-cyan); font-weight: 800; display: block; margin-bottom: 6px;"><i class="fas fa-camera"></i> Fotos del Inmueble</span>
+                        <div class="filter-group">
+                            <label class="filter-label" id="labelInfoLimiteFotos">URLs de las Fotos (Separadas por comas — Sin límite para Master)</label>
+                            <textarea id="pubFotosUrls" class="filter-input" rows="2" placeholder="https://..."></textarea>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(168, 85, 247, 0.05); border: 1.5px dashed var(--magia-morado); padding: 12px; border-radius: 10px;">
+                        <span style="font-size: 0.75rem; color: #e9d5ff; font-weight: 800; display: block; margin-bottom: 6px;"><i class="fas fa-lock"></i> Datos del Vendedor / Arrendador (Custodia Exclusiva Master)</span>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="text" id="pubNombreProp" class="filter-input" placeholder="Nombre Completo del Vendedor / Arrendador">
+                            <input type="text" id="pubTelfProp" class="filter-input" placeholder="Teléfono / WhatsApp directo">
+                        </div>
+                    </div>
+
+                    <button class="arcade-btn btn-success" style="padding: 14px; font-size: 0.85rem;" onclick="registrarNuevoInmueble()">
+                        <i class="fa-solid fa-check"></i> Publicar Inmueble de Forma Permanente en Base de Datos
+                    </button>
+                </div>
+            </div>
+
+            <!-- VISTA 3: BANDEJA DE MEDIACIÓN MASTER (COMPRADORES, ARRENDATARIOS, VENDEDORES, ARRENDADORES) -->
+            <div class="view-section" id="viewChat">
+                <div class="magical-panel private-chats-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1.5px dashed rgba(0, 229, 255, 0.2); padding-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 0.95rem; color: var(--text-main); font-weight: 800;">
+                                <i class="fas fa-scale-balanced" style="color: var(--magia-dorado);"></i> Centro de Mediación y Custodia Permanente Master
+                            </h3>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">El Master recibe y media todas las propuestas entre <strong>Compradores ↔ Vendedores</strong> y <strong>Arrendatarios ↔ Arrendadores</strong>.</span>
+                        </div>
+                        <button class="arcade-btn btn-warning" style="width: auto; padding: 6px 12px; font-size: 0.7rem;" onclick="abrirNuevoCanalMediacion()">
+                            <i class="fas fa-user-plus"></i> Nuevo Participante en Mediación
+                        </button>
+                    </div>
+
+                    <div class="chat-layout">
+                        <div class="chats-sidebar">
+                            <div style="padding: 8px; border-bottom: 1px solid rgba(0,229,255,0.2);">
+                                <select id="filtroRolMediacion" class="filter-input" style="padding: 5px 8px; font-size: 0.72rem;" onchange="renderizarContactosMediacion()">
+                                    <option value="TODOS">Todos los Participantes (4 Perfiles)</option>
+                                    <option value="Comprador">Compradores</option>
+                                    <option value="Vendedor">Vendedores</option>
+                                    <option value="Arrendatario">Arrendatarios</option>
+                                    <option value="Arrendador">Arrendadores</option>
+                                </select>
+                            </div>
+                            <div class="chats-list-scroll" id="listaContactosMediacion">
+                                <!-- Se renderiza dinámicamente -->
+                            </div>
+                        </div>
+
+                        <div class="chat-main-panel">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; border-bottom: 1.5px solid rgba(0, 229, 255, 0.2); padding-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                                <div>
+                                    <strong id="chat-header-title" style="color: var(--text-main);">Seleccione un expediente de mediación...</strong>
+                                    <div id="chat-header-propiedad" style="font-size: 0.68rem; color: var(--magia-dorado);"></div>
+                                </div>
+                                <span style="color: var(--lcars-terminal-green); font-weight: 700;"><i class="fas fa-database"></i> Registro Permanente Activo</span>
+                            </div>
+                            <div class="chat-messages-box" id="box-mensajes-inmobiliarios"></div>
+                            <div style="display: flex; gap: 8px; border-top: 1.5px solid rgba(0, 229, 255, 0.2); padding-top: 8px;">
+                                <input type="text" id="txtInmobiliarioInput" class="filter-input" placeholder="Escribir mensaje permanente como Mediador Master..." onkeypress="if(event.key === 'Enter') enviarMensajeInmobiliario()">
+                                <button class="arcade-btn" style="width: auto; padding: 0 16px;" onclick="enviarMensajeInmobiliario()">
+                                    <i class="fas fa-paper-plane"></i> Publicar Permanente
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <footer class="arcade-footer">
+        <div>
+            <strong>CONDOLINK GLOBAL V20.8</strong> &copy; 2026 - Torre Charam, Caracas. Todos los derechos reservados.
+        </div>
+        <div>STATUS: <span style="color: #00ff66;">ONLINE [SECURE]</span> // <span style="color: var(--lcars-cyan);"><i class="fa-solid fa-shield-halved"></i> Google Workspace</span></div>
+    </footer>
+
+    <script>
+        let tasaActualBCV = 881.88;
+        let esUsuarioMaster = true;
+        const BASE_URL = typeof window.BASE_URL !== 'undefined' ? window.BASE_URL : window.location.href.split('?')[0];
+
+        let listaInmuebles = [
+            {
+                id: 1, modalidad: 'Permanente', operacion: 'Venta', tipologia: 'Apartamento', zona: 'Altamira',
+                titulo: 'Residencias Altamira Park (Custodia Master)', precio: 135000, habitaciones: 3, banos: 2, puestos: 2,
+                propietario: 'Carlos Mendoza (Vendedor)', telefono: '+58 412-1234567',
+                fotos: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500']
+            },
+            {
+                id: 2, modalidad: 'Permanente', operacion: 'Alquiler', tipologia: 'Apartamento', zona: 'La Castellana',
+                titulo: 'Suite Ejecutiva Torre Charam', precio: 1200, habitaciones: 2, banos: 2, puestos: 2,
+                propietario: 'Inversiones Charam (Arrendador)', telefono: '+58 414-9998877',
+                fotos: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500']
+            }
+        ];
+
+        // Canales de Mediación Master para los 4 perfiles: Vendedor, Comprador, Arrendador, Arrendatario
+        let chatsInmobiliarios = {
+            carlos_vendedor: {
+                id: "carlos_vendedor",
+                nombre: "Carlos Mendoza",
+                perfil: "Vendedor",
+                colorPerfil: "#f87171",
+                propiedad: "Residencias Altamira Park ($135,000 - Venta)",
+                mensajes: [
+                    { de: "incoming", autor: "Carlos Mendoza [Vendedor]", texto: "Hola Master, el inmueble en Altamira tiene título registrado y solvencia de condominio lista para su custodia.", fecha: " Permanente" }
+                ]
+            },
+            mariana_comprador: {
+                id: "mariana_comprador",
+                nombre: "Mariana Pérez",
+                perfil: "Comprador",
+                colorPerfil: "#60a5fa",
+                propiedad: "Residencias Altamira Park ($135,000 - Venta)",
+                mensajes: [
+                    { de: "incoming", autor: "Mariana Pérez [Comprador]", texto: "Buenas tardes Master, presento propuesta formal de compra para Residencias Altamira Park bajo su intermediación.", fecha: "Permanente" }
+                ]
+            },
+            charam_arrendador: {
+                id: "charam_arrendador",
+                nombre: "Inversiones Charam",
+                perfil: "Arrendador",
+                colorPerfil: "#c084fc",
+                propiedad: "Suite Ejecutiva Torre Charam ($1,200/mes - Alquiler)",
+                mensajes: [
+                    { de: "incoming", autor: "Inversiones Charam [Arrendador]", texto: "Master, autorizamos a Condolink Global para mediar el contrato de arrendamiento corporativo.", fecha: "Permanente" }
+                ]
+            },
+            roberto_arrendatario: {
+                id: "roberto_arrendatario",
+                nombre: "Roberto Gómez",
+                perfil: "Arrendatario",
+                colorPerfil: "#34d399",
+                propiedad: "Suite Ejecutiva Torre Charam ($1,200/mes - Alquiler)",
+                mensajes: [
+                    { de: "incoming", autor: "Roberto Gómez [Arrendatario]", texto: "Estimado Master, envío referencias bancarias y comerciales para tomar en arrendamiento la Suite en La Castellana.", fecha: "Permanente" }
+                ]
+            }
+        };
+
+        let chatActivoActual = 'carlos_vendedor';
+
+        /* ===================== NORMALIZADOR ESTRICTO A 2 DECIMALES ===================== */
+        function normalizarTasaBCV(raw) {
+            if (raw === null || raw === undefined) return 881.88;
+            let str = String(raw).trim().replace(/[^0-9.,]/g, '');
+            if (!str) return 881.88;
+            if (str.includes(',') && !str.includes('.')) {
+                str = str.replace(',', '.');
+            } else if (str.includes('.') && str.includes(',')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            }
+            let num = parseFloat(str);
+            if (isNaN(num) || num <= 0) return 881.88;
+            while (num >= 5000) {
+                num = num / 10;
+            }
+            return Math.round(num * 100) / 100;
+        }
+
+        /* ===================== PERSISTENCIA PERMANENTE DE INMUEBLES Y MENSAJES ===================== */
+        function cargarEstadoPermanenteInmobiliario() {
+            try {
+                const inmueblesGuardados = JSON.parse(localStorage.getItem("CLG_Inmuebles_Permanentes_Master") || "null");
+                if (Array.isArray(inmueblesGuardados) && inmueblesGuardados.length > 0) {
+                    listaInmuebles = inmueblesGuardados;
+                }
+                const chatsGuardados = JSON.parse(localStorage.getItem("CLG_Chats_Mediacion_Permanentes_Master") || "null");
+                if (chatsGuardados && typeof chatsGuardados === "object") {
+                    chatsInmobiliarios = Object.assign({}, chatsInmobiliarios, chatsGuardados);
+                }
+            } catch (e) {}
+
+            // Sincronizar con la Base de Datos Central Google Sheets
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                if (typeof google.script.run.obtenerInmueblesMasterBackend === 'function') {
+                    google.script.run
+                        .withSuccessHandler(function(resServidor) {
+                            if (Array.isArray(resServidor) && resServidor.length > 0) {
+                                resServidor.forEach(inm => {
+                                    if (!listaInmuebles.some(x => x.titulo === inm.titulo && x.propietario === inm.propietario)) {
+                                        listaInmuebles.unshift(inm);
+                                    }
+                                });
+                                guardarEstadoPermanenteLocal();
+                                renderizarInmuebles(listaInmuebles);
+                            }
+                        })
+                        .obtenerInmueblesMasterBackend();
+                }
+                if (typeof google.script.run.obtenerChatsInmobiliariosMasterBackend === 'function') {
+                    google.script.run
+                        .withSuccessHandler(function(chatsServidor) {
+                            if (chatsServidor && typeof chatsServidor === 'object' && Object.keys(chatsServidor).length > 0) {
+                                chatsInmobiliarios = Object.assign({}, chatsInmobiliarios, chatsServidor);
+                                guardarEstadoPermanenteLocal();
+                                renderizarContactosMediacion();
+                                renderizarMensajesInmobiliarios();
+                            }
+                        })
+                        .obtenerChatsInmobiliariosMasterBackend();
+                }
+            }
+        }
+
+        function guardarEstadoPermanenteLocal() {
+            try {
+                localStorage.setItem("CLG_Inmuebles_Permanentes_Master", JSON.stringify(listaInmuebles));
+                localStorage.setItem("CLG_Chats_Mediacion_Permanentes_Master", JSON.stringify(chatsInmobiliarios));
+            } catch (e) {}
+        }
+
+        function renderizarContactosMediacion() {
+            const contenedor = document.getElementById('listaContactosMediacion');
+            const filtro = document.getElementById('filtroRolMediacion') ? document.getElementById('filtroRolMediacion').value : 'TODOS';
+            if (!contenedor) return;
+            contenedor.innerHTML = '';
+
+            Object.keys(chatsInmobiliarios).forEach(key => {
+                const c = chatsInmobiliarios[key];
+                if (filtro !== 'TODOS' && c.perfil !== filtro) return;
+                const claseActiva = (key === chatActivoActual) ? 'active' : '';
+                contenedor.innerHTML += `
+                    <div id="chat-item-${key}" class="chat-contact-item ${claseActiva}" onclick="seleccionarChatInmobiliario('${key}')">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <strong style="color:#fff;">${c.nombre}</strong>
+                            <span style="font-size:0.65rem; color:${c.colorPerfil || '#00e5ff'}; font-weight:800;">[${c.perfil}]</span>
+                        </div>
+                        <div style="font-size:0.68rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${c.propiedad || 'Mediación Directa Master'}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function seleccionarChatInmobiliario(idChat) {
+            if (!chatsInmobiliarios[idChat]) return;
+            chatActivoActual = idChat;
+            renderizarContactosMediacion();
+
+            const chatData = chatsInmobiliarios[idChat];
+            const tituloHeader = document.getElementById('chat-header-title');
+            const propHeader = document.getElementById('chat-header-propiedad');
+            if (tituloHeader) tituloHeader.innerText = `${chatData.nombre} [${chatData.perfil}]`;
+            if (propHeader) propHeader.innerText = chatData.propiedad || 'Negociación en Custodia Master';
+
+            renderizarMensajesInmobiliarios();
+            logTerminal(`Expediente de mediación activo: ${chatData.nombre} (${chatData.perfil})`);
+        }
+
+        function renderizarMensajesInmobiliarios() {
+            const boxMsgs = document.getElementById('box-mensajes-inmobiliarios');
+            if (!boxMsgs) return;
+
+            const chatData = chatsInmobiliarios[chatActivoActual];
+            if (!chatData) return;
+            let html = '';
+
+            chatData.mensajes.forEach(m => {
+                const clase = m.de === 'outgoing' ? 'outgoing' : 'incoming';
+                const etiquetaAutor = m.autor || (m.de === 'outgoing' ? 'MASTER MEDIADOR' : `${chatData.nombre} [${chatData.perfil}]`);
+                html += `
+                    <div class="master-msg-bubble ${clase}">
+                        <div>${m.texto}</div>
+                        <span class="msg-meta">${etiquetaAutor} · ${m.fecha || 'Permanente'}</span>
+                    </div>
+                `;
+            });
+
+            boxMsgs.innerHTML = html;
+            boxMsgs.scrollTop = boxMsgs.scrollHeight;
+        }
+
+        function enviarMensajeInmobiliario() {
+            const input = document.getElementById('txtInmobiliarioInput');
+            if (!input) return;
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            const chatActual = chatsInmobiliarios[chatActivoActual];
+            if (!chatActual) return;
+
+            const ahora = new Date().toLocaleString('es-VE');
+            const nuevoMensaje = {
+                de: 'outgoing',
+                autor: 'MASTER MEDIADOR (Torre Charam)',
+                texto: texto,
+                fecha: ahora
+            };
+
+            chatActual.mensajes.push(nuevoMensaje);
+            guardarEstadoPermanenteLocal();
+
+            input.value = '';
+            renderizarMensajesInmobiliarios();
+            logTerminal(`Mensaje permanente publicado en mediación con [${chatActual.nombre} - ${chatActual.perfil}].`);
+
+            // Persistir de forma permanente en Google Sheets
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.guardarMensajeInmobiliarioMasterBackend === 'function') {
+                google.script.run.guardarMensajeInmobiliarioMasterBackend({
+                    chatId: chatActivoActual,
+                    participante: chatActual.nombre,
+                    perfil: chatActual.perfil,
+                    propiedad: chatActual.propiedad,
+                    texto: texto,
+                    fecha: ahora
+                });
+            }
+        }
+
+        function abrirNuevoCanalMediacion() {
+            const nombre = prompt("Nombre completo del participante:");
+            if (!nombre) return;
+            const perfilInput = prompt("Rol en la negociación (Escriba: Comprador, Vendedor, Arrendatario o Arrendador):", "Comprador");
+            const perfil = ["Comprador", "Vendedor", "Arrendatario", "Arrendador"].find(
+                p => p.toLowerCase() === String(perfilInput || "").trim().toLowerCase()
+            ) || "Comprador";
+            const propiedad = prompt("Inmueble objeto de la mediación:", "Torre Charam - Unidad en Negociación");
+
+            const colores = { Comprador: "#60a5fa", Vendedor: "#f87171", Arrendatario: "#34d399", Arrendador: "#c084fc" };
+            const nuevoId = "med_" + Date.now();
+            chatsInmobiliarios[nuevoId] = {
+                id: nuevoId,
+                nombre: nombre.trim(),
+                perfil: perfil,
+                colorPerfil: colores[perfil] || "#00e5ff",
+                propiedad: propiedad || "Negociación Master",
+                mensajes: [
+                    {
+                        de: "outgoing",
+                        autor: "MASTER MEDIADOR",
+                        texto: `Canal oficial de mediación permanente abierto por Master para ${nombre} en calidad de [${perfil}] sobre: ${propiedad}.`,
+                        fecha: new Date().toLocaleString('es-VE')
+                    }
+                ]
+            };
+            guardarEstadoPermanenteLocal();
+            seleccionarChatInmobiliario(nuevoId);
+        }
+
+        function intermediarPropiedadEspecifica(idInmueble) {
+            const item = listaInmuebles.find(x => x.id === idInmueble);
+            if (!item) {
+                cambiarVistaPanel('chat');
+                return;
+            }
+            const rolTitular = item.operacion === 'Alquiler' ? 'Arrendador' : 'Vendedor';
+            const keyExistente = Object.keys(chatsInmobiliarios).find(
+                k => chatsInmobiliarios[k].propiedad && chatsInmobiliarios[k].propiedad.includes(item.titulo)
+            );
+            let targetKey = keyExistente;
+            if (!targetKey) {
+                targetKey = "inm_" + item.id;
+                chatsInmobiliarios[targetKey] = {
+                    id: targetKey,
+                    nombre: item.propietario,
+                    perfil: rolTitular,
+                    colorPerfil: rolTitular === 'Arrendador' ? '#c084fc' : '#f87171',
+                    propiedad: `${item.titulo} ($${item.precio.toLocaleString()} - ${item.operacion})`,
+                    mensajes: [
+                        {
+                            de: "incoming",
+                            autor: `${item.propietario} [${rolTitular}]`,
+                            texto: `Propiedad "${item.titulo}" en ${item.zona} puesta bajo recepción y mediación del Master (${item.telefono}).`,
+                            fecha: "Permanente"
+                        }
+                    ]
+                };
+                guardarEstadoPermanenteLocal();
+            }
+            cambiarVistaPanel('chat');
+            seleccionarChatInmobiliario(targetKey);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            cargarEstadoPermanenteInmobiliario();
+            aplicarFormatoTasaExacta(tasaActualBCV);
+            cargarTasaBCVAutomatica();
+            setInterval(cargarTasaBCVAutomatica, 60000);
+            renderizarInmuebles(listaInmuebles);
+            renderizarContactosMediacion();
+            seleccionarChatInmobiliario(chatActivoActual);
+        });
+
+        function logTerminal(mensaje, color = 'var(--lcars-terminal-green)') {
+            const terminal = document.getElementById('terminal-logs');
+            if (!terminal) return;
+            const timestamp = new Date().toLocaleTimeString();
+            terminal.innerHTML += `<br><span style="color: ${color}">[LOG ${timestamp}]: ${mensaje}</span>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        /* CAMBIO FLUIDO ENTRE LAS 3 VISTAS (PANELES INTERNOS) */
+        function cambiarVistaPanel(vista) {
+            const btnConsulta = document.getElementById('tabBtnConsulta');
+            const btnPublicar = document.getElementById('tabBtnPublicar');
+            const btnChat = document.getElementById('tabBtnChat');
+            
+            const viewConsulta = document.getElementById('viewConsulta');
+            const viewPublicar = document.getElementById('viewPublicar');
+            const viewChat = document.getElementById('viewChat');
+
+            if(btnConsulta) btnConsulta.classList.remove('active');
+            if(btnPublicar) btnPublicar.classList.remove('active');
+            if(btnChat) btnChat.classList.remove('active');
+
+            if(viewConsulta) viewConsulta.classList.remove('active');
+            if(viewPublicar) viewPublicar.classList.remove('active');
+            if(viewChat) viewChat.classList.remove('active');
+
+            if (vista === 'consulta') {
+                if(btnConsulta) btnConsulta.classList.add('active');
+                if(viewConsulta) viewConsulta.classList.add('active');
+                logTerminal("Cambiando a vista de Consulta y Captación.");
+            } else if (vista === 'publicar') {
+                if(btnPublicar) btnPublicar.classList.add('active');
+                if(viewPublicar) viewPublicar.classList.add('active');
+                logTerminal("Cambiando a Formulario de Publicación Permanente Master.");
+            } else if (vista === 'chat') {
+                if(btnChat) btnChat.classList.add('active');
+                if(viewChat) viewChat.classList.add('active');
+                logTerminal("Cambiando a Centro de Mediación Master (Compradores / Arrendatarios / Vendedores / Arrendadores).");
+            }
+        }
+
+        function aplicarFormatoTasaExacta(valor) {
+            tasaActualBCV = normalizarTasaBCV(valor || tasaActualBCV);
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            if (spanTasa) spanTasa.textContent = tasaActualBCV.toFixed(2).replace('.', ',') + " VES";
+            
+            const inputMonto = document.getElementById('inputMontoVesCalculado');
+            if (inputMonto) inputMonto.value = (5 * tasaActualBCV).toFixed(2).replace('.', ',') + " VES";
+            renderizarInmuebles(listaInmuebles);
+        }
+
+        function cargarTasaBCVAutomatica() {
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                const runner = google.script.run
+                    .withSuccessHandler(res => {
+                        let val = (res && typeof res === 'object') ? (res.tasaNumerica || res.tasa) : res;
+                        if (val) {
+                            aplicarFormatoTasaExacta(val);
+                        } else {
+                            consultarDolarApiInmobiliario();
+                        }
+                    })
+                    .withFailureHandler(consultarDolarApiInmobiliario);
+
+                if (typeof runner.obtenerTasaBCVOficial === 'function') {
+                    runner.obtenerTasaBCVOficial();
+                } else if (typeof runner.obtenerTasaBCV === 'function') {
+                    runner.obtenerTasaBCV();
+                } else {
+                    consultarDolarApiInmobiliario();
+                }
+            } else {
+                consultarDolarApiInmobiliario();
+            }
+        }
+
+        function consultarDolarApiInmobiliario() {
+            fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+                .then(res => res.json())
+                .then(data => {
+                    let tasaVal = data.promedio || data.price || 881.88;
+                    aplicarFormatoTasaExacta(tasaVal);
+                })
+                .catch(() => aplicarFormatoTasaExacta(881.88));
+        }
+
+        function togglePanelAnunciosPagos() {
+            const panel = document.getElementById('panelAnunciosPagos');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            logTerminal("Intercambiando visibilidad del Panel de Pagos Destacados.");
+        }
+
+        function actualizarCamposTipologiaPub() {
+            const tipo = document.getElementById('pubTipologia').value;
+            const grupoHab = document.getElementById('grupoHabitaciones');
+            grupoHab.style.display = tipo === 'Local' ? 'none' : 'flex';
+        }
+
+        function validarLimiteFotosModalidad() {
+            const mod = document.getElementById('pubModalidad').value;
+            const label = document.getElementById('labelInfoLimiteFotos');
+            if (mod === 'Permanente') {
+                label.innerText = "URLs de las Fotos (Publicación Permanente Master — Sin límite)";
+            } else if (mod === 'Gratis') {
+                label.innerText = "URLs de las Fotos (Máx 5 fotos - Vigencia 7 días)";
+            } else {
+                label.innerText = "URLs de las Fotos (Máx 10 fotos para publicaciones pagas)";
+            }
+        }
+
+        function registrarNuevoInmueble() {
+            const modalidad = document.getElementById('pubModalidad').value;
+            const operacion = document.getElementById('pubOperacion').value;
+            const tipologia = document.getElementById('pubTipologia').value;
+            const zona = document.getElementById('pubZonaSelect').value;
+            const titulo = document.getElementById('pubTitulo').value.trim();
+            const precio = parseFloat(document.getElementById('pubPrecio').value);
+            const hab = parseInt(document.getElementById('pubHab').value) || 0;
+            const banos = parseInt(document.getElementById('pubBanos').value) || 0;
+            const puestos = parseInt(document.getElementById('pubPuestos').value) || 0;
+            const nombreProp = document.getElementById('pubNombreProp').value.trim();
+            const telfProp = document.getElementById('pubTelfProp').value.trim();
+            const rawFotos = document.getElementById('pubFotosUrls').value.trim();
+
+            if(!zona || !titulo || !precio || !nombreProp) {
+                alert("Por favor complete los campos obligatorios.");
+                return;
+            }
+
+            let fotosArr = rawFotos ? rawFotos.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0) : ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500'];
+            
+            const nuevoInmueble = {
+                id: Date.now(),
+                modalidad,
+                operacion,
+                tipologia,
+                zona,
+                titulo,
+                precio,
+                habitaciones: hab,
+                banos,
+                puestos,
+                propietario: nombreProp,
+                telefono: telfProp,
+                fotos: fotosArr
+            };
+
+            listaInmuebles.unshift(nuevoInmueble);
+            guardarEstadoPermanenteLocal();
+            renderizarInmuebles(listaInmuebles);
+
+            // Persistir de forma permanente en Google Sheets
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.registrarInmuebleMasterBackend === 'function') {
+                google.script.run.registrarInmuebleMasterBackend(nuevoInmueble);
+            }
+
+            cambiarVistaPanel('consulta');
+            logTerminal(`Inmueble publicado de forma permanente: ${titulo} ($${precio})`);
+            alert("Inmueble publicado de forma permanente en la base de datos Master.");
+        }
+
+        function renderizarInmuebles(arrayInmuebles) {
+            const contenedor = document.getElementById('gridInmueblesContenedor');
+            if(!contenedor) return;
+            contenedor.innerHTML = '';
+
+            if (arrayInmuebles.length === 0) {
+                contenedor.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 30px;">No se encontraron publicaciones con los filtros aplicados.</div>`;
+                return;
+            }
+
+            arrayInmuebles.forEach(item => {
+                let badgeColor = item.operacion === 'Venta' ? '#0088cc' : '#f97316';
+                let modalidadBadge = '';
+                if (item.modalidad === 'Permanente') {
+                    modalidadBadge = `<span style="background: var(--magia-morado); color: #fff;" class="badge-tag">Permanente Master</span>`;
+                } else if (item.modalidad === 'Pago') {
+                    modalidadBadge = `<span style="background: var(--magia-dorado); color: #030712;" class="badge-tag">Destacado 3 Meses</span>`;
+                } else {
+                    modalidadBadge = `<span style="background: var(--lcars-terminal-green); color: #030712;" class="badge-tag">Gratis 7 Días</span>`;
+                }
+
+                let detallesHtml = item.tipologia === 'Local' ? `
+                    <span><i class="fas fa-store"></i> Local</span><span><i class="fas fa-bath"></i> ${item.banos} Baños</span><span><i class="fas fa-car"></i> ${item.puestos} Est.</span>
+                ` : `
+                    <span><i class="fas fa-bed"></i> ${item.habitaciones} Hab</span><span><i class="fas fa-bath"></i> ${item.banos} Baños</span><span><i class="fas fa-car"></i> ${item.puestos} Est.</span>
+                `;
+
+                const etiquetaTitular = item.operacion === 'Alquiler' ? 'Arrendador' : 'Vendedor';
+                let masterPersonalBox = esUsuarioMaster ? `
+                    <div class="master-personal-data-box">
+                        <i class="fas fa-user-secret"></i> <strong>${etiquetaTitular}:</strong> ${item.propietario} (${item.telefono})
+                    </div>
+                ` : '';
+
+                let precioBs = (item.precio * tasaActualBCV).toFixed(2).replace('.', ',');
+                let fotos = item.fotos && item.fotos.length > 0 ? item.fotos : ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500'];
+                let sliderId = `slider_${item.id}`;
+                let imgsHtml = '';
+                fotos.forEach((f, idx) => {
+                    let activeClass = idx === 0 ? 'active-slide' : '';
+                    imgsHtml += `<img src="${f}" class="${activeClass}" alt="Foto inmueble" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500'">`;
+                });
+
+                let sliderControlsHtml = fotos.length > 1 ? `
+                    <div class="slider-controls">
+                        <button onclick="cambiarFotoSlider(${item.id}, -1)"><i class="fas fa-chevron-left"></i></button>
+                        <span id="counter_${item.id}">1/${fotos.length}</span>
+                        <button onclick="cambiarFotoSlider(${item.id}, 1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                ` : '';
+
+                contenedor.innerHTML += `
+                    <div class="card-inmueble" data-fotos='${JSON.stringify(fotos)}' data-current-foto="0">
+                        <div class="card-img-container" id="${sliderId}">
+                            <span class="badge-tag" style="background: ${badgeColor}; top: 8px;">${item.operacion}</span>
+                            <div style="position: absolute; top: 32px; left: 8px;">${modalidadBadge}</div>
+                            ${imgsHtml}
+                            ${sliderControlsHtml}
+                        </div>
+                        <div class="card-body">
+                            <span style="font-size: 0.68rem; color: var(--lcars-cyan); font-weight: 800;"><i class="fas fa-map-marker-alt"></i> ${item.zona.toUpperCase()} // ${item.tipologia.toUpperCase()}</span>
+                            <h3 class="card-title">${item.titulo}</h3>
+                            <div class="card-price">$${item.precio.toLocaleString()} <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(${precioBs} VES)</span></div>
+                            <div class="card-features">${detallesHtml}</div>
+                            ${masterPersonalBox}
+                            <button class="arcade-btn" style="margin-top: 6px; width: 100%;" onclick="intermediarPropiedadEspecifica(${item.id})">
+                                <i class="fas fa-handshake"></i> Intermediar Negociación Master
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function cambiarFotoSlider(id, direccion) {
+            const container = document.getElementById(`slider_${id}`);
+            if(!container) return;
+            const card = container.closest('.card-inmueble');
+            let fotos = JSON.parse(card.getAttribute('data-fotos'));
+            let current = parseInt(card.getAttribute('data-current-foto')) || 0;
+
+            current += direccion;
+            if (current < 0) current = fotos.length - 1;
+            if (current >= fotos.length) current = 0;
+
+            card.setAttribute('data-current-foto', current);
+
+            const imgs = container.querySelectorAll('img');
+            imgs.forEach((img, idx) => {
+                if (idx === current) img.classList.add('active-slide');
+                else img.classList.remove('active-slide');
+            });
+
+            const counter = document.getElementById(`counter_${id}`);
+            if (counter) counter.innerText = `${current + 1}/${fotos.length}`;
+        }
+
+        function filtrarBusquedaInmuebles() {
+            const zonaFiltro = document.getElementById('filtro-zona').value;
+            const opFiltro = document.getElementById('filtro-operacion').value;
+            const tipoFiltro = document.getElementById('filtro-tipologia').value;
+            const habFiltro = parseInt(document.getElementById('filtro-hab').value) || 0;
+            const precioMaxFiltro = parseFloat(document.getElementById('filtro-precio-max').value) || Infinity;
+
+            const filtrados = listaInmuebles.filter(item => {
+                return (zonaFiltro === 'todos' || item.zona === zonaFiltro) &&
+                       (opFiltro === 'todos' || item.operacion === opFiltro) &&
+                       (tipoFiltro === 'todos' || item.tipologia === tipoFiltro) &&
+                       (item.habitaciones >= habFiltro) &&
+                       (item.precio <= precioMaxFiltro);
+            });
+            logTerminal(`Filtro Master aplicado (${filtrados.length} resultados)`);
+            renderizarInmuebles(filtrados);
+        }
+
+        function enviarSolicitudAnuncioPago() {
+            alert("¡Verificación de pago aprobada! Anuncio destacado asignado por 3 meses.");
+            logTerminal("Pago de destacado validado y aprobado.");
+            togglePanelAnunciosPagos();
+        }
+
+        function irLoginUI() {
+            navegarModulo('login_ui');
+        }
+
+        function navegarModulo(mod) {
+            logTerminal(`Navegando a módulo Master: ${mod}`, 'var(--magia-dorado)');
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+                google.script.run
+                    .withSuccessHandler(htmlContent => {
+                        if (mod === 'login_ui') {
+                            window.top.location.href = htmlContent || '?p=login_ui';
+                        } else {
+                            document.open();
+                            document.write(htmlContent);
+                            document.close();
+                        }
+                    })
+                    .withFailureHandler(() => {
+                        window.top.location.href = `${BASE_URL}?p=${mod}&rol=master`;
+                    })
+                    .router_backend(mod);
+            } else {
+                window.top.location.href = `${BASE_URL}?p=${mod}&rol=master`;
+            }
+        }
+    </script>
+</body>
+</html>

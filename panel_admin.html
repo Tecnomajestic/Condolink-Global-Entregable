@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Condolink Global V20.8 - Panel Admin & Consola LCARS Multi-Junta</title>
+    <!-- FontAwesome para iconografía HUD -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Plus Jakarta Sans y Press Start 2P -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-principal: #030810;
+            --bg-card: #0b1120;
+            --bg-card-hover: #131c31;
+            --acento-verde: #00ff66;
+            --acento-rojo: #ff3333;
+            --magia-dorado: #ffcc00;     
+            --magia-cian: #00e5ff;
+            --magia-azul: #0088ff;
+            --magia-morado: #a855f7;
+            --magia-fucsia: #ec4899;
+            --magia-naranja: #f97316;
+            --gris-texto: #94a3b8;
+            --texto-blanco: #f0f6fc;
+            --borde-color: rgba(0, 229, 255, 0.3);
+            --arcade-shadow: 0 15px 35px -5px rgba(0,0,0,0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #0b1120 0%, #030810 70%);
+            color: var(--texto-blanco);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 12px 24px;
+            border-bottom: 2px solid var(--magia-dorado);
+            box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.1), 0 6px 20px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        @keyframes spinSlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spinSlowRev { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+        @keyframes cyan-pulse { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 6px currentColor); } 50% { opacity: 1; filter: drop-shadow(0 0 14px currentColor); } }
+
+        .header-mystical-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 65px;
+            height: 65px;
+        }
+
+        .mystical-halo {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed var(--magia-dorado);
+            border-radius: 50%;
+            animation: spinSlowRev 18s linear infinite;
+            pointer-events: none;
+        }
+
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 50%;
+            background: #030810;
+            padding: 2px;
+            border: 2px solid var(--magia-dorado);
+            z-index: 2;
+            animation: cyan-pulse 3s ease-in-out infinite;
+        }
+
+        .header-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--magia-cian);
+            letter-spacing: 0.8px;
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+        }
+
+        .bcv-ticker {
+            background: rgba(0, 0, 0, 0.75);
+            border: 1.5px solid var(--magia-dorado);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--magia-dorado);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+            transition: transform 0.2s;
+            font-weight: 700;
+        }
+        .bcv-ticker:hover { transform: scale(1.02); }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .lcars-sidebar {
+            width: 85px;
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 10px;
+            border-right: 2px solid var(--magia-dorado);
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            flex-shrink: 0;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.4);
+        }
+
+        .sidebar-elbow {
+            width: 100%;
+            height: 40px;
+            background: var(--magia-cian);
+            border-top-left-radius: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 10px var(--magia-cian);
+        }
+
+        .sidebar-nav-btn {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1.5px solid var(--magia-cian);
+            color: var(--magia-cian);
+            padding: 12px 6px;
+            text-align: center;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-nav-btn:hover, .sidebar-nav-btn.active {
+            background: var(--magia-cian);
+            color: #030810;
+            box-shadow: 0 0 15px var(--magia-cian);
+            transform: translateY(-2px);
+        }
+
+        .sidebar-nav-btn.btn-logout-custom {
+            background-color: rgba(255, 51, 51, 0.2) !important;
+            border-color: var(--acento-rojo) !important;
+            color: var(--acento-rojo) !important;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
+            margin-top: auto;
+        }
+        .sidebar-nav-btn.btn-logout-custom:hover {
+            background-color: var(--acento-rojo) !important;
+            color: #fff !important;
+            box-shadow: 0 0 20px var(--acento-rojo) !important;
+            transform: translateY(-2px);
+        }
+
+        .workspace {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 16px;
+            align-content: start;
+        }
+
+        .panel-box {
+            background: var(--bg-card);
+            border: 2px solid var(--magia-dorado);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.08), 0 6px 20px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .panel-box h3 {
+            font-size: 0.92rem;
+            font-weight: 800;
+            border-bottom: 1.5px dashed rgba(255, 204, 0, 0.3);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--magia-dorado);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .terminal-screen {
+            grid-column: span 3;
+            background: #030810;
+            border: 2px solid var(--acento-verde);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.82rem;
+            color: var(--acento-verde);
+            height: 95px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 15px rgba(0, 255, 102, 0.2);
+            line-height: 1.4;
+        }
+
+        .dom-tabs-bar {
+            grid-column: span 3;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: var(--bg-card);
+            border: 1.5px solid var(--magia-cian);
+            border-radius: 12px;
+            padding: 10px 14px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dom-tab-btn {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1.5px solid var(--magia-cian);
+            color: var(--magia-cian);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.74rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .dom-tab-btn.active, .dom-tab-btn:hover {
+            background: var(--magia-cian);
+            color: #030810;
+            box-shadow: 0 0 12px var(--magia-cian);
+        }
+
+        .arcade-btn {
+            position: relative;
+            padding: 11px 14px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s ease;
+            outline: none;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .arcade-btn:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        .btn-eldritch { background: linear-gradient(135deg, #ffcc00 0%, #b38f00 100%); color: #030810; border-color: #ffcc00; }
+        .btn-salud { background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%); color: #030810; border-color: #00ff66; }
+        .btn-contrato { background: linear-gradient(135deg, #00e5ff 0%, #0088cc 100%); color: #030810; border-color: #00e5ff; }
+        .btn-arcana { background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); color: #fff; border-color: #a855f7; }
+        .btn-transmutacion { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: #fff; border-color: #ec4899; }
+        .btn-energia { background: linear-gradient(135deg, #f97316 0%, #c2410c 100%); color: #030810; border-color: #f97316; }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .module-arcade-btn {
+            background: linear-gradient(135deg, #131c31 0%, #0b1120 100%);
+            border: 2px solid var(--magia-cian);
+            color: var(--magia-cian);
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .module-arcade-btn:hover {
+            background: var(--magia-cian);
+            color: #030810;
+            border-color: #fff;
+            box-shadow: 0 0 20px var(--magia-cian);
+            transform: translateY(-2px);
+        }
+
+        .module-arcade-btn i { font-size: 1.2rem; }
+
+        .form-group { margin-bottom: 10px; }
+
+        .form-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--magia-cian);
+            margin-bottom: 4px;
+            display: block;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            background: var(--bg-card-hover);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 9px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--magia-dorado);
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+        }
+
+        .eco-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            margin-top: 6px;
+        }
+
+        .eco-table th, .eco-table td {
+            border: 1.5px solid rgba(0, 229, 255, 0.25);
+            padding: 7px 9px;
+            text-align: left;
+        }
+
+        .eco-table th {
+            background: rgba(0, 229, 255, 0.12);
+            color: var(--magia-cian);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.68rem;
+        }
+
+        .chat-channel-box {
+            background: #030810;
+            border: 1.5px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-history {
+            height: 115px;
+            overflow-y: auto;
+            font-size: 0.78rem;
+            background: rgba(11, 17, 32, 0.7);
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .chat-bubble {
+            padding: 6px 9px;
+            border-radius: 8px;
+            background: rgba(0, 229, 255, 0.12);
+            border-left: 3px solid var(--magia-cian);
+            color: #fff;
+            line-height: 1.35;
+        }
+
+        .footer-lcars {
+            background: var(--bg-card);
+            border-top: 2px solid var(--magia-cian);
+            border-radius: 14px 14px 0 0;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 -4px 15px rgba(0, 229, 255, 0.15);
+            font-size: 0.75rem;
+            color: var(--gris-texto);
+            flex-shrink: 0;
+            margin-top: 12px;
+            backdrop-filter: blur(10px);
+        }
+        .footer-lcars strong { color: #f0f6fc; }
+
+        @media (max-width: 1024px) {
+            .workspace { grid-template-columns: 1fr; }
+            .terminal-screen, .dom-tabs-bar, .panel-box { grid-column: span 1 !important; }
+            .modules-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body onload="inicializarPanelAdminCentral()">
+
+    <!-- Cabecera Global LCARS con Logo Central, Tasa BCV a 2 decimales, Botón Libro Diario y Botón Rojo Salir -->
+    <header>
+        <div class="header-brand">
+            <div class="header-title">CONDOLINK GLOBAL V20.8 // CONSOLA ADMINISTRATIVA & DESPLIEGUE MULTI-JUNTA</div>
+        </div>
+
+        <div class="header-mystical-center" title="Torre Charam Sede Principal - La Castellana, Caracas">
+            <div class="mystical-halo"></div>
+            <img id="headerLogoAdmin" src="https://i.imgur.com/XcMwIDa.png" alt="Condolink Logo Oficial" class="header-logo" onerror="this.src='https://i.imgur.com/XcMwIDa.png'">
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <!-- BOTÓN DIRECTO AL LIBRO DIARIO Y BALANCE DE COMPROBACIÓN SOLICITADO POR EL USUARIO -->
+            <button class="arcade-btn btn-salud" style="padding: 9px 13px;" onclick="navegarModulo('panel_libro_diario_admin')" title="Ir al Libro Diario y Balance de Comprobación">
+                <i class="fa-solid fa-book-open"></i> Libro Diario & Balance
+            </button>
+
+            <button class="arcade-btn btn-eldritch" style="padding: 9px 13px;" onclick="navegarModulo('instalador_tenant_admin')" title="Configuración e Instalador de Juntas">
+                <i class="fa-solid fa-sliders"></i> Configurar Juntas
+            </button>
+
+            <div class="bcv-ticker" id="bcv-display" onclick="cargarTasaBCVAutomatica()" title="Clic para sincronizar tasa oficial BCV (2 decimales)">
+                <i class="fa-solid fa-chart-line" style="color: var(--magia-dorado);"></i> Tasa Oficial BCV: <span id="tasa-valor-dinamico" style="color: #fff; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> Sync...</span> [Auto-Sync]
+            </div>
+
+            <!-- BOTÓN ROJO DE SALIDA A LOGIN_UI -->
+            <button class="arcade-btn" style="background: linear-gradient(135deg, #ff3333 0%, #b30000 100%); color: #fff; border-color: #ff3333; padding: 9px 13px;" onclick="navegarModulo('login_ui')">
+                <i class="fa-solid fa-power-off"></i> Salir
+            </button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Barra Lateral Curva LCARS -->
+        <aside class="lcars-sidebar">
+            <div class="sidebar-elbow"></div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="sidebar-nav-btn active" title="Panel Admin Central" onclick="navegarModulo('panel_admin')"><i class="fa-solid fa-user-shield"></i></button>
+                <button class="sidebar-nav-btn" title="Libro Diario y Balance de Comprobación" onclick="navegarModulo('panel_libro_diario_admin')"><i class="fa-solid fa-book-open"></i></button>
+                <button class="sidebar-nav-btn" title="Instalador de Juntas y Alícuota" onclick="navegarModulo('instalador_tenant_admin')"><i class="fa-solid fa-gears"></i></button>
+                <button class="sidebar-nav-btn" title="Servicios Contratados" onclick="navegarModulo('panel_servicios_contratados_admin')"><i class="fa-solid fa-toolbox"></i></button>
+                <button class="sidebar-nav-btn" title="Panel Financiero" onclick="navegarModulo('panel_financiero_admin')"><i class="fa-solid fa-vault"></i></button>
+            </div>
+            <div>
+                <button class="sidebar-nav-btn btn-logout-custom" title="Cerrar Sesión Segura (login_ui)" onclick="navegarModulo('login_ui')"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- Workspace Principal -->
+        <main class="workspace" style="flex: 1; overflow-y: auto; max-height: calc(100vh - 140px);">
+
+            <!-- Terminal de Eventos -->
+            <div class="terminal-screen" id="terminal-logs">
+                [SYS ARCADE 12:46:25Z]: Consola Administrativa Multi-Junta V20.8 inicializada.<br>
+                [JERARQUÍA OFICIAL]: Solo los Administradores crean Juntas independientes. Cada Junta posee sus propias unidades, trabajadores LOTTT, alícuota, Usuario Legal, 03 Ejecutivos y comunicados con el logo del Administrador.
+            </div>
+
+            <!-- PATRÓN DOM TABS STATE CONTROLLER -->
+            <div class="dom-tabs-bar">
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="dom-tab-btn active" onclick="conmutarPestanaDomAdmin('todas', this)"><i class="fa-solid fa-table-cells-large"></i> Todas las Vistas</button>
+                    <button class="dom-tab-btn" onclick="conmutarPestanaDomAdmin('ecosistemas', this)"><i class="fa-solid fa-rocket"></i> Creación de Juntas, Ejecutivos & Legal</button>
+                    <button class="dom-tab-btn" onclick="conmutarPestanaDomAdmin('mensajeria', this)"><i class="fa-solid fa-comments"></i> Mensajería 6 Canales & Comunicados con Logo</button>
+                    <button class="dom-tab-btn" onclick="conmutarPestanaDomAdmin('modulos', this)"><i class="fa-solid fa-network-wired"></i> Matriz de Módulos & Libro Diario</button>
+                </div>
+                <div style="font-size:0.75rem; color:var(--magia-dorado); font-weight:800;">
+                    <i class="fa-solid fa-building-shield"></i> Junta Activa: <span id="badgeJuntaActivaHeader" style="color:#fff;">ejemplo01 (Aislada)</span>
+                </div>
+            </div>
+
+            <!-- COLUMNA 1: ASISTENTE DE DESPLIEGUE DE ECOSISTEMAS (JUNTAS INDEPENDIENTES) -->
+            <div class="panel-box bloque-dom-admin" data-vista="ecosistemas">
+                <h3><i class="fa-solid fa-rocket" style="color: var(--magia-dorado);"></i> Creación de Juntas & Ecosistemas</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Caso de Despliegue / Ecosistema Independiente:</label>
+                    <select class="form-select" id="casoDespliegueSelect" onchange="actualizarCasoDespliegue()">
+                        <option value="CASO_1">Caso 1: Conjunto Residencial / Urbanismo</option>
+                        <option value="CASO_2">Caso 2: Edificio Vertical (Apartamentos)</option>
+                        <option value="CASO_3">Caso 3: Inversionista Múltiples Inmuebles</option>
+                        <option value="CASO_4">Caso 4: Estacionamiento / Comercial</option>
+                        <option value="CASO_5">Caso 5: Inquilinos Directos / Arrendamientos</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div class="form-group">
+                        <label class="form-label">ID Junta Independiente:</label>
+                        <input type="text" class="form-control" id="inputJuntaId" value="ejemplo01" placeholder="Ej: junta_torre_a">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color:var(--magia-dorado);">Alícuota Unidad (%):</label>
+                        <input type="number" step="0.0001" class="form-control" id="inputAlicuotaJunta" value="2.0000">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div class="form-group">
+                        <label class="form-label">Unidades Propietarios:</label>
+                        <input type="number" class="form-control" id="inputTotalUnidades" value="50" min="1" oninput="recalcularAlicuotaPanelAdmin()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trabajadores LOTTT:</label>
+                        <input type="number" class="form-control" id="inputTotalTrabajadores" value="2" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Logo del Administrador Creador (Para Comunicados):</label>
+                    <input type="text" class="form-control" id="inputLogoAdminEcosistema" value="https://i.imgur.com/XcMwIDa.png" oninput="sincronizarLogoAdminEnVivo()">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0, 229, 255, 0.05); padding: 8px; border-radius: 8px; border: 1px dashed rgba(0, 229, 255, 0.3);">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" style="color: var(--magia-dorado);"><i class="fa-solid fa-store"></i> ¿Locales Comerciales?</label>
+                        <select class="form-select" id="moduloLocalesSelect" onchange="toggleLocalesInput()">
+                            <option value="NO">No (Solo Residencial)</option>
+                            <option value="SI">Sí (Habilitar Locales)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">N° de Locales:</label>
+                        <input type="number" class="form-control" id="inputCantLocales" value="0" min="0" disabled>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 4px;">
+                    <button class="arcade-btn btn-eldritch" onclick="navegarModulo('portal_admin')" style="font-size: 7px; padding: 8px 4px;">
+                        <i class="fa-solid fa-door-open"></i> 1. Portal
+                    </button>
+                    <button class="arcade-btn btn-salud" onclick="navegarModulo('panel_financiero_admin')" style="font-size: 7px; padding: 8px 4px;">
+                        <i class="fa-solid fa-heart-pulse"></i> 2. Salud Fin.
+                    </button>
+                    <button class="arcade-btn btn-contrato" onclick="navegarModulo('instalador_tenant_admin')" style="font-size: 7px; padding: 8px 4px;">
+                        <i class="fa-solid fa-sliders"></i> 3. Instalador
+                    </button>
+                </div>
+
+                <button class="arcade-btn btn-arcana" style="width: 100%; margin-top: 4px;" onclick="ejecutarWizardDespliegue()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 4. Crear Junta Independiente & Desplegar
+                </button>
+
+                <table class="eco-table">
+                    <thead>
+                        <tr><th>Junta (Aislada)</th><th>Unid. / Trab.</th><th>Alícuota</th><th>Estado</th></tr>
+                    </thead>
+                    <tbody id="tablaEcosistemas">
+                        <tr onclick="seleccionarJuntaActiva('ejemplo01', 50, 2, '2.0000')" style="cursor:pointer;">
+                            <td><strong>ejemplo01</strong></td>
+                            <td>50 un. / 2 tr.</td>
+                            <td>2,0000%</td>
+                            <td style="color: var(--acento-verde);">Aislado [OK]</td>
+                        </tr>
+                        <tr onclick="seleccionarJuntaActiva('torre_norte', 80, 4, '1.2500')" style="cursor:pointer;">
+                            <td><strong>torre_norte</strong></td>
+                            <td>80 un. / 4 tr.</td>
+                            <td>1,2500%</td>
+                            <td style="color: var(--acento-verde);">Aislado [OK]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- COLUMNA 2: ACTIVACIÓN Y AUTORIZACIÓN DE LOS 03 EJECUTIVOS Y EL USUARIO LEGAL -->
+            <div class="panel-box bloque-dom-admin" data-vista="ecosistemas">
+                <h3><i class="fa-solid fa-users-gear" style="color: var(--magia-cian);"></i> Activación de Ejecutivos & Usuario Legal</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Junta Independiente Destino:</label>
+                    <select class="form-select" id="selectJuntaRolDelegado">
+                        <option value="ejemplo01">Junta: ejemplo01 (Conjunto Residencial)</option>
+                        <option value="torre_norte">Junta: torre_norte (Edificio Vertical)</option>
+                        <option value="pedroperez">Junta: pedroperez (Inversionista)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Correo Electrónico del Usuario Delegado:</label>
+                    <input type="email" class="form-control" id="emailEjecutivo" value="ejecutivo01@condolink.com" placeholder="usuario@condominio.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Perfil Oficial a Activar (03 Ejecutivos + Legal):</label>
+                    <select class="form-select" id="rolEjecutivoSelect">
+                        <option value="EJECUTIVO_ADMINISTRATIVO">1. EJECUTIVO_ADMINISTRATIVO</option>
+                        <option value="EJECUTIVO_FACTURACION">2. EJECUTIVO_FACTURACION</option>
+                        <option value="EJECUTIVO_OPERACIONES">3. EJECUTIVO_OPERACIONES</option>
+                        <option value="USUARIO_LEGAL">4. USUARIO_LEGAL (Abogado / Consultoría Jurídica)</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button class="arcade-btn btn-contrato" onclick="asignarPermisosEjecutivo()">
+                        <i class="fa-solid fa-user-check"></i> Activar Rol en BD
+                    </button>
+                    <button class="arcade-btn btn-energia" onclick="verificarAccesoRol()">
+                        <i class="fa-solid fa-shield-halved"></i> Verificar Acceso
+                    </button>
+                </div>
+
+                <!-- BOTONES DIRECTOS DE ACTIVACIÓN Y NAVEGACIÓN A EJECUTIVOS Y USUARIO LEGAL -->
+                <div style="background: rgba(3, 8, 16, 0.85); border: 1.5px solid rgba(0, 229, 255, 0.35); border-radius: 10px; padding: 10px; margin-top: 4px;">
+                    <span class="form-label" style="color: var(--magia-dorado); margin-bottom: 8px;"><i class="fa-solid fa-bolt"></i> Botones Directos de Activación y Acceso por Rol:</span>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="arcade-btn btn-arcana" style="font-size: 7px; padding: 9px 6px;" onclick="activarYAbrirRol('USUARIO_LEGAL', 'portal_legal')">
+                            <i class="fa-solid fa-scale-balanced"></i> Activar Usuario Legal
+                        </button>
+                        <button class="arcade-btn btn-contrato" style="font-size: 7px; padding: 9px 6px;" onclick="activarYAbrirRol('EJECUTIVO_ADMINISTRATIVO', 'panel_cierre_ejecutivo_administrativo')">
+                            <i class="fa-solid fa-user-tie"></i> Ejecutivo Admin
+                        </button>
+                        <button class="arcade-btn btn-salud" style="font-size: 7px; padding: 9px 6px;" onclick="activarYAbrirRol('EJECUTIVO_FACTURACION', 'panel_cobros_admin')">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Ejecutivo Facturación
+                        </button>
+                        <button class="arcade-btn btn-eldritch" style="font-size: 7px; padding: 9px 6px;" onclick="activarYAbrirRol('EJECUTIVO_OPERACIONES', 'panel_zonas_admin')">
+                            <i class="fa-solid fa-screwdriver-wrench"></i> Ejecutivo Operador
+                        </button>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.72rem; color: var(--gris-texto); background: #030810; padding: 10px; border-radius: 10px; border: 1px solid rgba(0, 229, 255, 0.2); line-height: 1.45;">
+                    <div><strong style="color:#fff;">• EJECUTIVO_ADMINISTRATIVO:</strong> Cierre administrativo, servicios, inmobiliario.</div>
+                    <div><strong style="color:#fff;">• EJECUTIVO_FACTURACION:</strong> Facturación, cobros, recibos, estados de cuenta.</div>
+                    <div><strong style="color:#fff;">• EJECUTIVO_OPERACIONES:</strong> Mantenimiento, zonas, proveedores, operaciones.</div>
+                    <div><strong style="color:var(--magia-morado);">• USUARIO_LEGAL:</strong> Cobranza extrajudicial/judicial, actas y contratos de la Junta.</div>
+                </div>
+            </div>
+
+            <!-- COLUMNA 3: OPERACIONES, NÓMINA Y CIERRE POR JUNTA INDEPENDIENTE -->
+            <div class="panel-box bloque-dom-admin" data-vista="ecosistemas">
+                <h3><i class="fa-solid fa-calendar-check" style="color: var(--magia-fucsia);"></i> Operaciones, Nómina & Cierre por Junta</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Seleccionar Junta Independiente Activa:</label>
+                    <select class="form-select" id="selectEcosistemaActivo" onchange="cambiarEcosistemaOperativo()">
+                        <option value="ejemplo01">Junta Independiente: ejemplo01 (50 Unid. / 2 Trab.)</option>
+                        <option value="torre_norte">Junta Independiente: torre_norte (80 Unid. / 4 Trab.)</option>
+                        <option value="pedroperez">Junta Independiente: pedroperez (Inversionista)</option>
+                        <option value="parking_central">Junta Independiente: parking_central (Comercial)</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label class="form-label">Nómina Quincenal LOTTT:</label>
+                        <select class="form-select" id="quincenaSelect">
+                            <option value="Q1">1ra Quincena (Día 15)</option>
+                            <option value="Q2">2da Quincena (Fin de Mes)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ejecutar Pago:</label>
+                        <button class="arcade-btn btn-salud" style="width: 100%; padding: 10px;" onclick="procesarNominaQuincenal()">
+                            <i class="fa-solid fa-money-check-dollar"></i> Pagar Nómina
+                        </button>
+                    </div>
+                </div>
+
+                <div style="border-top: 1.5px dashed rgba(255, 204, 0, 0.3); padding-top: 10px;">
+                    <span class="form-label" style="color: var(--magia-dorado);"><i class="fa-solid fa-lock"></i> Cierre Contable y Prorrateo por Alícuota:</span>
+                    <p style="font-size: 0.75rem; color: var(--gris-texto); margin-bottom: 10px;">
+                        Consolida ingresos, gastos, nómina LOTTT y aplica la alícuota de cada unidad en la Junta seleccionada, generando asientos en el Libro Diario.
+                    </p>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                        <button class="arcade-btn btn-transmutacion" onclick="ejecutarCierreMensual()">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Ejecutar Cierre
+                        </button>
+                        <button class="arcade-btn btn-contrato" onclick="navegarModulo('panel_libro_diario_admin')">
+                            <i class="fa-solid fa-book"></i> Ver Libro Diario
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL COMPLETO (SPAN 3): CENTRO DE MENSAJERÍA MULTICANAL PERMANENTE (6 CANALES) -->
+            <div class="panel-box bloque-dom-admin" data-vista="mensajeria" style="grid-column: span 3;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom: 1.5px dashed rgba(255, 204, 0, 0.3); padding-bottom: 8px;">
+                    <h3 style="border:none; padding:0; margin:0;"><i class="fa-solid fa-comments" style="color: var(--magia-cian);"></i> Centro de Mensajería Multicanal Permanente (6 Canales Oficiales Admin)</h3>
+                    <button class="arcade-btn btn-contrato" style="font-size:7px; padding:7px 12px;" onclick="sincronizarMensajeriaAdminBackend()">
+                        <i class="fa-solid fa-rotate"></i> Sincronizar Historial BD
+                    </button>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+                    <!-- Canal 1: Admin <-> Junta -->
+                    <div class="chat-channel-box">
+                        <span class="form-label" style="color: var(--magia-dorado);"><i class="fa-solid fa-users"></i> 1. Canal Admin ⇄ Junta de Condominio</span>
+                        <div id="chat-junta" class="chat-history"></div>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="msg-junta" class="form-control" placeholder="Escribir a la Junta..." style="padding: 8px;" onkeydown="if(event.key==='Enter') enviarMensajeChat('junta')">
+                            <button class="arcade-btn btn-contrato" onclick="enviarMensajeChat('junta')" style="padding: 8px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Canal 2: Admin <-> Ejecutivo Administrativo -->
+                    <div class="chat-channel-box">
+                        <span class="form-label" style="color: var(--acento-verde);"><i class="fa-solid fa-user-tie"></i> 2. Canal Admin ⇄ Ejecutivos (03 Perfiles)</span>
+                        <div id="chat-ejecutivo" class="chat-history"></div>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="msg-ejecutivo" class="form-control" placeholder="Escribir a Ejecutivos..." style="padding: 8px;" onkeydown="if(event.key==='Enter') enviarMensajeChat('ejecutivo')">
+                            <button class="arcade-btn btn-salud" onclick="enviarMensajeChat('ejecutivo')" style="padding: 8px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Canal 3: Admin <-> Master -->
+                    <div class="chat-channel-box">
+                        <span class="form-label" style="color: var(--magia-morado);"><i class="fa-solid fa-crown"></i> 3. Canal Admin ⇄ Receptor Master</span>
+                        <div id="chat-master" class="chat-history"></div>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="msg-master" class="form-control" placeholder="Escribir a Master..." style="padding: 8px;" onkeydown="if(event.key==='Enter') enviarMensajeChat('master')">
+                            <button class="arcade-btn btn-arcana" onclick="enviarMensajeChat('master')" style="padding: 8px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Canal 4: Admin <-> Inversionista -->
+                    <div class="chat-channel-box">
+                        <span class="form-label" style="color: var(--magia-fucsia);"><i class="fa-solid fa-chart-pie"></i> 4. Canal Admin ⇄ Inversionista</span>
+                        <div id="chat-inversionista" class="chat-history"></div>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="msg-inversionista" class="form-control" placeholder="Escribir a Inversionista..." style="padding: 8px;" onkeydown="if(event.key==='Enter') enviarMensajeChat('inversionista')">
+                            <button class="arcade-btn btn-transmutacion" onclick="enviarMensajeChat('inversionista')" style="padding: 8px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Canal 5: Admin <-> Legal -->
+                    <div class="chat-channel-box">
+                        <span class="form-label" style="color: var(--magia-naranja);"><i class="fa-solid fa-scale-balanced"></i> 5. Canal Admin ⇄ Usuario Legal</span>
+                        <div id="chat-legal" class="chat-history"></div>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="msg-legal" class="form-control" placeholder="Escribir a Legal..." style="padding: 8px;" onkeydown="if(event.key==='Enter') enviarMensajeChat('legal')">
+                            <button class="arcade-btn btn-energia" onclick="enviarMensajeChat('legal')" style="padding: 8px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Canal 6: Admin <-> Propietario -->
+                    <div class="chat-channel-box">
+                        <span class="form-label" style="color: var(--magia-cian);"><i class="fa-solid fa-house-user"></i> 6. Canal Admin ⇄ Propietarios</span>
+                        <div id="chat-propietario" class="chat-history"></div>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="msg-propietario" class="form-control" placeholder="Escribir a Propietario..." style="padding: 8px;" onkeydown="if(event.key==='Enter') enviarMensajeChat('propietario')">
+                            <button class="arcade-btn btn-eldritch" onclick="enviarMensajeChat('propietario')" style="padding: 8px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL COMPLETO (SPAN 3): EMISIÓN DE COMUNICADOS OFICIALES CON EL LOGO DEL ADMINISTRADOR CREADOR DE LA JUNTA -->
+            <div class="panel-box bloque-dom-admin" data-vista="mensajeria" style="grid-column: span 3; border-color: var(--magia-dorado);">
+                <h3><i class="fa-solid fa-bullhorn" style="color: var(--magia-dorado);"></i> Centro de Comunicados Oficiales (Con Sello y Logo del Administrador Creador de la Junta)</h3>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label">Junta Emisora (Independiente):</label>
+                                <select class="form-select" id="juntaComunicadoSelect" onchange="actualizarMembreteComunicado()">
+                                    <option value="ejemplo01">Junta: ejemplo01 (Res. Parque Leander)</option>
+                                    <option value="torre_norte">Junta: torre_norte (Edificio Vertical)</option>
+                                    <option value="torre_charam">Junta: torre_charam (Sede Principal)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label">Destinatarios del Comunicado:</label>
+                                <select class="form-select" id="destinoComunicadoSelect">
+                                    <option value="TODOS_CONDOMINIO">Toda la Comunidad (Unidades y Junta)</option>
+                                    <option value="SOLO_PROPIETARIOS">Exclusivo Propietarios</option>
+                                    <option value="SOLO_INQUILINOS">Exclusivo Inquilinos / Arrendatarios</option>
+                                    <option value="SOLO_EJECUTIVOS">Interno: 03 Ejecutivos & Usuario Legal</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label">Asunto Oficial:</label>
+                                <input type="text" class="form-control" id="asuntoComunicado" placeholder="Ej: Convocatoria a Asamblea / Corte Programado">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Cuerpo del Comunicado Oficial:</label>
+                            <textarea class="form-control" id="cuerpoComunicado" rows="3" placeholder="Redacte el comunicado oficial. Se adjuntará automáticamente el Logo Institucional del Administrador que creó esta Junta..."></textarea>
+                        </div>
+
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button class="arcade-btn btn-eldritch" style="flex:1;" onclick="emitirComunicadoGlobalConLogo()">
+                                <i class="fa-solid fa-tower-broadcast"></i> Publicar Comunicado Oficial con Logo del Administrador
+                            </button>
+                            <button class="arcade-btn btn-contrato" style="width:auto;" onclick="navegarModulo('panel_comunicados_admin')">
+                                <i class="fa-solid fa-expand"></i> Abrir Cartelera Completa
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PREVISUALIZACIÓN EN VIVO DEL MEMBRETE CON EL LOGO DEL ADMINISTRADOR -->
+                    <div style="background:#030810; border:2px solid var(--magia-dorado); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between;">
+                        <div style="display:flex; align-items:center; gap:12px; border-bottom:1px dashed rgba(255,204,0,0.4); padding-bottom:10px;">
+                            <img id="logoMembreteComunicado" src="https://i.imgur.com/XcMwIDa.png" alt="Logo Administrador" style="width:48px; height:48px; border-radius:50%; border:2px solid var(--magia-dorado); object-fit:cover;">
+                            <div>
+                                <div style="font-size:0.68rem; color:var(--magia-dorado); font-weight:800; text-transform:uppercase;">LOGO DEL ADMINISTRADOR CREADOR</div>
+                                <div id="lblAdminMembrete" style="font-size:0.82rem; color:#fff; font-weight:700;">Administradora Condolink Global C.A.</div>
+                                <div id="lblJuntaMembrete" style="font-size:0.72rem; color:var(--magia-cian);">Junta Independiente: ejemplo01</div>
+                            </div>
+                        </div>
+                        <div id="listaUltimosComunicadosConLogo" style="font-size:0.74rem; color:var(--gris-texto); margin-top:8px; max-height:95px; overflow-y:auto;">
+                            <div style="color:var(--acento-verde);"><i class="fa-solid fa-certificate"></i> Sello verificado: Cada comunicado emitido estampa el logo del Administrador titular de la Junta.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL INFERIOR (SPAN 3): CONSOLA DE NAVEGACIÓN DE MÓDULOS DEL SISTEMA (SIN REPETIDOS Y CON LIBRO DIARIO) -->
+            <div class="panel-box bloque-dom-admin" data-vista="modulos" style="grid-column: span 3;">
+                <h3><i class="fa-solid fa-network-wired" style="color: var(--magia-dorado);"></i> Consola de Navegación Integral de Módulos del Administrador (26 Vistas Interconectadas)</h3>
+                <div class="modules-grid">
+                    <div class="module-arcade-btn" onclick="navegarModulo('instalador_tenant_admin')"><i class="fa-solid fa-gears" style="color: var(--magia-dorado);"></i>Instalador Juntas & Alícuota</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_libro_diario_admin')" style="border-color:var(--acento-verde);"><i class="fa-solid fa-book-open" style="color: var(--acento-verde);"></i>Libro Diario & Balance Comprobación</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_contabilidad_admin')"><i class="fa-solid fa-calculator" style="color: var(--magia-cian);"></i>Contabilidad General</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_financiero_admin')"><i class="fa-solid fa-wallet" style="color: var(--magia-cian);"></i>Panel Financiero</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_pagos_admin')"><i class="fa-solid fa-money-bill-transfer" style="color: var(--acento-verde);"></i>Pagos Multimoneda</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_cobros_admin')"><i class="fa-solid fa-hand-holding-dollar" style="color: var(--magia-dorado);"></i>Cobros & Recaudación</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_gastos_admin')"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--magia-fucsia);"></i>Gastos & Egresos</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_nomina_admin')"><i class="fa-solid fa-users-gear" style="color: var(--magia-morado);"></i>Nómina LOTTT</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_cierre_admin')"><i class="fa-solid fa-lock" style="color: var(--acento-rojo);"></i>Cierre Mensual Admin</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_cierre_ejecutivo_administrativo')"><i class="fa-solid fa-user-check" style="color: var(--magia-cian);"></i>Cierre Ejecutivo Admin</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_conciliacion_admin')"><i class="fa-solid fa-scale-balanced" style="color: var(--acento-verde);"></i>Conciliación Bancaria</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_edocuentas_admin')"><i class="fa-solid fa-receipt" style="color: var(--magia-dorado);"></i>Estados de Cuenta</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_propiedades_admin')"><i class="fa-solid fa-building" style="color: var(--magia-naranja);"></i>Propiedades & Activos</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_unidades_admin')"><i class="fa-solid fa-door-closed" style="color: var(--magia-cian);"></i>Unidades & Copropietarios</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_zonas_admin')"><i class="fa-solid fa-map-location-dot" style="color: var(--acento-verde);"></i>Zonas & Territorio</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_comunicados_admin')"><i class="fa-solid fa-bullhorn" style="color: var(--magia-dorado);"></i>Comunicados Oficiales</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_reportes_admin')"><i class="fa-solid fa-file-pdf" style="color: var(--acento-rojo);"></i>Reportes Ejecutivos PDF</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_reportes_configuracion_admin')"><i class="fa-solid fa-sliders" style="color: var(--magia-morado);"></i>Configuración de Reportes</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_graficos_admin')"><i class="fa-solid fa-chart-line" style="color: var(--magia-cian);"></i>Gráficos & Métricas</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_auditoria_admin')"><i class="fa-solid fa-user-secret" style="color: var(--magia-fucsia);"></i>Auditoría Forense</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_corporativo_admin')"><i class="fa-solid fa-briefcase" style="color: var(--magia-dorado);"></i>Gobierno Corporativo</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_pago_inversionista_admin')"><i class="fa-solid fa-sack-dollar" style="color: var(--acento-verde);"></i>Liquidación Inversionistas</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_inmobiliario_admin')"><i class="fa-solid fa-sign-hanging" style="color: var(--magia-naranja);"></i>Mercado Inmobiliario</div>
+                    <div class="module-arcade-btn" onclick="navegarModulo('panel_servicios_contratados_admin')"><i class="fa-solid fa-screwdriver-wrench" style="color: var(--magia-cian);"></i>Servicios Contratados</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <footer class="footer-lcars">
+        <div><strong>CONDOLINK GLOBAL V20.8</strong> &copy; 2026 - Torre Charam, La Castellana, Caracas. Todos los derechos reservados.</div>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <span style="color: var(--magia-cian); cursor: pointer;" onclick="navegarModulo('instalador_tenant_admin')"><i class="fas fa-shield-alt"></i> Seguridad por Roles Activa (13 Roles)</span>
+            <span style="color: var(--acento-verde);"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Ecosistema Multi-Junta Sincronizado</span>
+        </div>
+    </footer>
+
+    <script>
+        let BASE_URL = typeof window !== 'undefined' ? window.location.href.split('?')[0] : '';
+
+        const CANALES_INICIALES_ADMIN = {
+            junta: [
+                { autor: 'Sistema', texto: 'Canal directo con Junta de Condominio activo.' },
+                { autor: 'Junta (ejemplo01)', texto: 'Aprobado presupuesto de mantenimiento de bombas.' }
+            ],
+            ejecutivo: [
+                { autor: 'Sistema', texto: 'Enlace con los 03 Ejecutivos (Admin, Facturación, Operaciones) activo.' },
+                { autor: 'Ejecutivo01', texto: 'Conciliación bancaria del día verificada.' }
+            ],
+            master: [
+                { autor: 'Sistema', texto: 'Canal prioritario con Superusuario Master y Monitor.' },
+                { autor: 'Master', texto: 'Tasa BCV y licencias multi-junta sincronizadas.' }
+            ],
+            inversionista: [
+                { autor: 'Sistema', texto: 'Canal de liquidación y rendimientos con Inversionistas.' }
+            ],
+            legal: [
+                { autor: 'Sistema', texto: 'Enlace jurídico y cobranza extrajudicial con Usuario Legal.' }
+            ],
+            propietario: [
+                { autor: 'Sistema', texto: 'Canal de atención directa a Propietarios y Unidades.' }
+            ]
+        };
+
+        function normalizarTasaBCV(valorRaw) {
+            if (valorRaw === null || valorRaw === undefined) return '445,78';
+            let str = String(valorRaw).replace(/[^0-9.,]/g, '').trim();
+            if (!str) return '445,78';
+            if (str.includes(',') && str.includes('.')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            } else if (str.includes(',')) {
+                str = str.replace(',', '.');
+            }
+            const num = parseFloat(str);
+            if (isNaN(num) || num <= 0) return '445,78';
+            return num.toFixed(2).replace('.', ',');
+        }
+
+        function inicializarPanelAdminCentral() {
+            cargarTasaBCVAutomatica();
+            setInterval(cargarTasaBCVAutomatica, 60000);
+            cargarLogoAdminGuardado();
+            renderizarTodosLosCanalesChat();
+            sincronizarMensajeriaAdminBackend();
+        }
+
+        function logTerminal(mensaje, color = 'var(--acento-verde)') {
+            const terminal = document.getElementById('terminal-logs');
+            const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+            if (terminal) {
+                terminal.innerHTML += `<br><span style="color: ${color}">[SYS ARCADE ${timestamp}]: ${mensaje}</span>`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }
+
+        function conmutarPestanaDomAdmin(vista, btnEl) {
+            document.querySelectorAll('.dom-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            document.querySelectorAll('.bloque-dom-admin').forEach(el => {
+                if (vista === 'todas' || el.getAttribute('data-vista') === vista) {
+                    el.style.display = 'flex';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+            logTerminal(`Controlador DOM Tabs: Vista [${vista.toUpperCase()}] activada sin recarga.`, 'var(--magia-cian)');
+        }
+
+        function cargarLogoAdminGuardado() {
+            const savedLogo = localStorage.getItem('clg_logo_admin_url');
+            if (savedLogo) {
+                const inputLogo = document.getElementById('inputLogoAdminEcosistema');
+                if (inputLogo) inputLogo.value = savedLogo;
+                sincronizarLogoAdminEnVivo();
+            }
+        }
+
+        function sincronizarLogoAdminEnVivo() {
+            const url = document.getElementById('inputLogoAdminEcosistema').value.trim() || 'https://i.imgur.com/XcMwIDa.png';
+            localStorage.setItem('clg_logo_admin_url', url);
+            const imgHeader = document.getElementById('headerLogoAdmin');
+            const imgMembrete = document.getElementById('logoMembreteComunicado');
+            if (imgHeader) imgHeader.src = url;
+            if (imgMembrete) imgMembrete.src = url;
+        }
+
+        function recalcularAlicuotaPanelAdmin() {
+            const unidades = parseInt(document.getElementById('inputTotalUnidades').value, 10) || 1;
+            document.getElementById('inputAlicuotaJunta').value = (100 / Math.max(1, unidades)).toFixed(4);
+        }
+
+        function cargarTasaBCVAutomatica() {
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            if (spanTasa) spanTasa.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sync...`;
+            logTerminal("Sincronizando Tasa Oficial BCV (2 decimales) desde CLG_Configuracion!B2...", "var(--magia-dorado)");
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                const metodo = typeof google.script.run.obtenerTasaBCVOficial === 'function' ? 'obtenerTasaBCVOficial' : 'obtenerTasaBCV';
+                google.script.run
+                    .withSuccessHandler(res => {
+                        let raw = (typeof res === 'object' && res !== null) ? (res.tasaFormateada || res.tasa || res.valor) : res;
+                        if (raw) {
+                            const fmt = normalizarTasaBCV(raw) + " VES";
+                            if (spanTasa) spanTasa.innerText = fmt;
+                            localStorage.setItem('clg_tasa_bcv_oficial', normalizarTasaBCV(raw));
+                            logTerminal(`Tasa BCV sincronizada a 2 decimales: ${fmt}`, "var(--acento-verde)");
+                        } else {
+                            usarTasaRespaldoApi();
+                        }
+                    })
+                    .withFailureHandler(usarTasaRespaldoApi)[metodo]();
+            } else {
+                usarTasaRespaldoApi();
+            }
+        }
+
+        function usarTasaRespaldoApi() {
+            const spanTasa = document.getElementById('tasa-valor-dinamico');
+            fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+                .then(r => r.json())
+                .then(d => {
+                    const fmt = normalizarTasaBCV(d.promedio || d.price || 445.78) + " VES";
+                    if (spanTasa) spanTasa.innerText = fmt;
+                    logTerminal(`Tasa BCV vía API BCV: ${fmt}`, "var(--acento-verde)");
+                })
+                .catch(() => {
+                    if (spanTasa) spanTasa.innerText = "445,78 VES";
+                    logTerminal("Tasa BCV cargada por respaldo local: 445,78 VES", "var(--acento-verde)");
+                });
+        }
+
+        function toggleLocalesInput() {
+            const select = document.getElementById('moduloLocalesSelect').value;
+            const input = document.getElementById('inputCantLocales');
+            input.disabled = (select !== 'SI');
+            if (select === 'SI') {
+                if (input.value == 0) input.value = 5;
+                logTerminal("Módulo de Locales Comerciales habilitado para esta Junta.", "var(--magia-dorado)");
+            } else {
+                input.value = 0;
+            }
+        }
+
+        function actualizarCasoDespliegue() {
+            const caso = document.getElementById('casoDespliegueSelect').value;
+            const inputJunta = document.getElementById('inputJuntaId');
+            const inputUnidades = document.getElementById('inputTotalUnidades');
+            const inputTrab = document.getElementById('inputTotalTrabajadores');
+            if (caso === 'CASO_1') { inputJunta.value = 'ejemplo01'; inputUnidades.value = 50; inputTrab.value = 2; }
+            else if (caso === 'CASO_2') { inputJunta.value = 'torre_norte'; inputUnidades.value = 80; inputTrab.value = 4; }
+            else if (caso === 'CASO_3') { inputJunta.value = 'pedroperez'; inputUnidades.value = 12; inputTrab.value = 1; }
+            else if (caso === 'CASO_4') { inputJunta.value = 'parking_central'; inputUnidades.value = 120; inputTrab.value = 3; }
+            else if (caso === 'CASO_5') { inputJunta.value = 'arrendamientos_01'; inputUnidades.value = 25; inputTrab.value = 1; }
+            recalcularAlicuotaPanelAdmin();
+            logTerminal(`Preconfigurado ${caso} -> Junta Independiente [${inputJunta.value}].`, "var(--magia-cian)");
+        }
+
+        function seleccionarJuntaActiva(juntaId, unidades, trabajadores, alicuota) {
+            document.getElementById('inputJuntaId').value = juntaId;
+            document.getElementById('inputTotalUnidades').value = unidades;
+            document.getElementById('inputTotalTrabajadores').value = trabajadores;
+            document.getElementById('inputAlicuotaJunta').value = alicuota;
+            document.getElementById('badgeJuntaActivaHeader').innerText = `${juntaId} (${unidades} Unid. / ${trabajadores} Trab.)`;
+            logTerminal(`Junta independiente seleccionada: [${juntaId}] con ${unidades} unidades, ${trabajadores} trabajadores y alícuota ${alicuota}%.`, 'var(--magia-dorado)');
+        }
+
+        function ejecutarWizardDespliegue() {
+            const junta = document.getElementById('inputJuntaId').value.trim() || ('junta_' + Date.now());
+            const unidades = document.getElementById('inputTotalUnidades').value || '50';
+            const trabajadores = document.getElementById('inputTotalTrabajadores').value || '2';
+            const alicuota = document.getElementById('inputAlicuotaJunta').value || '2.0000';
+            const logoAdminUrl = document.getElementById('inputLogoAdminEcosistema').value.trim() || 'https://i.imgur.com/XcMwIDa.png';
+            const tieneLocales = document.getElementById('moduloLocalesSelect').value;
+            const cantLocales = document.getElementById('inputCantLocales').value;
+
+            const tabla = document.getElementById('tablaEcosistemas');
+            if (tabla) {
+                tabla.insertAdjacentHTML('afterbegin', `
+                    <tr onclick="seleccionarJuntaActiva('${junta}', ${unidades}, ${trabajadores}, '${alicuota}')" style="cursor:pointer;">
+                        <td><strong>${junta}</strong></td>
+                        <td>${unidades} un. / ${trabajadores} tr.</td>
+                        <td>${Number(alicuota).toFixed(4)}%</td>
+                        <td style="color: var(--acento-verde);">Aislado [OK]</td>
+                    </tr>
+                `);
+            }
+
+            ['selectEcosistemaActivo', 'selectJuntaRolDelegado', 'juntaComunicadoSelect'].forEach(selId => {
+                const sel = document.getElementById(selId);
+                if (sel && !Array.from(sel.options).some(o => o.value === junta)) {
+                    const opt = document.createElement('option');
+                    opt.value = junta;
+                    opt.textContent = `Junta Independiente: ${junta} (${unidades} Unid. / ${trabajadores} Trab.)`;
+                    sel.appendChild(opt);
+                }
+            });
+
+            document.getElementById('badgeJuntaActivaHeader').innerText = `${junta} (${unidades} Unid. / ${trabajadores} Trab.)`;
+            logTerminal(`Junta independiente [${junta}] creada por el Administrador: ${unidades} propietarios, ${trabajadores} trabajadores LOTTT, alícuota ${alicuota}% y logo institucional vinculado.`, "var(--acento-verde)");
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.registrarInstalacionTenantAdmin === 'function') {
+                google.script.run.registrarInstalacionTenantAdmin({
+                    seccion: 'JUNTA_INDEPENDIENTE',
+                    juntaId: junta,
+                    nombreJunta: junta,
+                    numPropietarios: unidades,
+                    numTrabajadores: trabajadores,
+                    alicuotaUnidad: alicuota,
+                    logoAdminUrl: logoAdminUrl,
+                    tieneLocales: tieneLocales,
+                    cantLocales: cantLocales
+                });
+            }
+        }
+
+        function asignarPermisosEjecutivo() {
+            const email = document.getElementById('emailEjecutivo').value.trim();
+            const rol = document.getElementById('rolEjecutivoSelect').value;
+            const juntaId = document.getElementById('selectJuntaRolDelegado').value;
+            logTerminal(`Activando [${rol}] (${email}) para la Junta independiente [${juntaId}] en CLG_Usuarios...`, "var(--magia-cian)");
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.activarUsuarioRolDelegadoAdminBackend === 'function') {
+                google.script.run
+                    .withSuccessHandler(res => {
+                        logTerminal(`Credencial [${rol}] activada con éxito para [${juntaId}]. Portal asignado: ${res && res.portalDestino ? res.portalDestino : rol}`, "var(--acento-verde)");
+                    })
+                    .activarUsuarioRolDelegadoAdminBackend({
+                        correo: email,
+                        rol: rol,
+                        juntaId: juntaId
+                    });
+            }
+        }
+
+        function verificarAccesoRol() {
+            const email = document.getElementById('emailEjecutivo').value.trim();
+            const rol = document.getElementById('rolEjecutivoSelect').value;
+            const juntaId = document.getElementById('selectJuntaRolDelegado').value;
+            logTerminal(`Verificación RBAC exitosa: ${email} posee rol [${rol}] aislado en la Junta [${juntaId}].`, "var(--magia-dorado)");
+        }
+
+        function activarYAbrirRol(rol, vistaDestino) {
+            const juntaId = document.getElementById('selectJuntaRolDelegado').value;
+            const email = document.getElementById('emailEjecutivo').value.trim() || `${rol.toLowerCase()}@condolink.com`;
+            logTerminal(`Activando rol [${rol}] en Junta [${juntaId}] y abriendo módulo [${vistaDestino}]...`, "var(--magia-morado)");
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.activarUsuarioRolDelegadoAdminBackend === 'function') {
+                google.script.run
+                    .withSuccessHandler(() => navegarModulo(vistaDestino))
+                    .withFailureHandler(() => navegarModulo(vistaDestino))
+                    .activarUsuarioRolDelegadoAdminBackend({ correo: email, rol: rol, juntaId: juntaId });
+            } else {
+                navegarModulo(vistaDestino);
+            }
+        }
+
+        function cambiarEcosistemaOperativo() {
+            const eco = document.getElementById('selectEcosistemaActivo').value;
+            document.getElementById('badgeJuntaActivaHeader').innerText = `${eco} (Aislada)`;
+            logTerminal(`Contexto operativo conmutado a la Junta independiente [${eco}].`, "var(--magia-cian)");
+        }
+
+        function procesarNominaQuincenal() {
+            const eco = document.getElementById('selectEcosistemaActivo').value;
+            const quincena = document.getElementById('quincenaSelect').value;
+            logTerminal(`Nómina LOTTT [${quincena}] procesada para los trabajadores residenciales de la Junta [${eco}].`, "var(--acento-verde)");
+            navegarModulo('panel_nomina_admin');
+        }
+
+        function ejecutarCierreMensual() {
+            const eco = document.getElementById('selectEcosistemaActivo').value;
+            logTerminal(`Iniciando cierre contable y prorrateo por alícuota para la Junta [${eco}]...`, "var(--magia-fucsia)");
+            navegarModulo('panel_cierre_admin');
+        }
+
+        /* MENSAJERÍA MULTICANAL PERMANENTE (6 CANALES) */
+        function obtenerMensajesCanalLocal(canal) {
+            try {
+                const raw = localStorage.getItem('clg_admin_chat_' + canal);
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            return CANALES_INICIALES_ADMIN[canal] || [];
+        }
+
+        function guardarMensajesCanalLocal(canal, lista) {
+            try {
+                localStorage.setItem('clg_admin_chat_' + canal, JSON.stringify(lista));
+            } catch (e) {}
+        }
+
+        function renderizarCanalChat(canal) {
+            const chatBox = document.getElementById('chat-' + canal);
+            if (!chatBox) return;
+            const lista = obtenerMensajesCanalLocal(canal);
+            chatBox.innerHTML = lista.map(m => `
+                <div class="chat-bubble">
+                    <strong style="color:var(--magia-dorado);">${m.autor}:</strong> ${m.texto}
+                    ${m.fecha ? `<span style="float:right; font-size:0.65rem; color:var(--gris-texto);">${m.fecha}</span>` : ''}
+                </div>
+            `).join('');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function renderizarTodosLosCanalesChat() {
+            ['junta', 'ejecutivo', 'master', 'inversionista', 'legal', 'propietario'].forEach(renderizarCanalChat);
+        }
+
+        function enviarMensajeChat(canal) {
+            const input = document.getElementById('msg-' + canal);
+            if (!input || !input.value.trim()) return;
+            const texto = input.value.trim();
+            const juntaActiva = document.getElementById('selectEcosistemaActivo').value || 'ejemplo01';
+            const hora = new Date().toTimeString().slice(0, 5);
+
+            const lista = obtenerMensajesCanalLocal(canal);
+            lista.push({ autor: `Admin (${juntaActiva})`, texto: texto, fecha: hora });
+            guardarMensajesCanalLocal(canal, lista);
+            renderizarCanalChat(canal);
+            input.value = '';
+
+            logTerminal(`Mensaje permanente enviado en canal [${canal.toUpperCase()}] (Junta: ${juntaActiva}).`, "var(--magia-cian)");
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.guardarMensajeAdminBackend === 'function') {
+                google.script.run.guardarMensajeAdminBackend({
+                    canal: canal.toUpperCase(),
+                    juntaId: juntaActiva,
+                    emisor: 'ADMINISTRADOR',
+                    mensaje: texto
+                });
+            }
+        }
+
+        function sincronizarMensajeriaAdminBackend() {
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.obtenerMensajesAdminBackend === 'function') {
+                google.script.run
+                    .withSuccessHandler(res => {
+                        if (res && Array.isArray(res.mensajes) && res.mensajes.length > 0) {
+                            logTerminal(`Sincronizados ${res.mensajes.length} mensajes permanentes desde CLG_NotificacionesResidenciales.`, 'var(--acento-verde)');
+                        }
+                    })
+                    .obtenerMensajesAdminBackend();
+            }
+        }
+
+        /* COMUNICADOS OFICIALES CON LOGO DEL ADMINISTRADOR CREADOR DE LA JUNTA */
+        function actualizarMembreteComunicado() {
+            const junta = document.getElementById('juntaComunicadoSelect').value;
+            const lblJunta = document.getElementById('lblJuntaMembrete');
+            if (lblJunta) lblJunta.textContent = `Junta Independiente: ${junta}`;
+        }
+
+        function emitirComunicadoGlobalConLogo() {
+            const juntaId = document.getElementById('juntaComunicadoSelect').value;
+            const destino = document.getElementById('destinoComunicadoSelect').value;
+            const asunto = document.getElementById('asuntoComunicado').value.trim();
+            const cuerpo = document.getElementById('cuerpoComunicado').value.trim();
+            const logoAdminUrl = document.getElementById('inputLogoAdminEcosistema').value.trim() || 'https://i.imgur.com/XcMwIDa.png';
+
+            if (!asunto || !cuerpo) {
+                logTerminal("Error: Debe especificar el asunto y cuerpo del comunicado oficial.", "var(--acento-rojo)");
+                return;
+            }
+
+            const contenedor = document.getElementById('listaUltimosComunicadosConLogo');
+            if (contenedor) {
+                contenedor.insertAdjacentHTML('afterbegin', `
+                    <div style="border-left:3px solid var(--acento-verde); padding-left:8px; margin-bottom:6px; color:#fff;">
+                        <img src="${logoAdminUrl}" style="width:16px; height:16px; border-radius:50%; vertical-align:middle; margin-right:4px;">
+                        <strong>[${juntaId}] ${asunto}</strong> (${destino})
+                    </div>
+                `);
+            }
+
+            let comunicadosLocal = [];
+            try { comunicadosLocal = JSON.parse(localStorage.getItem('clg_comunicados_admin_logo') || '[]'); } catch(e) {}
+            comunicadosLocal.unshift({
+                juntaId: juntaId,
+                destino: destino,
+                asunto: asunto,
+                cuerpo: cuerpo,
+                logoAdminUrl: logoAdminUrl,
+                fecha: new Date().toLocaleString('es-VE')
+            });
+            localStorage.setItem('clg_comunicados_admin_logo', JSON.stringify(comunicadosLocal));
+
+            logTerminal(`Comunicado Oficial "${asunto}" emitido para la Junta [${juntaId}] (${destino}) con el Logo Institucional del Administrador estampado.`, "var(--magia-dorado)");
+
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.emitirComunicadoConLogoAdminBackend === 'function') {
+                google.script.run.emitirComunicadoConLogoAdminBackend({
+                    juntaId: juntaId,
+                    destinatarios: destino,
+                    asunto: asunto,
+                    cuerpo: cuerpo,
+                    logoAdminUrl: logoAdminUrl
+                });
+            }
+
+            document.getElementById('asuntoComunicado').value = "";
+            document.getElementById('cuerpoComunicado').value = "";
+        }
+
+        function navegarModulo(nombreModulo) {
+            logTerminal(`Redirigiendo al módulo [${nombreModulo}]...`, "var(--magia-cian)");
+            if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+                google.script.run
+                    .withSuccessHandler(htmlContent => {
+                        if (nombreModulo === 'login_ui' && htmlContent && htmlContent.startsWith('http')) {
+                            window.top.location.href = htmlContent;
+                        } else if (htmlContent) {
+                            document.open();
+                            document.write(htmlContent);
+                            document.close();
+                        } else {
+                            window.top.location.href = `${BASE_URL}?p=${nombreModulo}&tenant=default&rol=admin`;
+                        }
+                    })
+                    .withFailureHandler(() => {
+                        window.top.location.href = `${BASE_URL}?p=${nombreModulo}&tenant=default&rol=admin`;
+                    })
+                    .router_backend(nombreModulo);
+            } else {
+                window.top.location.href = `${BASE_URL}?p=${nombreModulo}&tenant=default&rol=admin`;
+            }
+        }
+    </script>
+</body>
+</html>

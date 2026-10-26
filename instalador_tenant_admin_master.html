@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aprovisionamiento Master — Condolink Global V20.8</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --azul-primario: #020617;
+      --azul-secundario: #00f2fe;
+      --neon-pink: #ff2a8d;
+      --bg-card: rgba(15, 23, 42, 0.96);
+      --bg-input: #0b1120;
+      --gris-borde: rgba(0, 242, 254, 0.4);
+      --gris-texto: #94a3b8;
+      --gris-titulo: #f8fafc;
+      --success: #22c55e;
+      --gold-tasa: #ffb703;
+      --radius: 16px;
+      --shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: radial-gradient(circle at top right, #082f49 0%, #060913 70%);
+      color: var(--gris-titulo);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .header {
+      background: linear-gradient(135deg, #0369a1 0%, #0f172a 100%);
+      color: white; padding: 12px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--gris-borde); flex-shrink: 0;
+    }
+    .brand-logo { width: 32px; height: 32px; object-fit: cover; border-radius: 6px; background: #020617; padding: 2px; border: 1px solid var(--gris-borde); }
+    
+    .tasa-bcv-widget {
+      background: rgba(10, 15, 28, 0.95);
+      border: 1px solid var(--gold-tasa);
+      border-radius: 10px;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      box-shadow: 0 0 15px rgba(255, 183, 3, 0.3);
+      min-width: 170px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .tasa-bcv-widget:hover { transform: scale(1.02); }
+    .tasa-bcv-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+      font-size: 0.58rem;
+      font-weight: 800;
+      color: var(--gris-texto);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .tasa-bcv-body {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+    }
+    .tasa-bcv-value {
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--gold-tasa);
+      text-shadow: 0 0 8px rgba(255, 183, 3, 0.5);
+      font-family: monospace;
+    }
+    .tasa-bcv-icon {
+      color: var(--gold-tasa);
+      font-size: 0.85rem;
+      filter: drop-shadow(0 0 5px var(--gold-tasa));
+    }
+
+    .onboarding-container {
+      width: 100%; max-width: 1200px; background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius); padding: 30px 40px; border: 1px solid var(--gris-borde);
+      box-shadow: var(--shadow); margin: 20px auto;
+    }
+    .brand-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 20px; flex-wrap: wrap; }
+    .brand-header-left { display: flex; align-items: center; gap: 20px; }
+    .brand-logo-container {
+      width: 75px; height: 75px; border-radius: 50%; background: rgba(3, 7, 18, 0.95);
+      border: 2px dashed rgba(0, 242, 254, 0.8); display: flex; align-items: center; justify-content: center;
+      position: relative; box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      animation: rotarHaloMistico 12s linear infinite;
+    }
+    @keyframes rotarHaloMistico { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .brand-logo-container img { width: 55px; height: 55px; object-fit: contain; border-radius: 50%; }
+    .brand-title-group h2 { font-size: 1.3rem; font-weight: 800; text-transform: uppercase; margin-bottom: 3px; }
+    .brand-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--azul-secundario); background: rgba(0, 242, 254, 0.15); padding: 3px 10px; border-radius: 4px; border: 1px solid rgba(0, 242, 254, 0.3); }
+    
+    .subtitle { font-size: 0.82rem; color: var(--gris-texto); margin-bottom: 16px; line-height: 1.5; }
+    .info-box { background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.2); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 0.78rem; color: var(--gris-texto); line-height: 1.5; }
+    .info-box strong { color: var(--azul-secundario); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { margin-bottom: 6px; display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: span 2; }
+    label { font-size: 0.7rem; font-weight: 700; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--gris-borde); background: var(--bg-input); color: var(--gris-titulo); font-size: 0.85rem; font-family: inherit; }
+    input:focus, select:focus { outline: none; border-color: var(--azul-secundario); box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.25); }
+
+    .arcade-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .arcade-card {
+      background: linear-gradient(145deg, #0f172a 0%, #030712 100%);
+      border: 2px solid var(--gris-borde);
+      border-radius: 12px;
+      padding: 18px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .arcade-card:hover {
+      border-color: var(--azul-secundario);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+    }
+    .arcade-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--azul-secundario);
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+
+    button { width: 100%; padding: 12px 18px; border-radius: 8px; border: none; font-weight: 800; font-size: 0.78rem; cursor: pointer; text-transform: uppercase; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+    .btn-submit { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; grid-column: span 2; margin-top: 8px; box-shadow: 0 4px 15px rgba(3, 105, 161, 0.4); }
+    .btn-submit:hover { filter: brightness(1.15); transform: translateY(-1px); }
+    .btn-arcade-action {
+      background: linear-gradient(135deg, #00f2fe 0%, #0088ff 100%);
+      color: #000;
+      font-size: 0.72rem;
+      padding: 8px;
+      border-radius: 6px;
+      font-weight: 800;
+      margin-top: 12px;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+    }
+    .btn-arcade-action:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(0, 242, 254, 0.6); }
+
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+    .btn-back { background: rgba(30, 41, 59, 0.9); color: var(--azul-secundario); border: 1px solid var(--gris-borde); padding: 8px 14px; font-size: 0.72rem; border-radius: 6px; cursor: pointer; width: auto; }
+
+    .resultado { margin-top: 12px; background: var(--bg-input); border-radius: 8px; padding: 12px 16px; font-size: 0.75rem; color: var(--gris-titulo); white-space: pre-wrap; border: 1px solid var(--gris-borde); display: none; line-height: 1.5; }
+    .resultado.active { display: block; }
+    .footer { text-align: center; font-size: 0.65rem; color: var(--gris-texto); padding: 10px 20px; border-top: 1px solid var(--gris-borde); background: rgba(11, 15, 25, 0.95); flex-shrink: 0; }
+  </style>
+  <script>
+    let tasaBCVGlobal = 881.88;
+    let listaAdminsRegistrados = [
+      { ID_Admin: "ADM-001", Nombre: "Tecno Majestic C.A.", Correo: "director@tecnomajestic.com", Nivel_Acceso: "MASTER", Estatus: "Activo", RIF: "J-40012345-0" },
+      { ID_Admin: "ADM-002", Nombre: "Administradora Global Center", Correo: "master@globalcenter.com", Nivel_Acceso: "ADMIN", Estatus: "Activo", RIF: "J-50098765-1" }
+    ];
+
+    function normalizarTasaBCV(raw) {
+      if (raw === null || raw === undefined) return 881.88;
+      let str = String(raw).trim().replace(/[^0-9.,]/g, '');
+      if (!str) return 881.88;
+      if (str.includes(',') && !str.includes('.')) {
+        str = str.replace(',', '.');
+      } else if (str.includes('.') && str.includes(',')) {
+        str = str.replace(/\./g, '').replace(',', '.');
+      }
+      let num = parseFloat(str);
+      if (isNaN(num) || num <= 0) return 881.88;
+      while (num >= 5000) {
+        num = num / 10;
+      }
+      return Math.round(num * 100) / 100;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      cargarFichaPreconfiguradaMaster();
+      obtenerTasaBCVAutomatizada();
+      setInterval(obtenerTasaBCVAutomatizada, 60000);
+      cargarAdministradorasArcade();
+    });
+
+    /* CARGA AUTOMÁTICA DE LA FICHA ENVIADA DESDE LOGIN_UI / PANEL_MASTER (CON RIF Y LOGO EN DRIVE) */
+    function cargarFichaPreconfiguradaMaster() {
+      try {
+        const ficha = JSON.parse(localStorage.getItem("CLG_Ficha_Instalador_Activa") || "null");
+        if (ficha && ficha.nombre) {
+          document.getElementById("masterNombreAdmin").value = ficha.nombre;
+          document.getElementById("masterCedula").value = ficha.rif || "";
+          document.getElementById("masterAdminEmail").value = ficha.email || "";
+          document.getElementById("masterTelefono").value = ficha.telefono || "";
+          document.getElementById("masterTenantId").value = "CLG_TENANT_" + String(ficha.nombre).toUpperCase().replace(/[^A-Z0-9]/g, "_").substring(0, 18);
+          if (ficha.urlLogoDrive) {
+            document.getElementById("masterLogoUrl").value = ficha.urlLogoDrive;
+          }
+          if (ficha.urlRifDrive) {
+            document.getElementById("masterRifDriveUrl").value = ficha.urlRifDrive;
+          }
+        }
+      } catch (e) {}
+    }
+
+    function obtenerTasaBCVAutomatizada() {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        const runner = google.script.run
+          .withSuccessHandler(res => {
+            let val = (res && typeof res === 'object') ? (res.tasaNumerica || res.tasa) : res;
+            if (val) {
+              tasaBCVGlobal = normalizarTasaBCV(val);
+              actualizarWidgetTasaGlobal();
+              actualizarTasasEnTarjetas();
+            } else {
+              consultarDolarApiInstalador();
+            }
+          })
+          .withFailureHandler(consultarDolarApiInstalador);
+
+        if (typeof runner.obtenerTasaBCVOficial === 'function') {
+          runner.obtenerTasaBCVOficial();
+        } else {
+          consultarDolarApiInstalador();
+        }
+      } else {
+        consultarDolarApiInstalador();
+      }
+    }
+
+    function consultarDolarApiInstalador() {
+      fetch('https://ve.dolarapi.com/v1/dolares/bcv')
+        .then(r => r.json())
+        .then(data => {
+          tasaBCVGlobal = normalizarTasaBCV(data.promedio || data.price || 881.88);
+          actualizarWidgetTasaGlobal();
+          actualizarTasasEnTarjetas();
+        })
+        .catch(() => {
+          actualizarWidgetTasaGlobal();
+          actualizarTasasEnTarjetas();
+        });
+    }
+
+    function actualizarWidgetTasaGlobal() {
+      const displayWidget = document.getElementById("tasaWidgetDisplay");
+      if (displayWidget) {
+        displayWidget.innerText = tasaBCVGlobal.toFixed(2).replace('.', ',') + " VES";
+      }
+    }
+
+    function actualizarTasasEnTarjetas() {
+      const spans = document.querySelectorAll('.tasa-card-val');
+      spans.forEach(el => {
+        el.innerText = tasaBCVGlobal.toFixed(2).replace('.', ',') + " VES";
+      });
+    }
+
+    function cargarAdministradorasArcade() {
+      const contenedor = document.getElementById("gridAdministradorasArcade");
+      if (!contenedor) return;
+
+      let html = "";
+      listaAdminsRegistrados.forEach(a => {
+        html += `
+          <div class="arcade-card" onclick="gestionarAdministradora('${a.Nombre}')">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                <span style="font-weight: 800; font-size: 0.95rem; color: #fff;"><i class="fas fa-building-shield" style="color: var(--azul-secundario); margin-right: 6px;"></i>${a.Nombre}</span>
+                <span style="background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; font-weight: 700;">${a.Estatus}</span>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--gris-texto); margin-bottom: 4px; font-family: monospace;">ID: ${a.ID_Admin} | Correo: ${a.Correo}</div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--gris-texto); background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px; margin-bottom: 8px;">
+                <div>Acceso: <b style="color: var(--azul-secundario);">${a.Nivel_Acceso}</b></div>
+                <div>Tasa BCV: <b style="color: var(--gold-tasa);" class="tasa-card-val">${tasaBCVGlobal.toFixed(2).replace('.', ',')} VES</b></div>
+              </div>
+            </div>
+            <button type="button" class="btn-arcade-action" onclick="event.stopPropagation(); gestionarAdministradora('${a.Nombre}')">
+              <i class="fas fa-gamepad"></i> Gestionar Administradora
+            </button>
+          </div>
+        `;
+      });
+      contenedor.innerHTML = html;
+      actualizarTasasEnTarjetas();
+    }
+
+    function gestionarAdministradora(empresa) {
+      navegarPortal('portal_admin');
+    }
+
+    function solicitarProvisionamientoMaster() {
+      const data = {
+        ID_Admin: "ADM-" + Math.floor(100 + Math.random() * 900),
+        Cedula: document.getElementById("masterCedula").value.trim(),
+        Nombre: document.getElementById("masterNombreAdmin").value.trim(),
+        Apellido: document.getElementById("masterApellidoAdmin").value.trim(),
+        Correo: document.getElementById("masterAdminEmail").value.trim(),
+        Telefono: document.getElementById("masterTelefono").value.trim(),
+        Tenant_ID: document.getElementById("masterTenantId").value.trim(),
+        Nivel_Acceso: document.getElementById("masterNivelAcceso").value,
+        logoUrl: document.getElementById("masterLogoUrl").value.trim(),
+        rifDriveUrl: document.getElementById("masterRifDriveUrl").value.trim(),
+        PIN: document.getElementById("masterPinAdmin").value.trim() || "1234",
+        Estatus: "Activo"
+      };
+
+      const resDiv = document.getElementById("resultadoMaster");
+      resDiv.className = "resultado active";
+      resDiv.textContent = "⏳ Registrando en CLG_Administradores, CLG_panel_admin y CLG_Usuario...";
+
+      listaAdminsRegistrados.unshift(data);
+      cargarAdministradorasArcade();
+
+      if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.registrarEmpresaMaster === 'function') {
+        google.script.run
+          .withSuccessHandler(res => {
+            resDiv.style.borderColor = "rgba(34, 197, 94, 0.4)";
+            resDiv.style.color = "#22c55e";
+            resDiv.textContent = "✅ " + (res && res.msg ? res.msg : "Administradora creada y sincronizada con la Base de Datos Central.");
+          })
+          .withFailureHandler(err => {
+            resDiv.style.borderColor = "#f87171";
+            resDiv.style.color = "#f87171";
+            resDiv.textContent = "❌ ERROR: " + err.message;
+          })
+          .registrarEmpresaMaster(data);
+      } else {
+        setTimeout(() => {
+          resDiv.style.borderColor = "rgba(34, 197, 94, 0.4)";
+          resDiv.style.color = "#22c55e";
+          resDiv.textContent = "✅ Administradora registrada correctamente con su ficha RIF y Logo de Drive.";
+        }, 500);
+      }
+    }
+
+    function navegarPortal(portal) {
+      if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.router_backend === 'function') {
+        google.script.run.withSuccessHandler(html => { document.open(); document.write(html); document.close(); }).router_backend(portal);
+      } else {
+        window.location.href = "?p=" + portal;
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="header">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <img src="https://i.imgur.com/nIZmQFJ.png" alt="Logo" class="brand-logo" onerror="this.src='https://i.imgur.com/nIZmQFJ.png'">
+      <span style="font-size: 0.85rem; font-weight: 800; color: #f8fafc;">CONDOLINK GLOBAL V20.8 — INSTALADOR TENANT ADMIN MASTER</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-back" onclick="navegarPortal('portal_master')"><i class="fas fa-crown"></i> Portal Master</button>
+      <button class="btn-back" onclick="navegarPortal('panel_master')"><i class="fas fa-arrow-left"></i> Panel Master</button>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px;">
+    <div class="onboarding-container">
+      <div class="brand-header">
+        <div class="brand-header-left">
+          <div class="brand-logo-container"><img src="https://i.imgur.com/XcMwIDa.png" alt="Logo" onerror="this.src='https://i.imgur.com/XcMwIDa.png'"></div>
+          <div class="brand-title-group">
+            <h2>Aprovisionamiento Nivel Master (Administradores)</h2>
+            <span class="brand-badge">Vinculación Automática de Ficha RIF y Logo en Drive</span>
+          </div>
+        </div>
+        
+        <div class="tasa-bcv-widget" onclick="obtenerTasaBCVAutomatizada()" title="Clic para actualizar tasa BCV">
+          <div class="tasa-bcv-header">
+            <span>TASA BCV (PANEL MASTER)</span>
+          </div>
+          <div class="tasa-bcv-body">
+            <span class="tasa-bcv-value" id="tasaWidgetDisplay">881,88 VES</span>
+            <i class="fas fa-bolt tasa-bcv-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="subtitle">Creación de nuevas entidades administradoras sincronizadas con las tablas <code>CLG_Administradores</code>, <code>CLG_panel_admin</code> y <code>CLG_Usuario</code>. Sede Operativa: Torre Charam, Caracas.</div>
+      
+      <div class="info-box">
+        <strong>Integración con Drive y Registro:</strong> Los datos de la solicitud aprobada en <code>panel_master</code> (incluyendo el documento RIF/Cédula y el Logo en Drive) se precargan automáticamente en esta ficha.
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre de la Empresa / Administrador</label>
+          <input id="masterNombreAdmin" placeholder="Ej. Tecno Majestic C.A." value="Tecno Majestic C.A.">
+        </div>
+        <div class="form-group">
+          <label>Apellido o Slogan Corporativo</label>
+          <input id="masterApellidoAdmin" placeholder="Ej. Soluciones Globales" value="Soluciones Tecnológicas">
+        </div>
+        <div class="form-group">
+          <label>Cédula / RIF del Titular</label>
+          <input id="masterCedula" placeholder="Ej. V-12345678 o J-40012345-0" value="J-40012345-0">
+        </div>
+        <div class="form-group">
+          <label>Correo Electrónico (Credencial de Acceso)</label>
+          <input id="masterAdminEmail" type="email" placeholder="director@tecnomajestic.com" value="director@tecnomajestic.com">
+        </div>
+        <div class="form-group">
+          <label>Teléfono de Contacto</label>
+          <input id="masterTelefono" placeholder="Ej. 0414-1700317" value="0414-1700317">
+        </div>
+        <div class="form-group">
+          <label>Tenant ID (Identificador Único del Ecosistema)</label>
+          <input id="masterTenantId" placeholder="Ej. CLG_TENANT_TECNO_MAJESTIC" value="CLG_TENANT_TECNO_MAJESTIC">
+        </div>
+        <div class="form-group">
+          <label>Nivel de Acceso (Rol)</label>
+          <select id="masterNivelAcceso">
+            <option value="ADMIN" selected>Admin (Administrador Principal)</option>
+            <option value="MASTER">Master (Global)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>PIN de Seguridad Inicial</label>
+          <input id="masterPinAdmin" type="text" placeholder="Ej. 1234" value="1234">
+        </div>
+        <div class="form-group">
+          <label>URL de Cédula / RIF Respaldado en Google Drive</label>
+          <input id="masterRifDriveUrl" placeholder="Enlace automático al comprobante RIF en Drive" value="">
+        </div>
+        <div class="form-group">
+          <label>URL de Logo Institucional en Drive (Para Documentos y Recibos)</label>
+          <input id="masterLogoUrl" placeholder="Enlace institucional para reportes PDF" value="https://i.imgur.com/XcMwIDa.png">
+        </div>
+
+        <div class="form-group full" style="margin-top: 15px;">
+          <label style="font-size: 0.85rem; margin-bottom: 10px; display: block; color: var(--azul-secundario);">
+            <i class="fas fa-gamepad"></i> Cuadrícula de Empresas Administradoras Registradas (Master)
+          </label>
+          <div id="gridAdministradorasArcade" class="arcade-grid"></div>
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="solicitarProvisionamientoMaster()"><i class="fas fa-user-plus"></i> Crear y Registrar Administradora en Base de Datos</button>
+      <div id="resultadoMaster" class="resultado"></div>
+    </div>
+  </div>
+
+  <div class="footer"><b>TECNO MAJESTIC</b> | Condolink Global V20.8 © 2026 Torre Charam, Caracas. Master Support: <span style="color: var(--azul-secundario);">0414-1700317</span></div>
+</body>
+</html>
