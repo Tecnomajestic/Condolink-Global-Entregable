@@ -9,7 +9,8 @@
     "build": "node -e \"console.log('Build OK')\"",
     "preview": "node server.js",
     "clean": "rm -rf dist",
-    "lint": "node -e \"console.log('No lint errors found')\""
+    "lint": "node -e \"console.log('No lint errors found')\"",
+    "push": "git add -A && git diff-index --quiet HEAD || git commit -m \"sync: actualización automática en DevBD\" && git push origin DevBD"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
