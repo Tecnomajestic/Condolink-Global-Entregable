@@ -10,7 +10,8 @@
     "preview": "node server.js",
     "clean": "rm -rf dist",
     "lint": "node -e \"console.log('No lint errors found')\"",
-    "push": "git add -A && git diff-index --quiet HEAD || git commit -m \"sync: actualización automática en DevBD\" && git push origin DevBD"
+    "push": "git add -A && git diff-index --quiet HEAD || git commit -m \"sync: actualización automática en DevBD\" && git push origin DevBD",
+    "pull": "git pull origin DevBD"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
