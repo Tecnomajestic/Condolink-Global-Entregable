@@ -1,0 +1,331 @@
+🏛️ Condolink Global V20.8 — Matriz de Archivos Organizada por Usuario / Rol
+
+Este documento presenta la consolidación y actualización oficial de los 91 archivos que integran el ecosistema Condolink Global V20.8, estructurados y clasificados por cada uno de los 12 roles del sistema más el núcleo de servicios backend.
+
+🛠️ CORE BACKEND Y SERVICIOS CENTRALES (17 Archivos .gs)
+
+Archivos de lógica de negocio, bases de datos, seguridad y servicios transversales comunes a todo el ecosistema.
+
+codigo.gs — Router principal del sistema, seguridad por roles y renderizado HTML.
+
+auth.gs — Manejo de sesiones, tokens, autenticación y seguridad.
+
+tasa_dinamica.gs — Lectura y sincronización autónoma de la Tasa BCV (celda B2 de CLG_Configuracion).
+
+mapeo_basededatos.gs — Estructuras, tablas relacionales CLG_* y esquemas del Spreadsheet Maestro.
+
+backend_admin.gs — Procesamiento de solicitudes y consultas administrativas.
+
+backend_propiedades_juntas.gs — Gestión de condominios, áreas comunes y juntas directivas.
+
+modulo_administracion.gs / modulos_administracion.gs — Lógica de gestión gerencial y condominios.
+
+modulo_financiero.gs / modulos_financiero.gs — Motor de cálculo contable, presupuestos y saldos.
+
+modulo_gastos.gs — Registro, categorización y procesamiento de egresos.
+
+modulo_pagos.gs — Procesamiento de cobranzas, alícuotas y recibos.
+
+conciliacion.gs — Validación bancaria y cruce de transacciones.
+
+auditoria_interna.gs — Registro inmutable de trazabilidad y eventos del sistema.
+
+monitoreo.gs — Telemetría y diagnóstico técnico del servidor.
+
+registro_empresas_inversionistas.gs — Registro de cuentas de inversión corporativa.
+
+validador_vistas_dashboard.gs — Validaciones dinámicas de interfaces HUD.
+
+pruebas_auditoria.gs — Suite de pruebas y utilidades de auditoría.
+
+funciones_internas.gs — Helpers y utilidades internas del motor backend.
+
+👑 1. MASTER / RAÍZ (10 Archivos)
+
+Soporte técnico global, licencias, aprovisionamiento de tenants y administración raíz del ecosistema.
+
+portal_master.html
+
+panel_master.html
+
+auditar_global_master.html
+
+panel_auditoria_master.html
+
+panel_inmobiliario_master.html
+
+panel_monitoreo_master.html
+
+panel_servicios_contratados_master.html
+
+instalador_tenant_admin.html
+
+instalador_tenant_admin_master.html
+
+instalador_tenant_inversionista_master.html
+
+🔍 2. MONITOR / TÉCNICO (9 Archivos)
+
+Diagnóstico en tiempo real, auditoría de logs, rendimiento de red y telemetría de servidor.
+
+portal_restricted_zone_monitor.html
+
+panel_restricted_zone_monitor.html
+
+auditar_global_monitor.html
+
+panel_auditoria_monitor.html
+
+panel_monitoreo_monitor.html
+
+usuarios_activos_monitor.html
+
+pruebas_monitoreo_monitor.html
+
+prueba_registro_monitor.html
+
+login_ui.html (Interfaz común de autenticación global)
+
+🏢 3. ADMINISTRADOR (ADMIN) (19 Archivos)
+
+Gestión gerencial de propiedades, finanzas, cobros, gastos, nómina, cierres y contabilidad general.
+
+portal_admin.html
+
+panel_admin.html
+
+panel_libro_diario_admin.html
+
+panel_pagos_admin.html (Corregida extensión duplicada)
+
+panel_gastos_admin.html
+
+panel_nomina_admin.html
+
+panel_auditoria_admin.html
+
+panel_cierre_admin.html
+
+panel_cobros_admin.html
+
+panel_comunicados_admin.html
+
+panel_conciliacion_admin.html
+
+panel_contabilidad_admin.html
+
+panel_corporativo_admin.html
+
+panel_edocuentas_admin.html
+
+panel_financiero_admin.html
+
+panel_graficos_admin.html
+
+panel_inmobiliario_admin.html
+
+panel_propiedades_admin.html
+
+panel_reportes_configuracion_admin.html
+
+panel_reportes_admin.html
+
+panel_servicios_contratados_admin.html
+
+panel_unidades_admin.html
+
+panel_zonas_admin.html
+
+💼 4. EJECUTIVO ADMINISTRATIVO (17 Archivos)
+
+Operativo especializado en reportes generales, estados de cuenta, balances y apoyo gerencial delegado.
+
+portal_ejecutivo_administrativo.html
+
+panel_ejecutivo_administrativo.html
+
+panel_cierre_ejecutivo_administrativo.html
+
+panel_cobros_ejecutivo_administrativo.html
+
+panel_comunicados_ejecutivo_administrativo.html
+
+panel_conciliacion_ejecutivo_administrativo.html
+
+panel_contabilidad_ejecutivo_administrativo.html
+
+panel_corporativo_ejecutivo_administrativo.html
+
+panel_edocuentas_ejecutivo_administrativo.html
+
+panel_financiero_ejecutivo_administrativo.html
+
+panel_gastos_ejecutivo_administrativo.html
+
+panel_graficos_ejecutivo_administrativo.html
+
+panel_inmobiliario_ejecutivo_administrativo.html
+
+panel_libro_diario_ejecutivo_administrativo.html
+
+panel_nomina_ejecutivo_administrativo.html
+
+panel_pago_inversionista_ejecutivo_administrador.html
+
+panel_pagos_ejecutivo_administrativo.html
+
+panel_propiedades_ejecutivo_administrativo.html
+
+panel_reportes_config_ejecutivo_administrativo.html
+
+panel_reportes_ejecutivo_administrativo.html
+
+panel_servicios_contratados_ejecutivo_administrativo.html
+
+panel_unidades_ejecutivo_administrativo.html
+
+panel_zonas_ejecutivo_administrativo.html
+
+💳 5. EJECUTIVO DE FACTURACIÓN (10 Archivos)
+
+Gestión operativa dedicada al procesamiento de pagos, conciliaciones, cobros y emisión de recibos.
+
+portal_ejecutivo_facturacion.html
+
+panel_ejecutivo_facturacion.html
+
+panel_cierre_ejecutivo_facturacion.html
+
+panel_cobros_ejecutivo_facturacion.html
+
+panel_comunicados_ejecutivo_facturacion.html
+
+panel_edocuentas_ejecutivo_facturacion.html
+
+panel_gastos_ejecutivo_facturacion.html
+
+panel_inmobiliario_ejecutivo_facturacion.html
+
+panel_pagos_ejecutivo_facturacion.html
+
+panel_reportes_ejecutivo_facturacion.html
+
+panel_servicios_contratados_ejecutivo_facturacion.html
+
+🔧 6. EJECUTIVO DE OPERACIONES (12 Archivos)
+
+Control de logística interna, mantenimiento de áreas comunes, gestión de proveedores y cierres de campo.
+
+portal_ejecutivo_operaciones.html
+
+panel_ejecutivo_operaciones.html
+
+panel_cierre_ejecutivo_operaciones.html
+
+panel_comunicados_ejecutivo_operaciones.html
+
+panel_contabilidad_ejecutivo_operaciones.html
+
+panel_gastos_ejecutivo_operaciones.html
+
+panel_inmobiliario_ejecutivo_operaciones.html
+
+panel_libro_diario_ejecutivo_operaciones.html
+
+panel_nomina_ejecutivo_operaciones.html
+
+panel_pago_inversionista_ejecutivo_operaciones.html
+
+panel_pagos_ejecutivo_operaciones.html
+
+panel_servicios_contratados_ejecutivo_operaciones.html
+
+panel_unidades_ejecutivo_operaciones.html
+
+⚖️ 7. LEGAL (4 Archivos)
+
+Gestión de cobranza judicial, morosidad crítica, expediente de casos y supervisión normativa.
+
+portal_legal.html
+
+panel_legal.html
+
+panel_inmobiliario_legal.html
+
+panel_servicios_contratados_legal.html
+
+📈 8. INVERSIONISTA (4 Archivos)
+
+Visualización de portafolios multi-propiedad, rendimiento financiero, retorno de inversión (ROI) e ingresos.
+
+portal_inversionista.html
+
+panel_inversionista.html
+
+panel_pago_inversionista_admin.html
+
+panel_inmobiliario_inversionista.html
+
+panel_servicios_contratados_inversionista.html
+
+🏛️ 9. JUNTA DE CONDOMINIO (6 Archivos)
+
+Co-administración, fiscalización, aprobación de presupuestos, actas de asambleas y publicaciones comunitarias.
+
+portal_junta.html
+
+panel_junta.html
+
+panel_areas_juntas.html
+
+panel_noticias_junta.html
+
+panel_inmobiliario_junta.html
+
+panel_servicios_contratados_junta.html
+
+🏠 10. PROPIETARIO / RESIDENTE (7 Archivos)
+
+Consulta individual de estados de cuenta, reporte de pagos, reserva de áreas comunes y noticias.
+
+portal_propietario.html
+
+panel_propietario.html
+
+panel_areas_propietarios.html
+
+panel_noticias_propietario.html
+
+panel_inmobiliario_propietario.html
+
+panel_servicios_contratados_propietario.html
+
+panel_comunicador_propietario01.html / portal_comunicador01_propietario.html
+
+panel_comunicador_propietario02.html / portal_comunicador02_propietario.html
+
+📢 11. COMUNICADORES (CANAL 01 Y CANAL 02) (4 Archivos)
+
+Emisión de comunicados autorizados, boletines institucionales y difusión masiva comunitaria.
+
+portal_comunicador01.html
+
+panel_comunicador01.html
+
+portal_comunicador02.html
+
+panel_comunicador02.html
+
+🧹 12. TRABAJADOR / PERSONAL RESIDENCIAL (4 Archivos)
+
+Control de tareas de campo, novedades de servicio, turnos y recepción de recibos laborales.
+
+portal_trabajador_residencial.html
+
+panel_trabajador_residencial.html
+
+panel_inmobiliario_trabajador_residencial.html
+
+panel_servicios_contratados_trabajador_residencial.html
+
+Documento consolidado en cumplimiento con los estándares arquitectónicos de Condolink Global V20.8.

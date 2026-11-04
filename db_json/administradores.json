@@ -1,0 +1,40 @@
+[
+  {
+    "id": "ADM-1731",
+    "cedula": "J-41258963-0",
+    "nombre": "Administradora Condolink Global C.A.",
+    "apellido": "",
+    "correo": "admin@condolinkglobal.com",
+    "telefono": "+58 212-5559011",
+    "logoUrl": "https://i.imgur.com/XcMwIDa.png",
+    "rifDriveUrl": "",
+    "modalidadServicio": "Contratación de Servicios",
+    "pagoCondominioBase": 65,
+    "alicuotaAdminMensual": 10,
+    "nivelAcceso": "ADMIN",
+    "estatus": "Activo",
+    "tenant_id": "altamira60",
+    "usuario_id": "USR-003",
+    "juntasAsignadas": [
+      "JTA-CHARAM-001"
+    ],
+    "fechaRegistro": "2026-10-30T22:32:41.731Z"
+  },
+  {
+    "id": "ADM-001",
+    "cedula": "V-14567890",
+    "nombre": "Beatriz",
+    "apellido": "Charam",
+    "correo": "admin@condolinkglobal.com",
+    "telefono": "+58 414 2631122",
+    "nivelAcceso": "ADMIN_MASTER",
+    "estatus": "Activo",
+    "tenant_id": "CLG_TENANT_ADMIN",
+    "usuario_id": "USR-003",
+    "juntasAsignadas": [
+      "JTA-CHARAM-001",
+      "JTA-AVILA-002"
+    ],
+    "fechaRegistro": "2026-01-10T10:00:00.000Z"
+  }
+]

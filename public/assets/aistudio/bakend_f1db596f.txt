@@ -1,0 +1,212 @@
+A continuación, te presento una batería completa y rigurosa de **50 pruebas estructuradas por módulo y rol** para certificar el correcto funcionamiento, la seguridad, la persistencia de datos y la coherencia arquitectónica de **Condolink Global V20.8**, alineada estrictamente con las directrices corporativas y técnicas del ecosistema.
+
+---
+
+### MÓDULO 0: Núcleo Backend, Enrutamiento y Seguridad Transversal (Pruebas 1 a 5)
+
+1. **Prueba de Autenticación y Enrutamiento por Roles:** Verificar que el archivo `codigo.gs` (`routers_unificados.gs`) bloquee el acceso directo por URL a paneles administrativos (`panel_admin.html`) cuando el usuario autenticado tiene el rol de `propietario`.
+2. **Prueba de Sincronización Autónoma Tasa BCV:** Validar que el script `tasa_dinamica.gs` consulte exitosamente la API externa o la celda `B2` de `CLG_Configuracion` y actualice el valor con dos decimales en formato `es-VE`.
+
+
+3. **Prueba de Inmutabilidad en Auditoría Global:** Comprobar que cualquier operación crítica realizada por un usuario registre automáticamente una traza con sello de tiempo, IP y módulo en la tabla `CLG_AuditoriaGlobal`.
+
+
+4. **Prueba de Integridad de la Base de Datos Maestro:** Validar las conexiones asíncronas y las relaciones de esquemas con el Google Sheet central (`1K_EiaARKQfucIqgC4_FnqBr1UwFGDKOOC-ks6i0Jh4c`) a través de `mapeo_basededatos.gs`.
+
+
+5. **Prueba de Seguridad en Sesiones (`auth.gs`):** Simular el vencimiento de un token de sesión para comprobar que el sistema expulse al usuario de manera segura hacia la interfaz de autenticación (`login_ui.html`).
+
+
+
+---
+
+### MÓDULO 1: Master / Raíz (Pruebas 6 a 9)
+
+6. **Prueba de Aprovisionamiento de Tenant (Fase I):** Ejecutar desde `portal_master.html` la creación de un nuevo condominio para verificar la generación automática del `Tenant_ID` único.
+
+
+7. **Prueba de Arquitectura de Doble Capa (*Dual Layer*):** Comprobar que al desplegar un nuevo tenant se creen de forma automática e independiente las tablas relacionales particionadas por año fiscal (ej. `[Tenant_ID]_CLG_Pagos_2026`).
+
+
+8. **Prueba de Privilegios en Anuncios Permanentes:** Validar que solo el rol **Master** tenga la facultad de publicar avisos de carácter permanente en el ecosistema, superando la regla general de 7 días.
+
+
+9. **Prueba de Gestión de Licencias:** Comprobar la activación, suspensión y control global de licencias de franquicias inmobiliarias desde `panel_master.html`.
+
+
+
+---
+
+### MÓDULO 2: Monitor / Técnico (Pruebas 10 a 12)
+
+10. **Prueba de Telemetría y Salud del Servidor:** Simular una consulta masiva de estrés desde `panel_monitoreo_monitor.html` para medir la estabilidad y latencia de respuesta del backend.
+
+
+11. **Prueba de Auditoría de Sesiones Activas:** Verificar que `usuarios_activos_monitor.html` refleje en tiempo real las conexiones simultáneas y el estado de los tokens activos.
+
+
+12. **Prueba de Diagnóstico en Zona Restringida:** Comprobar que el acceso a `portal_restricted_zone_monitor.html` esté blindado y permita ejecutar la suite de pruebas de errores de Apps Script.
+
+
+
+---
+
+### MÓDULO 3: Administrador / Admin (Pruebas 13 a 17)
+
+13. **Prueba de Control Financiero General:** Verificar el cálculo automático de ingresos, egresos y balances consolidados dentro de `panel_financiero_admin.html`.
+
+
+14. **Prueba de Gestión y Cierre de Nómina:** Procesar el pago de sueldos al personal residencial en `panel_nomina_admin.html` validando su impacto en `CLG_Nomina`.
+
+
+15. **Prueba de Conciliación Bancaria Administrativa:** Cruzar las referencias de pagos reportados con los movimientos bancarios registrados en `panel_conciliacion_admin.html`.
+
+
+16. **Prueba de Cierre Mensual Contable:** Ejecutar el cierre del período fiscal en `panel_cierre_admin.html` y verificar el bloqueo de modificaciones en los registros de ese mes.
+
+
+17. **Prueba de Configuración de Unidades y Alícuotas:** Registrar y modificar los coeficientes de participación y alícuotas de las propiedades en `panel_propiedades_admin.html`.
+
+
+
+---
+
+### MÓDULO 4: Ejecutivo Administrativo (Pruebas 18 a 21)
+
+18. **Prueba de Soporte Gerencial y Bitácora:** Registrar una tarea o nota operativa en `panel_ejecutivo_administrativo.html` y comprobar su almacenamiento en `CLG_Ejecutivos_Bitacora`.
+
+
+19. **Prueba de Emisión de Estados de Cuenta Delegados:** Generar y visualizar el reporte detallado de deuda de una unidad específica desde `panel_edocuentas_ejecutivo_administrativo.html`.
+
+
+20. **Prueba de Control de Morosidad y Cobros:** Validar la actualización de estatus de unidades con pagos pendientes en `panel_cobros_ejecutivo_administrativo.html`.
+
+
+21. **Prueba de Gestión en Panel de Servicios Contratados:** Registrar un nuevo proveedor certificado en el panel transversal y verificar su visualización correcta.
+
+
+
+---
+
+### MÓDULO 5: Ejecutivo de Facturación (Pruebas 22 a 24)
+
+22. **Prueba de Emisión Masiva de Recibos:** Procesar la facturación mensual de alícuotas y verificar la generación de registros en `CLG_Recibos`.
+
+
+23. **Prueba de Registro de Pagos Operativos:** Ingresar un pago reportado por transferencia o divisa en `panel_pagos_ejecutivo_facturacion.html` y comprobar su validación instantánea.
+
+
+24. **Prueba de Conciliación de Cobranza:** Verificar el cruce de recibos emitidos frente a los pagos acreditados en el módulo de facturación.
+
+
+
+---
+
+### MÓDULO 6: Ejecutivo de Operaciones (Pruebas 25 a 27)
+
+25. **Prueba de Logística de Mantenimiento:** Registrar una orden de servicio correctivo o preventivo para áreas comunes en `panel_ejecutivo_operaciones.html`.
+
+
+26. **Prueba de Control de Proveedores de Campo:** Validar la disponibilidad, certificación y calificación de los prestadores de servicios en las instalaciones.
+
+
+27. **Prueba de Cierre Operativo de Campo:** Consolidar las novedades de mantenimiento y turnos completados en `panel_cierre_ejecutivo_operaciones.html`.
+
+
+
+---
+
+### MÓDULO 7: Legal (Pruebas 28 a 30)
+
+28. **Prueba de Apertura de Expediente Contencioso:** Registrar un caso de morosidad crítica o litigio en `panel_legal.html` y verificar su inserción en `CLG_Legal`.
+
+
+29. **Prueba de Carga de Evidencias Legales:** Adjuntar documentos probatorios y notificaciones judiciales vinculadas a un caso en `CLG_LegalDocs`.
+
+
+30. **Prueba de Seguimiento Normativo:** Consultar el estatus de las actuaciones legales y acuerdos de pago de unidades en proceso coactivo.
+
+
+
+---
+
+### MÓDULO 8: Inversionista (Pruebas 31 a 33)
+
+31. **Prueba de Consolidación de Portafolios Multi-Propiedad:** Verificar que `portal_inversionista.html` muestre de forma agregada los ingresos y gastos de múltiples inmuebles asignados al inversor.
+
+
+32. **Prueba de Cálculo de Retorno de Inversión (ROI):** Validar la precisión de los gráficos de rentabilidad financiera en el panel del inversionista.
+
+
+33. **Prueba de Visualización de Pagos al Sector Inversor:** Comprobar el registro y recepción de transferencias de dividendos o rentas en `panel_pago_inversionista_admin.html`.
+
+
+
+---
+
+### MÓDULO 9: Junta de Condominio (Pruebas 34 a 37)
+
+34. **Prueba de Fiscalización y Aprobación de Presupuestos:** Revisar y aprobar un reporte de gastos extraordinarios desde `panel_junta.html`.
+
+
+35. **Prueba de Registro de Actas de Asamblea:** Cargar un acta oficial con sus respectivas decisiones y enlaces documentales en `CLG_JuntaActas`.
+
+
+36. **Prueba de Reserva de Áreas Comunes:** Validar el calendario y la aprobación de solicitudes de espacios compartidos en `panel_areas_juntas.html`.
+
+
+37. **Prueba de Supervisión de Solicitudes Vecinales:** Monitorear el flujo de peticiones y reclamos de los residentes en `CLG_Solicitudes`.
+
+
+
+---
+
+### MÓDULO 10: Propietario / Residente (Pruebas 38 a 41)
+
+38. **Prueba de Consulta de Estado de Cuenta Individual:** Verificar que el propietario visualice exclusivamente el saldo y los recibos vinculados a su unidad habitacional en `panel_propietario.html`.
+
+
+39. **Prueba de Reporte de Pago de Alícuota:** Enviar el formulario de notificación de pago adjuntando el comprobante de transferencia y tasa BCV correspondiente.
+
+
+40. **Prueba de Creación de Tickets de Soporte:** Enviar una incidencia o reporte técnico desde el portal del propietario hacia la administración.
+
+
+41. **Prueba de Límite en Anuncios Comunitarios:** Publicar un aviso de carácter vecinal y comprobar que el sistema aplique automáticamente la regla de expiración máxima de 7 días.
+
+
+
+---
+
+### MÓDULO 11: Comunicadores (Canal 01 y Canal 02) (Pruebas 42 a 45)
+
+42. **Prueba de Emisión de Boletines Institucionales:** Redactar y difundir un comunicado oficial a través de `portal_comunicador01.html`.
+
+
+43. **Prueba de Mensajería Masiva Comunitaria:** Validar el envío de alertas informativas mediante el Canal 02 hacia los residentes registrados.
+
+
+44. **Prueba de Registro en Historial de Operaciones:** Comprobar que cada boletín emitido quede inscripto en la tabla `CLG_Historial_Operaciones`.
+
+
+45. **Prueba de Restricción de Permisos de Difusión:** Verificar que los comunicadores no puedan alterar configuraciones financieras ni acceder a datos de otras propiedades ajenas a su canal.
+
+
+
+---
+
+### MÓDULO 12: Trabajador / Personal Residencial (Pruebas 46 a 50)
+
+46. **Prueba de Control de Turnos y Asistencia:** Registrar el ingreso y salida laboral desde `portal_trabajador_residencial.html`.
+
+
+47. **Prueba de Recepción de Tareas Operativas:** Consultar el listado de labores de mantenimiento de campo asignadas por el administrador u operador.
+
+
+48. **Prueba de Consulta de Recibos Laborales:** Verificar la visualización de los comprobantes de pago de sueldo del trabajador en `CLG_PersonalDocs`.
+
+
+49. **Prueba de Reporte de Incidencias de Campo:** Enviar una alerta sobre fallas en instalaciones del condominio (ej. luminarias, bombas de agua) para la atención gerencial.
+
+
+50. **Prueba de Aislamiento de Perfil Operativo:** Comprobar que el trabajador residencial posea acceso exclusivo a su entorno de campo, bloqueando cualquier intento de navegación hacia los módulos contables o de la Junta.

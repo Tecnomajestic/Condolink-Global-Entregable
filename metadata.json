@@ -1,0 +1,6 @@
+{
+  "name": "Condolink-App",
+  "description": "Plataforma integral de administración de condominios, finanzas, cobranza de cuotas, mantenimiento, reservas de áreas comunes y control de accesos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

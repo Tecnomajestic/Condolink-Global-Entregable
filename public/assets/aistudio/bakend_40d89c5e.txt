@@ -1,0 +1,82 @@
+### Pruebas del Sistema y Casos de Validación Ecosistema Condolink V14.2 (Torre Charam)
+
+A continuación, se detallan las pruebas unitarias y de integración orientadas a validar el comportamiento multi-tenant, la mensajería interna, la creación masiva de usuarios, la gestión de múltiples juntas para un administrador, los cierres mensuales, el pago de nómina de empleados y las publicaciones en el módulo de noticias de Condolink Global.
+
+---
+
+### 1. Pruebas de Múltiples Juntas para un Administrador
+
+* **Objetivo:** Validar que un Administrador Master o Administrador de Condominio con permisos cruzados pueda alternar de forma segura entre las diferentes juntas de condominio asignadas (ej. *Torre Charam*, *Residencias Parque Ávila*) sin fugas de sesión o de datos entre inmuebles.
+* **Casos de Prueba:**
+* **TC-MULTIJUNTA-01:** Inicio de sesión del Administrador y consulta del desplegable de propiedades vinculadas en el panel principal de Google Sites. *(Resultado esperado: Carga correcta exclusivamente de las juntas asociadas al tenant del usuario en `CLG_Usuarios`)*.
+
+
+* **TC-MULTIJUNTA-02:** Cambio de contexto activo de Torre Charam a Residencias Parque Ávila. *(Resultado esperado: El Apps Script actualiza el token de sesión y recarga los componentes de la hoja de cálculo correspondientes al nuevo condominio)*.
+
+
+* **TC-MULTIJUNTA-03:** Validación de restricciones por roles (Junta vs. Inquilino) al intentar acceder a actas de otra comunidad no autorizada. *(Resultado esperado: Bloqueo de acceso y redirección con advertencia de seguridad)*.
+
+---
+
+### 2. Pruebas de Creación de Usuarios (Batch e Individual)
+
+* **Objetivo:** Comprobar la correcta inserción de registros en la base de datos central de usuarios, asignación de roles y generación automática de pines de acceso.
+* **Casos de Prueba:**
+* **TC-USER-01:** Alta individual de un nuevo Propietario con asignación de alícuota y número de apartamento. *(Resultado esperado: Creación exitosa en `db_json` / solapa de usuarios y envío de credenciales mediante el flujo automatizado)*.
+
+
+* **TC-USER-02:** Ejecución de la utilidad de generación masiva de usuarios y empleados para la administración. *(Resultado esperado: Procesamiento correcto de lotes grandes en Google Sheets sin exceder el tiempo límite de ejecución de Apps Script)*.
+
+
+* **TC-USER-03:** Verificación de restricciones de duplicidad por correo electrónico y número de documento de identidad. *(Resultado esperado: Retorno de error controlado si el usuario ya existe en el sistema)*.
+
+
+---
+
+### 3. Pruebas de Mensajería Interna (Módulo de Tickets y Notificaciones)
+
+* **Objetivo:** Asegurar la fluidez y trazabilidad de los mensajes y requerimientos internos entre residentes, administración y personal técnico.
+* **Casos de Prueba:**
+* **TC-MSG-01:** Envío de un ticket de soporte o reporte de incidencia desde el portal del inquilino. *(Resultado esperado: Rexistro inmediato en a base de datos con marca de tempo e asignación ao departamento correspondente)*.
+
+
+* **TC-MSG-02:** Respuesta de la administración al mensaje interno del residente. *(Resultado esperado: Notificación en tempo real reflectida na interface do panel HTML correspondente)*.
+
+
+---
+
+### 4. Pruebas de Cierres Mensuales y Alquiler de Áreas Comunes
+
+* **Objetivo:** Validar el cálculo automatizado de los estados de cuenta, el bloqueo de períodos fiscales cerrados y el cobro por el uso de espacios compartidos (salón de fiestas, parrilleras).
+* **Casos de Prueba:**
+* **TC-CIERRE-01:** Ejecución del panel de cierre ejecutivo administrativo al finalizar el mes fiscal. *(Resultado esperado: Consolidación de ingresos, gastos y cálculo de saldos insolutos para el reporte de la Junta e Inversionistas)*.
+
+
+* **TC-CIERRE-02:** Intento de modificación de un asiento contable perteneciente a un mes ya cerrado. *(Resultado esperado: Bloqueo estricto polo sistema para preservar a auditoría financeira)*.
+
+
+* **TC-ALQUILER-01:** Registro de reserva y cobro por el uso de área común con tasa de cambio oficial BCV (`881.88 VES / USD`). *(Resultado esperado: Generación automática do cargo no recibo de alícuota do propietario correspondente)*.
+
+
+---
+
+### 5. Pruebas de Pago de Empleados (Nómina LOTTT)
+
+* **Objetivo:** Comprobar el cálculo de sueldos, bonos y deducciones legales de acuerdo con la legislación laboral aplicable (LOTTT) y la conversión multimoneda.
+* **Casos de Prueba:**
+* **TC-NOMINA-01:** Procesamiento de la quincena o mes para el personal de mantenimiento y vigilancia de Torre Charam. *(Resultado esperado: Cálculo exacto de retenciones, bonificaciones y montos netos a pagar expresados tanto en VES como en USD usando a taxa BCV activa)*.
+
+
+* **TC-NOMINA-02:** Emisión de comprobantes de pago individuales en formato PDF para el personal. *(Resultado esperado: Descarga ou envío correcto do recibo individualizado dende o módulo de recursos humanos)*.
+
+
+---
+
+### 6. Pruebas de Publicaciones en el Módulo de Noticias
+
+* **Objetivo:** Validar la difusión de comunicados oficiales, avisos de mantenimiento y circulares hacia los residentes.
+* **Casos de Prueba:**
+* **TC-NEWS-01:** Creación dun novo comunicado por parte do Administrador con imaxe adxunta e data de caducidade. *(Resultado esperado: Visualización inmediata no taboleiro de novas do Google Site para os propietarios e inquilinos autorizados)*.
+
+
+* **TC-NEWS-02:** Verificación de permisos de edición (restrinxido a roles Administrador e Master; a tarxeta de residentes só ten acceso de lectura). *(Resultado esperado: Ocultación de botóns de edición para perfis non autorizados)*.

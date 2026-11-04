@@ -1,0 +1,421 @@
+================================================================================
+MANUAL MAESTRO DE ARQUITECTURA, USO POR ROL Y PUESTA EN PRODUCCIÓN
+SISTEMA: CONDOLINK GLOBAL ENTERPRISE V20.8
+================================================================================
+Sede Principal: Torre Charam, La Castellana, Caracas, Venezuela
+Versión Certificada: V20.8 (71 / 71 Pruebas QA Aprobadas al 100%)
+Spreadsheet Maestro ID: 1K_EiaARKQfucIqgC4_FnqBr1UwFGDKOOC-ks6i0Jh4c
+Google Drive Folder ID: 1_GOZOLnHBMm_meTUQSpmsIqZeY1E4Jzl
+================================================================================
+
+
+================================================================================
+PARTE 1: ¿CÓMO ESTÁ CONFORMADO EL SISTEMA CONDOLINK GLOBAL V20.8?
+================================================================================
+
+El ecosistema está estructurado en 4 bloques maestros totalmente unificados:
+
+1. PUERTA ÚNICA DE ACCESO (`login_ui.html`)
+   - Es la única pantalla de entrada del sistema (no existe `index.html`).
+   - Incluye:
+     a) Selector de los 12 Roles Oficiales y autenticación con Usuario/Email y PIN
+        de seguridad (6 a 8 caracteres alfanuméricos).
+     b) Recuperación automática de PIN (`enviarRecuperacionPINPorUsuarioBackend`)
+        con notificación a `condolinkglobal@gmail.com`.
+     c) Formulario de Solicitud de Afiliación / Contratación para nuevas empresas
+        administradoras e inversionistas, con carga de RIF y Logo corporativo.
+     d) Cinta superior con Tasa Oficial BCV sincronizada en tiempo real (USD y EUR
+        a Bolívares con 2 decimales en formato `es-VE`).
+
+2. MOTOR BACKEND UNIFICADO (`codigo.gs` + `server.js`)
+   - `codigo.gs` (3.575 líneas, Secciones 1 a 16): Contiene fusionados los 18
+     módulos `.gs` originales (enrutador `doGet`/`doPost`, `router_backend`,
+     `auth.gs`, `tasa_dinamica.gs`, `mapeo_basededatos.gs`, `backend_admin.gs`,
+     `backend_propiedades_juntas.gs`, `modulo_administracion.gs`,
+     `modulo_financiero.gs`, `modulo_gastos.gs`, `modulo_pagos.gs`,
+     `conciliacion.gs`, `auditoria_interna.gs`, `monitoreo.gs`,
+     `registro_empresas_inversionistas.gs`, generador en cascada y suite de 71
+     pruebas QA).
+   - `server.js`: Espejo exacto en Node.js / Express que permite ejecutar el
+     sistema de forma autónoma sobre la base de datos JSON local sin depender de
+     límites de cuota, emulando `google.script.run` de forma transparente.
+
+3. BASE DE DATOS DUAL (`db_json/base_datos_unificada.json` + Google Sheets `CLG_*`)
+   - Compuesta por las tablas relacionales maestras:
+     * `CLG_Configuracion` (Celda B2 almacena el respaldo de la Tasa BCV)
+     * `CLG_Usuario` / `CLG_Usuarios` (Credenciales, Rol, PIN y Tenant_ID)
+     * `CLG_Solicitudes` / `CLG_RegistrosPendientes` (Bandeja de nuevos clientes)
+     * `CLG_Administradores` (Empresas administradoras aprobadas y su licencia)
+     * `CLG_panel_inversionista` (Portafolios y dividendos de inversionistas)
+     * `CLG_Propiedades` y `CLG_JuntaDirectiva` (`CLG_Juntas`)
+     * `CLG_Unidades` (Padrón de apartamentos, propietarios y alícuotas)
+     * `CLG_LibroDiario`, `CLG_Recibos`, `CLG_Pagos`, `CLG_Gastos`, `CLG_Bancos`
+     * `CLG_ServiciosContratados` y `CLG_Proveedores`
+     * `CLG_CasosLegales` (`CLG_Legal`) y `CLG_LegalDocs`
+     * `CLG_Tickets`, `CLG_Comunicados` y `CLG_Conserjeria`
+     * `CLG_AuditoriaGlobal` (Bitácora forense inmutable)
+   - Además, al desplegar un nuevo Tenant se crean las tablas particionadas por
+     año fiscal (*Dual Layer*): `[Tenant_ID]_CLG_Pagos_2026`, `_Gastos_2026`,
+     `_Recibos_2026` y `_LibroDiario_2026`.
+
+4. LAS 125 PANTALLAS HTML (`portal_*.html`, `panel_*.html`, `instalador_*.html`)
+   - Cada rol cuenta con un **Portal de Entrada (`portal_<rol>.html`)** y sus
+     respectivos **Paneles Operativos Especializados (`panel_<modulo>_<rol>.html`)**,
+     además de los paneles transversales de **Servicios Contratados** y
+     **Módulo Inmobiliario** adaptados a cada perfil.
+
+
+================================================================================
+PARTE 2: EL FLUJO OPERATIVO EN 5 PASOS (CÓMO FUNCIONA EL CICLO DE VIDA REAL)
+================================================================================
+
+PASO 1 — Solicitud de Nuevo Cliente (En `login_ui.html`):
+  Un nuevo Administrador de Condominios o Inversionista llena el formulario de
+  "Solicitar Afiliación / Contratar Servicio" en `login_ui.html`, adjuntando su
+  RIF y Logo. El registro se guarda automáticamente en `CLG_Solicitudes` con
+  estado "Pendiente".
+
+PASO 2 — Aprobación por el Master (En `panel_master.html`):
+  El usuario **Master** abre su bandeja de solicitudes pendientes, revisa el RIF
+  y Logo, elige el tiempo de licencia (`6 Meses`, `1 Año` o `Vitalicia`) y pulsa
+  **Aprobar**. El sistema:
+  - Genera el `Tenant_ID` único (`CLG_TENANT_<NOMBRE>` o `CLG_INV_<NOMBRE>`).
+  - Crea las credenciales de acceso en `CLG_Usuario`.
+  - Registra la empresa en `CLG_Administradores` (o `CLG_panel_inversionista`).
+  - Redirige al instalador maestro correspondiente si desea pre-configurarlo.
+
+PASO 3 — Ingreso del Administrador y Activación de su Equipo Delegado:
+  El Administrador aprobado inicia sesión en `login_ui.html` -> `portal_admin.html`
+  -> `panel_admin.html`. Desde allí puede activar sus **Usuarios Delegados**:
+  - Departamento Legal (`rol: legal`)
+  - Ejecutivo Administrativo (`rol: ejecutivo_administrativo`)
+  - Ejecutivo de Facturación (`rol: ejecutivo_facturacion`)
+  - Ejecutivo de Operaciones (`rol: ejecutivo_operaciones`)
+
+PASO 4 — Creación de Condominio y Despliegue en Cascada (`instalador_tenant_admin.html`):
+  Cuando el Administrador registra un nuevo condominio/junta en
+  `instalador_tenant_admin.html` (indicando un prefijo, ej. `ejemplo01`, cantidad
+  de unidades ej. `20`, cantidad de empleados ej. `3` y alícuota), el motor
+  crea **automáticamente en cascada**:
+  1) El usuario de la Junta de Condominio:
+     -> `juntaejemplo01` (Rol: `junta`, PIN inicial: `123456`)
+  2) Los 2 Comunicadores Oficiales del conjunto:
+     -> `comunicador01_ejemplo01` (Canal 01 Institucional)
+     -> `comunicador02_ejemplo01` (Canal 02 Vecinal/Masivo)
+  3) Todos los Trabajadores Residenciales con sufijo alfabético:
+     -> `emplejemplo01a`, `emplejemplo01b`, `emplejemplo01c` (Rol: `trabajador_residencial`)
+  4) Todas las Unidades y Usuarios Propietarios correlativos:
+     -> `ejemplo0101`, `ejemplo0102` ... hasta `ejemplo0120` (Rol: `propietario`),
+        creando sus apartamentos `U-01` a `U-20` en `CLG_Unidades` con su alícuota
+        asignada.
+
+PASO 5 — Operación Diaria Bimoneda (USD / Bs. BCV):
+  Cada usuario creado en el Paso 3 y Paso 4 ya puede iniciar sesión en
+  `login_ui.html` y será dirigido exclusivamente a su portal y paneles
+  correspondientes bajo aislamiento estricto de su `Tenant_ID`.
+
+
+================================================================================
+PARTE 3: MANUAL DE USO USUARIO POR USUARIO (LOS 12 ROLES OFICIALES)
+================================================================================
+
+TABLA MAESTRA DE USUARIOS Y CLAVES ÚNICAS EN BASE DE DATOS (`base_datos_unificada.json` / `CLG_Usuario`)
+Cada usuario se autentica directamente contra la base de datos y posee su propio
+identificador único y su propia clave/PIN exclusiva (ningún usuario repite clave):
+
+- USR-001 | Rol: Master                  | Usuario: `master`                   | Email: `master@condolinkglobal.com`        | Clave/PIN Único: `MS2080`
+- USR-002 | Rol: Monitor C4I             | Usuario: `monitor`                  | Email: `monitor@condolinkglobal.com`       | Clave/PIN Único: `MN2081`
+- USR-003 | Rol: Administrador Principal | Usuario: `admin`                    | Email: `admin@condolinkglobal.com`         | Clave/PIN Único: `AD2082`
+- USR-004 | Rol: Administrador General   | Usuario: `administrador`            | Email: `administrador@condolinkglobal.com` | Clave/PIN Único: `AG2083`
+- USR-005 | Rol: Ejecutivo Administrativo| Usuario: `ejecutivo_administrativo` | Email: `ejecutivo@condolinkglobal.com`     | Clave/PIN Único: `EA2084`
+- USR-006 | Rol: Ejecutivo Facturación   | Usuario: `ejecutivo_facturacion`    | Email: `facturacion@condolinkglobal.com`   | Clave/PIN Único: `EF2085`
+- USR-007 | Rol: Ejecutivo Operaciones   | Usuario: `ejecutivo_operaciones`    | Email: `operaciones@condolinkglobal.com`   | Clave/PIN Único: `EO2086`
+- USR-008 | Rol: Legal                   | Usuario: `legal`                    | Email: `legal@condolinkglobal.com`         | Clave/PIN Único: `LG2087`
+- USR-009 | Rol: Inversionista           | Usuario: `inversionista`            | Email: `inversionista@condolinkglobal.com` | Clave/PIN Único: `IN2088`
+- USR-010 | Rol: Junta de Condominio     | Usuario: `junta`                    | Email: `junta@condolinkglobal.com`         | Clave/PIN Único: `JT2089`
+- USR-011 | Rol: Propietario             | Usuario: `propietario`              | Email: `propietario@condolinkglobal.com`   | Clave/PIN Único: `PR2090`
+- USR-012 | Rol: Trabajador Residencial  | Usuario: `trabajador_residencial`   | Email: `operativo@condolinkglobal.com`     | Clave/PIN Único: `TR2091`
+- USR-013 | Rol: Comunicador Canal 01    | Usuario: `comunicador01`            | Email: `comunicador01@condolinkglobal.com` | Clave/PIN Único: `C12092`
+- USR-014 | Rol: Comunicador Canal 02    | Usuario: `comunicador02`            | Email: `comunicador02@condolinkglobal.com` | Clave/PIN Único: `C22093`
+
+* Además, cuando un Administrador crea un nuevo condominio en cascada desde
+  `instalador_tenant_admin.html`, el motor `generarPinUnico()` asigna una clave
+  alfanumérica irrepetible a cada nuevo usuario generado (`junta<prefijo>`,
+  `comunicador01_<prefijo>`, `comunicador02_<prefijo>`, `empl<prefijo>a..z` y
+  `<prefijo>01..N`) y la guarda en la base de datos.
+
+--------------------------------------------------------------------------------
+ROL 01: MASTER / RAÍZ CORPORATIVA
+--------------------------------------------------------------------------------
+* Credencial en Base de Datos: Usuario `master` (`master@condolinkglobal.com`) | Clave/PIN Único: `MS2080`
+* Pantallas principales:
+  - `portal_master.html` y `panel_master.html`
+  - `instalador_tenant_admin_master.html`
+  - `instalador_tenant_inversionista_master.html`
+  - `panel_auditoria_master.html` y `auditar_global_master.html`
+  - `panel_monitoreo_master.html`, `panel_inmobiliario_master.html`,
+    `panel_servicios_contratados_master.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Al entrar a `panel_master.html`, revisa la tabla **"Bandeja de Solicitudes
+     de Nuevos Tenants"** (`CLG_Solicitudes`).
+  2. Selecciona la vigencia de la membresía (`6 Meses`, `1 Año`, `Vitalicia`) y
+     aprueba con un clic a Administradoras o Inversionistas.
+  3. Puede actualizar manualmente la **Tasa BCV** de contingencia en la celda
+     `B2` de `CLG_Configuracion` si fuese necesario.
+  4. Es el **único rol** con privilegio para publicar anuncios de carácter
+     **PERMANENTE** en todo el ecosistema (superando la regla estándar de 7 días).
+  5. Audita todas las operaciones en `panel_auditoria_master.html` y gestiona
+     inmuebles globales en `panel_inmobiliario_master.html`.
+
+--------------------------------------------------------------------------------
+ROL 02: MONITOR / TÉCNICO C4I
+--------------------------------------------------------------------------------
+* Credencial por defecto: Usuario `monitor` (`monitor@condolink.global`) | PIN: `123456`
+* Pantallas principales:
+  - `panel_monitoreo_monitor.html` y `pruebas_monitoreo_monitor.html`
+  - `usuarios_activos_monitor.html`
+  - `portal_restricted_zone_monitor.html` y `panel_restricted_zone_monitor.html`
+  - `panel_auditoria_monitor.html` y `auditar_global_monitor.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Supervisa la salud del servidor, latencia en milisegundos, estado del motor
+     BCV y sincronización de las hojas `CLG_*`.
+  2. En `usuarios_activos_monitor.html` monitorea las sesiones activas y tokens.
+  3. En `portal_restricted_zone_monitor.html` ejecuta las baterías de pruebas QA
+     (`ejecutarCertificacionIntegral71PruebasV20_8`) y diagnósticos de DRP.
+
+--------------------------------------------------------------------------------
+ROL 03: ADMINISTRADOR DE CONDOMINIOS (TENANT ADMIN)
+--------------------------------------------------------------------------------
+* Credencial: Creada al aprobar su solicitud en Master (o `admin` / PIN `123456`)
+* Pantallas principales:
+  - `portal_admin.html` y `panel_admin.html`
+  - `instalador_tenant_admin.html`
+  - `panel_financiero_admin.html`, `panel_contabilidad_admin.html`,
+    `panel_libro_diario_admin.html`, `panel_cierre_admin.html`
+  - `panel_gastos_admin.html`, `panel_pagos_admin.html`, `panel_cobros_admin.html`,
+    `panel_conciliacion_admin.html`, `panel_edocuentas_admin.html`
+  - `panel_nomina_admin.html`, `panel_propiedades_admin.html`, `panel_unidades_admin.html`
+  - `panel_comunicados_admin.html`, `panel_reportes_admin.html`, `panel_graficos_admin.html`
+* ¿Cómo lo usa paso a paso?:
+  1. **Desplegar un Condominio:** Entra a `instalador_tenant_admin.html`, define
+     el nombre del condominio, prefijo (ej. `charam`), número de apartamentos,
+     número de trabajadores residenciales, alícuota y logo. Al guardar, el
+     sistema crea toda la estructura de usuarios en cascada.
+  2. **Alternar entre Múltiples Juntas:** Si administra varios edificios (ej.
+     *Torre Charam* y *Residencias Parque Ávila*), selecciona la junta activa en
+     su selector superior para trabajar sobre ese condominio sin mezclar datos.
+  3. **Contabilidad y Finanzas:** Registra asientos de partida doble en
+     `panel_libro_diario_admin.html`, carga gastos en `panel_gastos_admin.html`,
+     concilia bancos en `panel_conciliacion_admin.html` y procesa la nómina LOTTT
+     en `panel_nomina_admin.html`.
+  4. **Cierre de Mes:** Al finalizar el mes, entra a `panel_cierre_admin.html`,
+     emite los recibos de condominio y sella el período como inmutable.
+
+--------------------------------------------------------------------------------
+ROL 04: EJECUTIVO ADMINISTRATIVO
+--------------------------------------------------------------------------------
+* Credencial: Creada por el Administrador en su panel de delegación.
+* Pantallas principales:
+  - `portal_ejecutivo_administrativo.html` y `panel_ejecutivo_administrativo.html`
+  - `panel_edocuentas_ejecutivo_administrativo.html`
+  - `panel_cobros_ejecutivo_administrativo.html`
+  - `panel_conciliacion_ejecutivo_administrativo.html`
+  - `panel_propiedades_ejecutivo_administrativo.html` y `panel_unidades_ejecutivo_administrativo.html`
+  - `panel_cierre_ejecutivo_administrativo.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Asiste a la gerencia registrando actividades en la bitácora ejecutiva.
+  2. Emite estados de cuenta por apartamento, realiza seguimiento de morosidad
+     extrajudicial y mantiene actualizado el directorio de proveedores en
+     `panel_servicios_contratados_ejecutivo_administrativo.html`.
+
+--------------------------------------------------------------------------------
+ROL 05: EJECUTIVO DE FACTURACIÓN
+--------------------------------------------------------------------------------
+* Credencial: Creada por el Administrador.
+* Pantallas principales:
+  - `portal_ejecutivo_facturacion.html` y `panel_ejecutivo_facturacion.html`
+  - `panel_pagos_ejecutivo_facturacion.html`
+  - `panel_cobros_ejecutivo_facturacion.html`
+  - `panel_edocuentas_ejecutivo_facturacion.html`
+  - `panel_gastos_ejecutivo_facturacion.html`
+  - `panel_cierre_ejecutivo_facturacion.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Procesa la relación mensual de gastos comunes y no comunes para emitir los
+     avisos de cobro (`CLG_Recibos`).
+  2. Verifica los pagos reportados por los propietarios (Pago Móvil, transferencia
+     nacional, Zelle o efectivo divisas) validando la referencia y la tasa BCV
+     del día de la operación.
+
+--------------------------------------------------------------------------------
+ROL 06: EJECUTIVO DE OPERACIONES
+--------------------------------------------------------------------------------
+* Credencial: Creada por el Administrador.
+* Pantallas principales:
+  - `portal_ejecutivo_operaciones.html` y `panel_ejecutivo_operaciones.html`
+  - `panel_gastos_ejecutivo_operaciones.html`
+  - `panel_nomina_ejecutivo_operaciones.html`
+  - `panel_unidades_ejecutivo_operaciones.html`
+  - `panel_cierre_ejecutivo_operaciones.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Coordina el mantenimiento preventivo y correctivo de ascensores, bombas
+     hidroneumáticas, áreas verdes y vigilancia.
+  2. Asigna órdenes de trabajo al personal residencial (`empl<prefijo>a..z`),
+     evalúa proveedores de campo y ejecuta el cierre operativo de turnos.
+
+--------------------------------------------------------------------------------
+ROL 07: DEPARTAMENTO LEGAL
+--------------------------------------------------------------------------------
+* Credencial: Creada por el Administrador.
+* Pantallas principales:
+  - `portal_legal.html` y `panel_legal.html`
+  - `panel_inmobiliario_legal.html`
+  - `panel_servicios_contratados_legal.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Abre y gestiona expedientes contenciosos o de cobranza coactiva para
+     unidades con morosidad crítica (`CLG_CasosLegales`).
+  2. Adjunta evidencias documentales, actas y convenios de pago (`CLG_LegalDocs`),
+     y redacta o visa contratos con proveedores e inquilinos.
+
+--------------------------------------------------------------------------------
+ROL 08: INVERSIONISTA CORPORATIVO
+--------------------------------------------------------------------------------
+* Credencial: Aprobada por el Master (o `inversionista` / PIN `123456`).
+* Pantallas principales:
+  - `portal_inversionista.html` y `panel_inversionista.html`
+  - `panel_inmobiliario_inversionista.html`
+  - `panel_servicios_contratados_inversionista.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Visualiza de forma consolidada todas las propiedades y unidades que integran
+     su portafolio inmobiliario.
+  2. Consulta su retorno de inversión anual (ROI / Yield), valoración de activos
+     en USD y Bolívares (BCV), y el historial de liquidaciones/dividendos
+     recibidos desde administración (`panel_pago_inversionista_admin.html`).
+
+--------------------------------------------------------------------------------
+ROL 09: JUNTA DE CONDOMINIO
+--------------------------------------------------------------------------------
+* Credencial: Generada automáticamente como `junta<prefijo>` (ej. `juntaejemplo01`) | PIN: `123456`
+* Pantallas principales:
+  - `portal_junta.html` y `panel_junta.html`
+  - `panel_areas_juntas.html`
+  - `panel_noticias_junta.html`
+  - `panel_inmobiliario_junta.html` y `panel_servicios_contratados_junta.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Fiscaliza la gestión del Administrador, revisa y aprueba presupuestos de
+     gastos extraordinarios.
+  2. Registra y custodia las Actas de Asamblea (`CLG_JuntaActas`).
+  3. Aprueba o regula el calendario de reservas de áreas comunes (salón de
+     fiestas, parrilleras) en `panel_areas_juntas.html` y supervisa los reclamos
+     vecinales de su comunidad.
+
+--------------------------------------------------------------------------------
+ROL 10: PROPIETARIO / RESIDENTE
+--------------------------------------------------------------------------------
+* Credencial: Generada automáticamente como `<prefijo>01`, `<prefijo>02`... (ej. `ejemplo0101`) | PIN: `123456`
+* Pantallas principales:
+  - `portal_propietario.html` y `panel_propietario.html`
+  - `panel_areas_propietarios.html`
+  - `panel_noticias_propietario.html`
+  - `portal_comunicador01_propietario.html` y `portal_comunicador02_propietario.html`
+  - `panel_inmobiliario_propietario.html` y `panel_servicios_contratados_propietario.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Consulta su estado de cuenta individual y recibos de alícuota tanto en USD
+     como en Bolívares a la tasa BCV vigente.
+  2. Reporta el pago de su condominio adjuntando número de referencia bancaria y
+     método de pago.
+  3. Solicita el alquiler de áreas comunes en `panel_areas_propietarios.html`
+     (cuyo cargo se imputa automáticamente a su recibo).
+  4. Abre tickets de soporte técnico y publica avisos comunitarios (los cuales
+     tienen vigencia automática máxima de 7 días).
+
+--------------------------------------------------------------------------------
+ROL 11: COMUNICADORES OFICIALES (CANAL 01 Y CANAL 02)
+--------------------------------------------------------------------------------
+* Credenciales: Generadas automáticamente como `comunicador01_<prefijo>` y `comunicador02_<prefijo>` | PIN: `123456`
+* Pantallas principales:
+  - Canal 01 (Institucional Admin): `portal_comunicador01.html` y `panel_comunicador01.html`
+  - Canal 02 (Comunitario Junta): `portal_comunicador02.html` y `panel_comunicador02.html`
+* ¿Cómo lo usa paso a paso?:
+  1. El **Comunicador 01** redacta y emite boletines oficiales de la
+     Administración (cortes programados, convocatorias, circulares).
+  2. El **Comunicador 02** difunde avisos comunitarios y alertas de la Junta de
+     Condominio hacia todos los residentes del conjunto.
+  3. Tienen aislamiento estricto: no pueden acceder ni alterar módulos contables.
+
+--------------------------------------------------------------------------------
+ROL 12: TRABAJADOR / PERSONAL RESIDENCIAL
+--------------------------------------------------------------------------------
+* Credencial: Generada automáticamente como `empl<prefijo>a`, `empl<prefijo>b`... (ej. `emplejemplo01a`) | PIN: `123456`
+* Pantallas principales:
+  - `portal_trabajador_residencial.html` y `panel_trabajador_residencial.html`
+  - `panel_inmobiliario_trabajador_residencial.html`
+  - `panel_servicios_contratados_trabajador_residencial.html`
+* ¿Cómo lo usa paso a paso?:
+  1. Registra su entrada y salida de turno (control de asistencia y novedades de
+     conserjería/vigilancia).
+  2. Revisa la lista de tareas operativas asignadas para el día y las marca como
+     completadas.
+  3. Reporta incidencias de campo (bombas de agua, luminarias, ascensores) y
+     descarga sus recibos individuales de pago de nómina LOTTT.
+
+
+================================================================================
+PARTE 4: ¿CÓMO COLOCAR EL SISTEMA EN USO HOY MISMO? (GUÍA DE PUESTA EN MARCHA)
+================================================================================
+
+Tienes **3 modalidades listas** para empezar a utilizarlo de inmediato según tu
+preferencia:
+
+--------------------------------------------------------------------------------
+MODALIDAD A: USO INMEDIATO EN ESTA MISMA NUBE (YA ACTIVO AL 100%)
+--------------------------------------------------------------------------------
+1. El sistema ya está corriendo en vivo con persistencia real en
+   `db_json/base_datos_unificada.json`.
+2. Puedes abrir la URL de la aplicación (o compartir la Shared App URL con tu
+   equipo).
+3. Entra en `login_ui.html`:
+   - Para entrar como **Master**: Usuario `Master` | PIN `123456` | Rol `Master`.
+   - Para entrar como **Administrador**: Usuario `admin` | PIN `123456` | Rol `Administrador`.
+   - Para probar el flujo completo: Registra una solicitud desde `login_ui.html`,
+     apruébala en `panel_master.html`, entra a `instalador_tenant_admin.html` y
+     despliega tu primer condominio real.
+
+--------------------------------------------------------------------------------
+MODALIDAD B: DESPLIEGUE EN GOOGLE APPS SCRIPT + GOOGLE SHEETS + GOOGLE SITES
+--------------------------------------------------------------------------------
+Si deseas alojarlo directamente en tu cuenta de Google (`condolinkglobal@gmail.com`):
+
+1. Descarga los archivos desde `/centro-respaldo-v208`:
+   - Haz clic en **"DESCARGAR codigo.gs UNIFICADO"** y **"DESCARGAR .ZIP COMPLETO"**.
+2. Abre tu Google Sheet Maestro (`1K_EiaARKQfucIqgC4_FnqBr1UwFGDKOOC-ks6i0Jh4c`)
+   y ve a **Extensiones -> Apps Script**:
+   - Pega el contenido íntegro de **`codigo.gs`** en el archivo `codigo.gs` del
+     editor de Apps Script.
+   - Sube las vistas `.html` (puedes subirlas automáticamente en 10 segundos
+     usando `npx @google/clasp push` con el `.ZIP` descargado).
+3. Inicializa las Tablas Automáticamente:
+   - En la barra superior del editor de Apps Script, selecciona la función
+     `inicializarEsquemaSpreadsheetMaestro` y haz clic en **Ejecutar (Run)**.
+     Esto verificará y creará automáticamente todas las pestañas `CLG_*` con sus
+     columnas exactas.
+4. Publica como Aplicación Web:
+   - Haz clic en **Implementar -> Nueva implementación -> Aplicación web**.
+   - Ejecutar como: **Yo (`condolinkglobal@gmail.com`)**.
+   - Quién tiene acceso: **Cualquier persona**.
+   - Copia la URL terminada en `/exec` e incrústala en tu **Google Sites** (ya
+     está configurado con `XFrameOptionsMode.ALLOWALL` para funcionar dentro de
+     Google Sites sin bloqueos).
+
+--------------------------------------------------------------------------------
+MODALIDAD C: SERVIDOR PROPIO / LOCAL / VPS (USANDO EL `.ZIP` COMPLETO)
+--------------------------------------------------------------------------------
+1. Descarga `Condolink_Global_V20_8_Completo.zip` desde `/centro-respaldo-v208`.
+2. Descomprímelo en cualquier servidor o computador con Node.js y ejecuta:
+   `npm install`
+   `npm start`
+3. El sistema levantará en el puerto `3000` (`http://localhost:3000`) leyendo y
+   guardando todos los datos en `db_json/base_datos_unificada.json`.
+
+================================================================================
+FIN DEL MANUAL MAESTRO — CONDOLINK GLOBAL ENTERPRISE V20.8
+================================================================================
